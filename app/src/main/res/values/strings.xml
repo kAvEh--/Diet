@@ -1,0 +1,21 @@
+<resources>
+    <string name="app_name">My Application</string>
+    <string name="title_activity_intro">IntroActivity</string>
+    <string name="action_settings">Settings</string>
+    <string name="section_format">Hello World from section: %1$d</string>
+
+    //intro
+    <string name="title_intro1">به رژیم کرفس خوش آمدید.</string>
+    <string name="des_intro1">با استفاده از این اپلیکیشن می‌توانید به سادگی و در کمترین زمان به وزن ایده‌آل خود رسیده و در حین این پروسه، سلامت و نشاط خود را حفظ نمایید.</string>
+    <string name="title_intro2">رژیم کرفس چگونه کار می‌کند؟</string>
+    <string name="des_intro2">رژیم کرفس، بر اساس تحلیل و آنالیز داده‌های برنامه کالری شمار کرفس جمع‌آوری شده است و با بهره‌گیری از الگوریتم‌های یادگیری ماشین، رژیم‌های متناسب با ویژگی‌های فردی کاربر ارائه می‌دهد.</string>
+    <string name="title_intro3">امکان همگام‌سازی با حساب کاربری کرفس</string>
+    <string name="des_intro3">شما می‌توانید با حساب کاربری کرفس، علاوه بر همگام‌سازی اطلاعات، بدون نیاز به ثبت‌نام، وارد برنامه شوید.</string>
+    <string name="enter_app">ورود به برنامه</string>
+
+    //login
+    <string name="enter_karafs">ورود با اکانت کرفس</string>
+    <string name="signup">ثبت‌نام</string>
+    <string name="enter">ورود</string>
+
+</resources>
