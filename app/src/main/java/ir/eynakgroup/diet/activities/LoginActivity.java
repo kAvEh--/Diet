@@ -11,8 +11,6 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
-import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import ir.eynakgroup.diet.R;
@@ -74,6 +72,7 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
 
         mKarafsBtn.setOnClickListener(this);
         mSignupBtn.setOnClickListener(this);
+        mTxtForgot.setOnClickListener(this);
     }
 
     @Override
@@ -92,6 +91,9 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 break;
             case R.id.btn_enter:
 
+                break;
+            case R.id.txt_password_forgot:
+                
                 break;
             default:
                 break;
