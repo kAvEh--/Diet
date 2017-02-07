@@ -6,6 +6,14 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+
+        <item name="colorControlNormal">@color/colorEditText</item>
+        <item name="colorControlActivated">@color/colorEditText</item>
+        <!--<item name="colorControlHighlight">@color/colorEditText</item>-->
+    </style>
+
+    <style name="TextAppearence.App.TextInputLayout" parent="@android:style/TextAppearance">
+        <item name="android:textColor">@color/colorEditText</item>
     </style>
 
 </resources>
