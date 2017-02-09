@@ -1,5 +1,6 @@
 package ir.eynakgroup.diet.activities;
 
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -37,12 +38,12 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            Window window = getWindow();
-            window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-            window.setStatusBarColor(getResources().getColor(R.color.colorBlue, null));
-        }
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+//            Window window = getWindow();
+//            window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+//            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+//            window.setStatusBarColor(getResources().getColor(R.color.colorBlue, null));
+//        }
 
         mPassLayout = (TextInputLayout) findViewById(R.id.txtInput2);
         mPhoneLayout = (TextInputLayout) findViewById(R.id.txtInput1);
@@ -87,13 +88,13 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 mEnterBtn.setVisibility(View.VISIBLE);
                 break;
             case R.id.btn_signup:
-
+                startActivity(new Intent(this, SignupActivity.class));
                 break;
             case R.id.btn_enter:
 
                 break;
             case R.id.txt_password_forgot:
-                
+
                 break;
             default:
                 break;

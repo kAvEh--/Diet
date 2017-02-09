@@ -35,7 +35,7 @@
             android:layout_marginTop="@dimen/button_margin"
             android:background="@drawable/background_button2"
             android:text="@string/signup"
-            android:textColor="@color/colorBlue"
+            android:textColor="@color/colorPrimary"
             android:textSize="20sp" />
 
 
@@ -74,7 +74,7 @@
             android:layout_marginTop="@dimen/button_margin"
             android:text="@string/password_forgot"
             android:clickable="true"
-            android:textColor="@color/colorBlue"
+            android:textColor="@color/colorPrimary"
             android:visibility="invisible" />
 
         <android.support.design.widget.TextInputLayout

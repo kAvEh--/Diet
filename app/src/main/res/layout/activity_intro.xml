@@ -61,7 +61,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
         android:padding="@dimen/indicator_padding"
-        app:fillColor="@color/colorBlue"
+        app:fillColor="@color/colorPrimary"
         app:centered="true"/>
 
 </android.support.design.widget.CoordinatorLayout>

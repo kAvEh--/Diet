@@ -20,5 +20,9 @@
     <string name="password_forgot">رمز عبور خود را فراموش کرده‌اید؟</string>
     <string name="phone">تلفن</string>
     <string name="password">رمز عبور</string>
+    <string name="title_activity_signup">SignupActivity</string>
+
+    //signup
+    <string name="next_step">مرحله بعد</string>
 
 </resources>
