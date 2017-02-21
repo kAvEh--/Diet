@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">My Application</string>
+    <string name="app_name">Karafs Diet</string>
     <string name="title_activity_intro">IntroActivity</string>
     <string name="action_settings">Settings</string>
     <string name="section_format">Hello World from section: %1$d</string>
@@ -20,9 +20,49 @@
     <string name="password_forgot">رمز عبور خود را فراموش کرده‌اید؟</string>
     <string name="phone">تلفن</string>
     <string name="password">رمز عبور</string>
-    <string name="title_activity_signup">SignupActivity</string>
 
-    //signup
+    //signUp
+    <string name="title_activity_sign_up">SignUpActivity</string>
     <string name="next_step">مرحله بعد</string>
+    <string name="sign_up_submit">تکمیل ثبت‌نام</string>
+    <string name="reg_1">نام خود را وارد کنید.</string>
+    <string name="reg_2">جنسیت شما کدام است؟</string>
+    <string name="reg_3">تاریخ تولد خود را وارد کنید.</string>
+    <string name="reg_4">قد شما چند سانتی‌متر است؟</string>
+    <string name="reg_5">وزن شما چند کیلوگرم است؟</string>
+    <string name="reg_6">سطح فعالیت روزانه شما چگونه است؟</string>
+    <string name="reg_7">آیا به بیماری‌(های) خاص مبتلا هستید؟‌‌</string>
+    <string name="reg_8">اطلاعات ورود</string>
+    <string name="first_name">نام</string>
+    <string name="last_name">نام خانوادگی</string>
+    <string name="female">خانم</string>
+    <string name="male">آقا</string>
+    <string name="very_low">خیلی کم</string>
+    <string name="low">کم</string>
+    <string name="normal">متوسط</string>
+    <string name="high">زیاد</string>
+    <string name="very_high">خیلی زیاد</string>
+    <string name="kidney_disease">بیماری کلیوی</string>
+    <string name="heart_disease">بیماری قلبی</string>
+    <string name="fat_disease">چربی خون</string>
+    <string name="diabetes_disease">دیابت</string>
+    <string name="phone_number">شماره تلفن همراه</string>
+    <string name="password_repeat">تکرار رمز عبور</string>
+    <string name="privacy">حریم خصوصی</string>
+    <string name="terms">قوانین استفاده</string>
+    <string name="policy">با کلیک بر روی دکمه تکمیل ثبت‌نام، شما تایید می‌کنید که قوانین استفاده و حریم خصوصی سرویس‌های کرفس را مطالعه کرده و از آن‌ها پیروی خواهید کرد.</string>
+    <string name="title_activity_forgot_pass">ForgotPassActivity</string>
+    
+    //forgot pass
+    <string name="forgot_pass_description">برای بازیابی رمز عبور خود، لطفاً شماره تلفنی که با آن ثبت‌نام کرده‌ بودید را وارد نمایید.</string>
+    <string name="recovery_code">کد بازیابی حساب</string>
+    <string name="recovery_code_description">برای شماره تلفن همراه شما کد ۶ رقمی ارسال شده است، با وارد نمودن آن در فیلد زیر رمز عبور خود را بازیابی کنید.</string>
+    <string name="recovery_pass">بازیابی رمز عبور</string>
+    <string name="recovery_pass_description">شما می‌توانید از طریق فرم زیر اقدام به ایجاد رمز عبور جدید برای حساب کاربری خود نمایید.</string>
+    <string name="re_pass">تکرار رمز عبور</string>
+    <string name="code_send">ارسال کد</string>
+    <string name="code">کد ۶ رقمی</string>
+    <string name="recovery_submit">ثبت</string>
+
 
 </resources>

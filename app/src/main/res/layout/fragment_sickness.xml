@@ -1,0 +1,100 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:paddingBottom="@dimen/activity_vertical_margin"
+    android:paddingLeft="@dimen/activity_horizontal_margin"
+    android:paddingRight="@dimen/activity_horizontal_margin"
+    android:paddingTop="@dimen/activity_vertical_margin"
+    android:background="@android:color/white"
+    tools:context=".activities.SignUpActivity$PlaceholderFragment">
+
+
+    <include
+        android:layout_marginTop="@dimen/activity_horizontal_margin"
+        android:id="@+id/title"
+        layout="@layout/layout_title"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:layout_gravity="center_horizontal"/>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1.5"
+        android:layout_gravity="center_horizontal"
+        >
+
+        <TableLayout
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerHorizontal="true">
+            <TableRow>
+                <CheckBox
+                    style="@android:style/Widget.CompoundButton.RadioButton"
+                    android:id="@+id/check_kidney"
+                    android:text="@string/kidney_disease"
+                    android:textColor="@color/colorDescription"
+                    android:buttonTint="@color/colorDescription"
+                    android:layout_marginRight="@dimen/button_margin"
+                    android:checked="false"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="@dimen/activity_horizontal_margin"
+                    android:paddingRight="@dimen/activity_horizontal_margin"
+                    android:layout_marginBottom="@dimen/button_margin"
+                    android:background="@drawable/background_radio_button"/>
+                <CheckBox
+                    style="@android:style/Widget.CompoundButton.RadioButton"
+                    android:id="@+id/check_heart"
+                    android:text="@string/heart_disease"
+                    android:textColor="@color/colorDescription"
+                    android:buttonTint="@color/colorDescription"
+                    android:paddingLeft="@dimen/activity_horizontal_margin"
+                    android:paddingRight="@dimen/activity_horizontal_margin"
+                    android:checked="false"
+                    android:layout_marginBottom="@dimen/button_margin"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/background_radio_button"/>
+            </TableRow>
+            <TableRow>
+                <CheckBox
+                    style="@android:style/Widget.CompoundButton.RadioButton"
+                    android:id="@+id/check_fat"
+                    android:text="@string/fat_disease"
+                    android:textColor="@color/colorDescription"
+                    android:paddingLeft="@dimen/activity_horizontal_margin"
+                    android:paddingRight="@dimen/activity_horizontal_margin"
+                    android:checked="false"
+                    android:layout_marginRight="@dimen/button_margin"
+                    android:layout_marginBottom="@dimen/button_margin"
+                    android:buttonTint="@color/colorDescription"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/background_radio_button"/>
+
+                <CheckBox
+                    style="@android:style/Widget.CompoundButton.RadioButton"
+                    android:id="@+id/check_diabetes"
+                    android:text="@string/diabetes_disease"
+                    android:textColor="@color/colorDescription"
+                    android:paddingLeft="@dimen/activity_horizontal_margin"
+                    android:paddingRight="@dimen/activity_horizontal_margin"
+                    android:checked="false"
+                    android:buttonTint="@color/colorDescription"
+                    android:layout_marginBottom="@dimen/button_margin"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:background="@drawable/background_radio_button"/>
+
+            </TableRow>
+
+        </TableLayout>
+
+    </RelativeLayout>
+
+</LinearLayout>

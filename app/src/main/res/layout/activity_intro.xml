@@ -50,8 +50,7 @@
         android:background="@drawable/background_button"
         android:text="@string/enter_app"
         android:textColor="@android:color/white"
-        android:layout_marginTop="@dimen/indicator_padding"
-        android:layout_marginBottom="@dimen/indicator_padding"
+        android:layout_marginBottom="75dp"
         android:textSize="20sp"
         />
 
@@ -61,6 +60,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
         android:padding="@dimen/indicator_padding"
+        android:layout_marginBottom="40dp"
         app:fillColor="@color/colorPrimary"
         app:centered="true"/>
 

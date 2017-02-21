@@ -60,7 +60,7 @@ public class XmlToClassAttributeHandler {
                 value.contains("@color/")){
             int resId=mRes.getIdentifier(mContext.getPackageName()+":"+value.substring(1), null,null);
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
-                color=mRes.getColor(resId, null);
+                color=mRes.getColor(resId, mContext.getTheme());
             else
                 color=mRes.getColor(resId);
 
@@ -108,7 +108,7 @@ public class XmlToClassAttributeHandler {
     }
 
 
-    public int gettextSizeUnit() {
+    public int getTextSizeUnit() {
 
         String value=mAttributeSet.getAttributeValue(namespace, KEY_TEXT_SIZE );
 

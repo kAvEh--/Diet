@@ -2,21 +2,16 @@ package ir.eynakgroup.diet.activities;
 
 import android.content.Intent;
 import android.graphics.Paint;
-import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
-import android.support.v7.app.AppCompatActivity;
-import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
-import android.view.WindowManager;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
@@ -25,11 +20,13 @@ import android.widget.TextView;
 
 import com.viewpagerindicator.CirclePageIndicator;
 
+import java.lang.ref.WeakReference;
+
 import ir.eynakgroup.diet.R;
 import ir.eynakgroup.diet.utils.view.JustifiedTextView;
 
 
-public class IntroActivity extends AppCompatActivity {
+public class IntroActivity extends MainActivity {
 
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
@@ -60,28 +57,20 @@ public class IntroActivity extends AppCompatActivity {
 //        setSupportActionBar(toolbar);
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-//            Window window = getWindow();
-//            window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-//            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-//            window.setStatusBarColor(getResources().getColor(R.color.colorBlue, null));
-//        }
 
-
-        DisplayMetrics displaymetrics = new DisplayMetrics();
-        getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
+        getWindowManager().getDefaultDisplay().getMetrics(mDisplayMetrics);
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
 
         // Set up the ViewPager with the sections adapter.
         mViewPager = (ViewPager) findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
         mIndicator = (CirclePageIndicator) findViewById(R.id.indicator);
-        mIndicator.setRadius(displaymetrics.widthPixels / 75);
+        mIndicator.setRadius(mDisplayMetrics.widthPixels / 100);
         mIndicator.setViewPager(mViewPager);
 
         mButton = (Button) findViewById(R.id.btn_enter);
-        mButton.setWidth((int)(displaymetrics.widthPixels/2.5));
-        mButton.setHeight(displaymetrics.heightPixels/100);
+        mButton.setWidth(mDisplayMetrics.widthPixels / 2);
+        mButton.setHeight(mDisplayMetrics.heightPixels / 100);
 
         mButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -107,7 +96,7 @@ public class IntroActivity extends AppCompatActivity {
                     mIndicator.setVisibility(View.INVISIBLE);
                     mButton.setAnimation(animFadeIn);
                     mButton.setVisibility(View.VISIBLE);
-                }else{
+                } else {
                     mIndicator.setVisibility(View.VISIBLE);
                     mButton.setVisibility(View.INVISIBLE);
                 }
@@ -133,7 +122,6 @@ public class IntroActivity extends AppCompatActivity {
 
     }
 
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -156,7 +144,7 @@ public class IntroActivity extends AppCompatActivity {
         return super.onOptionsItemSelected(item);
     }
 
-    class Holder {
+    private class Holder {
         private int drawRes, strResTitle, strResDes;
 
         Holder(int drawRes, int strResTitle, int strResDes) {
@@ -197,7 +185,8 @@ public class IntroActivity extends AppCompatActivity {
          * Returns a new instance of this fragment for the given section
          * number.
          */
-        public static PlaceholderFragment newInstance(Holder holder) {
+        public static PlaceholderFragment getInstance(WeakReference<Holder> holderWeakReference) {
+            Holder holder = holderWeakReference.get();
             PlaceholderFragment fragment = new PlaceholderFragment();
             Bundle args = new Bundle();
             args.putInt(ARG_DRAWABLE, holder.getDrawRes());
@@ -219,9 +208,9 @@ public class IntroActivity extends AppCompatActivity {
 //            txtDesView.setText(getString(getArguments().getInt(ARG_DESCRIPTION)));
 
             JustifiedTextView mJTv = (JustifiedTextView) rootView.findViewById(R.id.description);
-            mJTv.setText(getResources().getString(getArguments().getInt(ARG_DESCRIPTION)));
+            mJTv.setText(getString(getArguments().getInt(ARG_DESCRIPTION)));
 //            mJTv.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20);
-            mJTv.setLineSpacing(20);
+            mJTv.setLineSpacing(15);
             mJTv.setAlignment(Paint.Align.RIGHT);
 
             return rootView;
@@ -245,13 +234,13 @@ public class IntroActivity extends AppCompatActivity {
 
             switch (position + 1) {
                 case 1:
-                    return PlaceholderFragment.newInstance(new Holder(R.drawable.intro_01, R.string.title_intro1, R.string.des_intro1));
+                    return PlaceholderFragment.getInstance(new WeakReference<>(new Holder(R.drawable.intro_1, R.string.title_intro1, R.string.des_intro1)));
                 case 2:
-                    return PlaceholderFragment.newInstance(new Holder(R.drawable.intro_02, R.string.title_intro2, R.string.des_intro2));
+                    return PlaceholderFragment.getInstance(new WeakReference<>(new Holder(R.drawable.intro_2, R.string.title_intro2, R.string.des_intro2)));
                 case 3:
-                    return PlaceholderFragment.newInstance(new Holder(R.drawable.intro_03, R.string.title_intro3, R.string.des_intro3));
+                    return PlaceholderFragment.getInstance(new WeakReference<>(new Holder(R.drawable.intro_3, R.string.title_intro3, R.string.des_intro3)));
                 default:
-                    return PlaceholderFragment.newInstance(null);
+                    return PlaceholderFragment.getInstance(null);
             }
         }
 

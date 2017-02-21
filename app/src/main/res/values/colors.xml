@@ -10,5 +10,6 @@
     <color name="colorTitle">#49a9df</color>
     <color name="colorDescription">#a3a4a8</color>
     <color name="colorEditText">#cecfd1</color>
+    <color name="colorWhite">@android:color/white</color>
 
 </resources>

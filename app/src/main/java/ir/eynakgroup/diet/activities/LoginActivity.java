@@ -7,7 +7,9 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputEditText;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.text.method.PasswordTransformationMethod;
 import android.util.DisplayMetrics;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
@@ -20,7 +22,7 @@ import ir.eynakgroup.diet.R;
 /**
  * Created by Shayan on 2/7/2017.
  */
-public class LoginActivity extends AppCompatActivity implements View.OnClickListener {
+public class LoginActivity extends MainActivity implements View.OnClickListener {
 
     private Button mSignupBtn;
     private Button mKarafsBtn;
@@ -33,22 +35,52 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
     private TextInputEditText mPhoneEdit;
     private TextView mTxtForgot;
 
+    private boolean showPassword = false;
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
 
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-//            Window window = getWindow();
-//            window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-//            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-//            window.setStatusBarColor(getResources().getColor(R.color.colorBlue, null));
-//        }
-
         mPassLayout = (TextInputLayout) findViewById(R.id.txtInput2);
         mPhoneLayout = (TextInputLayout) findViewById(R.id.txtInput1);
 
         mPassEdit = (TextInputEditText) findViewById(R.id.edit_pass);
+        mPassEdit.setLongClickable(false);
+        mPassEdit.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_visibility_black_18dp, 0, 0, 0);
+        mPassEdit.getCompoundDrawables()[0].setAlpha(45);
+
+
+        mPassEdit.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                final int DRAWABLE_LEFT = 0;
+                final int DRAWABLE_TOP = 1;
+                final int DRAWABLE_RIGHT = 2;
+                final int DRAWABLE_BOTTOM = 3;
+                if(event.getAction() == MotionEvent.ACTION_UP) {
+                    if(event.getX() <= (mPassEdit.getCompoundDrawables()[DRAWABLE_LEFT].getBounds().width()))          // your action here
+                    {
+                        // changePasswordVisibility(v);
+                        String temporary_stored_text = mPassEdit.getText().toString().trim();
+                        if(!showPassword) {
+                            mPassEdit.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_visibility_off_black_18dp, 0, 0, 0);
+                            mPassEdit.setTransformationMethod(null);
+                            showPassword = true;
+                        }else{
+                            mPassEdit.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_visibility_black_18dp, 0, 0, 0);
+                            mPassEdit.setTransformationMethod(PasswordTransformationMethod.getInstance());
+                            showPassword = false;
+                        }
+                        mPassEdit.setText(temporary_stored_text);
+                        mPassEdit.getCompoundDrawables()[DRAWABLE_LEFT].setAlpha(45);
+                        return true;
+                    }
+                }
+                return false;
+            }
+        });
+
         mPhoneEdit = (TextInputEditText) findViewById(R.id.edit_phone);
         mTxtForgot = (TextView) findViewById(R.id.txt_password_forgot);
 
@@ -59,13 +91,13 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
         DisplayMetrics displaymetrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
 
-        mSignupBtn.setWidth((int) (displaymetrics.widthPixels / 2.5));
+        mSignupBtn.setWidth(displaymetrics.widthPixels / 2);
         mSignupBtn.setHeight(displaymetrics.heightPixels / 100);
 
-        mKarafsBtn.setWidth((int) (displaymetrics.widthPixels / 2.5));
+        mKarafsBtn.setWidth(displaymetrics.widthPixels / 2);
         mKarafsBtn.setHeight(displaymetrics.heightPixels / 100);
 
-        mEnterBtn.setWidth((int) (displaymetrics.widthPixels / 2.5));
+        mEnterBtn.setWidth(displaymetrics.widthPixels / 2);
         mEnterBtn.setHeight(displaymetrics.heightPixels / 100);
 
         mPhoneEdit.setWidth((int) (displaymetrics.widthPixels / 1.25));
@@ -88,13 +120,13 @@ public class LoginActivity extends AppCompatActivity implements View.OnClickList
                 mEnterBtn.setVisibility(View.VISIBLE);
                 break;
             case R.id.btn_signup:
-                startActivity(new Intent(this, SignupActivity.class));
+                startActivity(new Intent(this, SignUpActivity.class));
                 break;
             case R.id.btn_enter:
 
                 break;
             case R.id.txt_password_forgot:
-
+                startActivity(new Intent(this, ForgotPassActivity.class));
                 break;
             default:
                 break;
