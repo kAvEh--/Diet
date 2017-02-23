@@ -12,7 +12,7 @@
 
 
     <include
-        android:layout_marginTop="@dimen/activity_horizontal_margin"
+        android:layout_marginTop="@dimen/activity_vertical_margin_2x"
         android:id="@+id/title"
         layout="@layout/layout_title"
         android:layout_width="wrap_content"
@@ -44,7 +44,7 @@
                     android:text="@string/female"
                     android:background="@drawable/background_radio_button"
                     android:textColor="@color/colorDescription"
-                    android:buttonTint="@color/colorDescription"
+                    android:buttonTint="@color/colorEditText"
                     android:paddingRight="@dimen/activity_horizontal_margin"
                     android:paddingLeft="@dimen/activity_horizontal_margin"
                     android:layout_marginBottom="@dimen/button_margin"
@@ -58,7 +58,7 @@
                     android:text="@string/male"
                     android:paddingRight="@dimen/activity_horizontal_margin"
                     android:paddingLeft="@dimen/activity_horizontal_margin"
-                    android:buttonTint="@color/colorDescription"
+                    android:buttonTint="@color/colorEditText"
                     android:textColor="@color/colorDescription"
                     android:layout_gravity="center_horizontal"/>
 

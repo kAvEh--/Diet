@@ -12,7 +12,7 @@
 
 
     <include
-        android:layout_marginTop="@dimen/activity_horizontal_margin"
+        android:layout_marginTop="@dimen/activity_vertical_margin_2x"
         android:id="@+id/title"
         layout="@layout/layout_title"
         android:layout_width="wrap_content"
@@ -38,7 +38,7 @@
                     android:id="@+id/check_kidney"
                     android:text="@string/kidney_disease"
                     android:textColor="@color/colorDescription"
-                    android:buttonTint="@color/colorDescription"
+                    android:buttonTint="@color/colorEditText"
                     android:layout_marginRight="@dimen/button_margin"
                     android:checked="false"
                     android:layout_width="wrap_content"
@@ -52,7 +52,7 @@
                     android:id="@+id/check_heart"
                     android:text="@string/heart_disease"
                     android:textColor="@color/colorDescription"
-                    android:buttonTint="@color/colorDescription"
+                    android:buttonTint="@color/colorEditText"
                     android:paddingLeft="@dimen/activity_horizontal_margin"
                     android:paddingRight="@dimen/activity_horizontal_margin"
                     android:checked="false"
@@ -72,7 +72,7 @@
                     android:checked="false"
                     android:layout_marginRight="@dimen/button_margin"
                     android:layout_marginBottom="@dimen/button_margin"
-                    android:buttonTint="@color/colorDescription"
+                    android:buttonTint="@color/colorEditText"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:background="@drawable/background_radio_button"/>
@@ -85,7 +85,7 @@
                     android:paddingLeft="@dimen/activity_horizontal_margin"
                     android:paddingRight="@dimen/activity_horizontal_margin"
                     android:checked="false"
-                    android:buttonTint="@color/colorDescription"
+                    android:buttonTint="@color/colorEditText"
                     android:layout_marginBottom="@dimen/button_margin"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"

@@ -2,6 +2,7 @@ package ir.eynakgroup.diet.activities;
 
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.os.Build;
 import android.support.design.widget.TextInputEditText;
 import android.support.v7.widget.Toolbar;
 
@@ -120,6 +121,11 @@ public class SignUpActivity extends MainActivity implements View.OnClickListener
 
             @Override
             public void onPageSelected(int position) {
+                if(mViewPager.getCurrentItem() != 0)
+                    mBackView.setVisibility(View.VISIBLE);
+                else
+                    mBackView.setVisibility(View.GONE);
+
                 if (mViewPager.getCurrentItem() != 7)
                     mNextView.setText(getString(R.string.next_step));
                 else
@@ -143,10 +149,18 @@ public class SignUpActivity extends MainActivity implements View.OnClickListener
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.back_step:
-                mViewPager.setCurrentItem(getItem(-1), true);
+                if(v.getVisibility() == View.VISIBLE){
+                    if(mViewPager.getCurrentItem() == 0)
+                        onBackPressed();
+                    else
+                        mViewPager.setCurrentItem(getItem(-1), true);
+                }
                 break;
             case R.id.next_step:
-                mViewPager.setCurrentItem(getItem(+1), true);
+                if(mViewPager.getCurrentItem() == 7)
+                    System.out.println("submit!!!");
+                else
+                    mViewPager.setCurrentItem(getItem(+1), true);
                 break;
             default:
                 break;

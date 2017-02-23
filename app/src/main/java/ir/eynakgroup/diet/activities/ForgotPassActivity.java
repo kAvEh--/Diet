@@ -62,9 +62,8 @@ public class ForgotPassActivity extends MainActivity implements View.OnClickList
         // Set up the ViewPager with the sections adapter.
         mViewPager = (ViewPager) findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
-
-
         mBackView = (ImageView) findViewById(R.id.back_step);
+
         final View backParent = (View) mBackView.getParent();  // button: the view you want to enlarge hit area
         backParent.post( new Runnable() {
             public void run() {
@@ -77,15 +76,37 @@ public class ForgotPassActivity extends MainActivity implements View.OnClickList
                 backParent.setTouchDelegate( new TouchDelegate( rect , mBackView));
             }
         });
-
         mBackView.setOnClickListener(this);
+
+
+        mViewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+                if(mViewPager.getCurrentItem() != 0)
+                    mBackView.setVisibility(View.VISIBLE);
+                else
+                    mBackView.setVisibility(View.GONE);
+
+            }
+
+            @Override
+            public void onPageScrollStateChanged(int state) {
+
+            }
+        });
     }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.back_step:
-                onBackPressed();
+                if(v.getVisibility() == View.VISIBLE)
+                    onBackFragment();
                 break;
             default:
                 mViewPager.setCurrentItem(getItem(+1), true);
@@ -101,8 +122,7 @@ public class ForgotPassActivity extends MainActivity implements View.OnClickList
         return mViewPager;
     }
 
-    @Override
-    public void onBackPressed() {
+    private void onBackFragment(){
         if(mViewPager.getCurrentItem() == 0) {
             finish();
             return;
@@ -242,7 +262,6 @@ public class ForgotPassActivity extends MainActivity implements View.OnClickList
                             viewPager.setCurrentItem(((ForgotPassActivity) getActivity()).getItem(+1), true);
                         }
                     });
-
 
                     break;
                 case 3:

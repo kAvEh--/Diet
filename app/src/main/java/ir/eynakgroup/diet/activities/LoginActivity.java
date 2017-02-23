@@ -7,6 +7,7 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputEditText;
 import android.support.design.widget.TextInputLayout;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.text.method.PasswordTransformationMethod;
 import android.util.DisplayMetrics;
 import android.view.MotionEvent;
@@ -14,6 +15,7 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import ir.eynakgroup.diet.R;
@@ -27,6 +29,7 @@ public class LoginActivity extends MainActivity implements View.OnClickListener 
     private Button mSignupBtn;
     private Button mKarafsBtn;
     private Button mEnterBtn;
+    private ImageView mBackImg;
 
     private TextInputLayout mPhoneLayout;
     private TextInputLayout mPassLayout;
@@ -41,6 +44,11 @@ public class LoginActivity extends MainActivity implements View.OnClickListener 
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar.setCollapsible(false);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayShowTitleEnabled(false);
 
         mPassLayout = (TextInputLayout) findViewById(R.id.txtInput2);
         mPhoneLayout = (TextInputLayout) findViewById(R.id.txtInput1);
@@ -58,16 +66,16 @@ public class LoginActivity extends MainActivity implements View.OnClickListener 
                 final int DRAWABLE_TOP = 1;
                 final int DRAWABLE_RIGHT = 2;
                 final int DRAWABLE_BOTTOM = 3;
-                if(event.getAction() == MotionEvent.ACTION_UP) {
-                    if(event.getX() <= (mPassEdit.getCompoundDrawables()[DRAWABLE_LEFT].getBounds().width()))          // your action here
+                if (event.getAction() == MotionEvent.ACTION_UP) {
+                    if (event.getX() <= (mPassEdit.getCompoundDrawables()[DRAWABLE_LEFT].getBounds().width()))          // your action here
                     {
                         // changePasswordVisibility(v);
                         String temporary_stored_text = mPassEdit.getText().toString().trim();
-                        if(!showPassword) {
+                        if (!showPassword) {
                             mPassEdit.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_visibility_off_black_18dp, 0, 0, 0);
                             mPassEdit.setTransformationMethod(null);
                             showPassword = true;
-                        }else{
+                        } else {
                             mPassEdit.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_visibility_black_18dp, 0, 0, 0);
                             mPassEdit.setTransformationMethod(PasswordTransformationMethod.getInstance());
                             showPassword = false;
@@ -87,6 +95,7 @@ public class LoginActivity extends MainActivity implements View.OnClickListener 
         mSignupBtn = (Button) findViewById(R.id.btn_signup);
         mKarafsBtn = (Button) findViewById(R.id.btn_enter_karafs);
         mEnterBtn = (Button) findViewById(R.id.btn_enter);
+        mBackImg = (ImageView) findViewById(R.id.back_step);
 
         DisplayMetrics displaymetrics = new DisplayMetrics();
         getWindowManager().getDefaultDisplay().getMetrics(displaymetrics);
@@ -106,36 +115,44 @@ public class LoginActivity extends MainActivity implements View.OnClickListener 
         mKarafsBtn.setOnClickListener(this);
         mSignupBtn.setOnClickListener(this);
         mTxtForgot.setOnClickListener(this);
+        mBackImg.setOnClickListener(this);
     }
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.btn_enter_karafs:
-                mKarafsBtn.setVisibility(View.INVISIBLE);
-                mSignupBtn.setVisibility(View.INVISIBLE);
-                mPassLayout.setVisibility(View.VISIBLE);
-                mPhoneLayout.setVisibility(View.VISIBLE);
-                mTxtForgot.setVisibility(View.VISIBLE);
-                mEnterBtn.setVisibility(View.VISIBLE);
+                if (v.getVisibility() == View.VISIBLE) {
+                    mKarafsBtn.setVisibility(View.INVISIBLE);
+                    mSignupBtn.setVisibility(View.INVISIBLE);
+                    mPassLayout.setVisibility(View.VISIBLE);
+                    mPhoneLayout.setVisibility(View.VISIBLE);
+                    mTxtForgot.setVisibility(View.VISIBLE);
+                    mEnterBtn.setVisibility(View.VISIBLE);
+                    mBackImg.setVisibility(View.VISIBLE);
+                }
                 break;
             case R.id.btn_signup:
-                startActivity(new Intent(this, SignUpActivity.class));
+                if (v.getVisibility() == View.VISIBLE)
+                    startActivity(new Intent(this, SignUpActivity.class));
                 break;
             case R.id.btn_enter:
 
                 break;
             case R.id.txt_password_forgot:
-                startActivity(new Intent(this, ForgotPassActivity.class));
+                if (v.getVisibility() == View.VISIBLE)
+                    startActivity(new Intent(this, ForgotPassActivity.class));
+                break;
+            case R.id.back_step:
+                if (v.getVisibility() == View.VISIBLE)
+                    onBackFragment();
                 break;
             default:
                 break;
         }
     }
 
-    @Override
-    public void onBackPressed() {
-//        super.onBackPressed();
+    private void onBackFragment(){
         if (mEnterBtn.getVisibility() == View.INVISIBLE) {
             super.onBackPressed();
             return;
@@ -146,7 +163,7 @@ public class LoginActivity extends MainActivity implements View.OnClickListener 
         mEnterBtn.setVisibility(View.INVISIBLE);
         mKarafsBtn.setVisibility(View.VISIBLE);
         mSignupBtn.setVisibility(View.VISIBLE);
-
+        mBackImg.setVisibility(View.GONE);
     }
 
 
