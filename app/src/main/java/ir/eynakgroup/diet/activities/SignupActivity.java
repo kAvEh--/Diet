@@ -1,8 +1,9 @@
 package ir.eynakgroup.diet.activities;
 
+import android.accounts.Account;
 import android.graphics.Paint;
 import android.graphics.Rect;
-import android.os.Build;
+import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputEditText;
 import android.support.v7.widget.Toolbar;
 
@@ -26,6 +27,8 @@ import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.TextView;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -33,11 +36,16 @@ import java.util.List;
 import io.blackbox_vision.wheelview.LoopScrollListener;
 import io.blackbox_vision.wheelview.view.WheelView;
 import ir.eynakgroup.diet.R;
+import ir.eynakgroup.diet.account.KarafsAccountConfig;
+import ir.eynakgroup.diet.account.tasks.CreateAccountTask;
+import ir.eynakgroup.diet.network.response_models.User;
+import ir.eynakgroup.diet.utils.JDateFormat;
 import ir.eynakgroup.diet.utils.view.CustomIndicator;
 import ir.eynakgroup.diet.utils.view.CustomViewPager;
 import ir.eynakgroup.diet.utils.view.JustifiedTextView;
+import ir.eynakgroup.diet.utils.view.ToggleButtonGroupTableLayout;
 
-public class SignUpActivity extends MainActivity implements View.OnClickListener {
+public class SignUpActivity extends BaseActivity implements View.OnClickListener {
 
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
@@ -49,6 +57,7 @@ public class SignUpActivity extends MainActivity implements View.OnClickListener
      */
     private SectionsPagerAdapter mSectionsPagerAdapter;
 
+
     /**
      * The {@link ViewPager} that will host the section contents.
      */
@@ -56,6 +65,15 @@ public class SignUpActivity extends MainActivity implements View.OnClickListener
     private ImageView mBackView;
     private TextView mNextView;
     private CustomIndicator mIndicator;
+    private static String mPhoneNumber;
+    private static String mPassword;
+    private static int mDay;
+    private static int mMonth;
+    private static int mYear;
+
+    private final static JDateFormat mDateFormat = new JDateFormat();
+    private static final User mUser = new User();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,8 +84,6 @@ public class SignUpActivity extends MainActivity implements View.OnClickListener
         toolbar.setCollapsible(false);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
-
-        getWindowManager().getDefaultDisplay().getMetrics(mDisplayMetrics);
 
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
@@ -85,7 +101,7 @@ public class SignUpActivity extends MainActivity implements View.OnClickListener
         mBackView = (ImageView) findViewById(R.id.back_step);
 
         final View nextParent = (View) mNextView.getParent();  // button: the view you want to enlarge hit area
-        nextParent.post( new Runnable() {
+        nextParent.post(new Runnable() {
             public void run() {
                 final Rect rect = new Rect();
                 mNextView.getHitRect(rect);
@@ -93,12 +109,12 @@ public class SignUpActivity extends MainActivity implements View.OnClickListener
                 rect.left -= 200;   // increase left hit area
                 rect.bottom += 200; // increase bottom hit area
                 rect.right += 200;  // increase right hit area
-                nextParent.setTouchDelegate( new TouchDelegate( rect , mNextView));
+                nextParent.setTouchDelegate(new TouchDelegate(rect, mNextView));
             }
         });
 
         final View backParent = (View) mBackView.getParent();  // button: the view you want to enlarge hit area
-        backParent.post( new Runnable() {
+        backParent.post(new Runnable() {
             public void run() {
                 final Rect rect = new Rect();
                 mBackView.getHitRect(rect);
@@ -106,7 +122,7 @@ public class SignUpActivity extends MainActivity implements View.OnClickListener
                 rect.left -= 100;   // increase left hit area
                 rect.bottom += 100; // increase bottom hit area
                 rect.right += 100;  // increase right hit area
-                backParent.setTouchDelegate( new TouchDelegate( rect , mBackView));
+                backParent.setTouchDelegate(new TouchDelegate(rect, mBackView));
             }
         });
 
@@ -121,7 +137,7 @@ public class SignUpActivity extends MainActivity implements View.OnClickListener
 
             @Override
             public void onPageSelected(int position) {
-                if(mViewPager.getCurrentItem() != 0)
+                if (mViewPager.getCurrentItem() != 0)
                     mBackView.setVisibility(View.VISIBLE);
                 else
                     mBackView.setVisibility(View.GONE);
@@ -141,6 +157,9 @@ public class SignUpActivity extends MainActivity implements View.OnClickListener
 
     }
 
+
+
+
     private int getItem(int i) {
         return mViewPager.getCurrentItem() + i;
     }
@@ -149,33 +168,124 @@ public class SignUpActivity extends MainActivity implements View.OnClickListener
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.back_step:
-                if(v.getVisibility() == View.VISIBLE){
-                    if(mViewPager.getCurrentItem() == 0)
+                if (v.getVisibility() == View.VISIBLE) {
+                    if (mViewPager.getCurrentItem() == 0)
                         onBackPressed();
                     else
                         mViewPager.setCurrentItem(getItem(-1), true);
                 }
                 break;
             case R.id.next_step:
-                if(mViewPager.getCurrentItem() == 7)
-                    System.out.println("submit!!!");
-                else
-                    mViewPager.setCurrentItem(getItem(+1), true);
+                if (mViewPager.getCurrentItem() == 7) {
+                    if (mPhoneNumber == null || !mPhoneNumber.startsWith("09") || mPhoneNumber.length() != 11) {
+                        getToast(getString(R.string.reg8_phone_error)).show();
+                        break;
+                    }
+                    if (mPassword == null || mPhoneNumber.length() == 0) {
+                        getToast(getString(R.string.reg8_password_error)).show();
+                        break;
+                    }
+
+                    new CreateAccountTask(this, KarafsAccountConfig.ACCOUNT_TYPE) {
+                        @Override
+                        protected void onPostExecute(Account result) {
+                            super.onPostExecute(result);
+                            setResult(RESULT_OK);
+                            finish();
+                        }
+                    }.execute(new CreateAccountTask.AccountInfo(mPhoneNumber, mPassword, mUser));
+
+                } else {
+                    boolean goToNext = true;
+                    switch (mViewPager.getCurrentItem()) {
+                        case 0:
+                            if (mUser.getName() == null || mUser.getName().length() == 0) {
+                                goToNext = false;
+                                getToast(getString(R.string.reg1_error)).show();
+                                break;
+
+                            }
+                            break;
+                        case 1:
+                            if (mUser.getGender() == null) {
+                                goToNext = false;
+                                getToast(getString(R.string.reg2_error)).show();
+                                break;
+
+                            }
+
+                            break;
+                        case 2:
+                            mDateFormat.setIranianDate(mYear, mMonth, mDay);
+                            try {
+                                mUser.setBirthday(new SimpleDateFormat("yyyy/mm/dd").parse(mDateFormat.getGregorianDate()));
+                            } catch (ParseException e) {
+                                e.printStackTrace();
+                            }
+
+                            if (mUser.getBirthday() == null) {
+                                goToNext = false;
+                                getToast(getString(R.string.reg3_error)).show();
+                                break;
+                            }
+
+
+                            break;
+                        case 3:
+                            if (mUser.getHeight() < 140) {
+                                goToNext = false;
+                                getToast(getString(R.string.reg4_error)).show();
+                                break;
+
+                            }
+
+                            break;
+                        case 4:
+                            if (mUser.getWeight() < 30) {
+                                goToNext = false;
+                                getToast(getString(R.string.reg5_error)).show();
+                                break;
+                            }
+                            break;
+                        case 5:
+                            System.out.println("activity -------------- " + mUser.getActivityLevel() + "");
+//                            if(mUser.getActivityLevel() == -1){
+//                                goToNext = false;
+//                                getToast(getString(R.string.reg6_error)).show();
+//                                break;
+//                            }
+
+                            break;
+                        case 6:
+
+                            break;
+                    }
+                    if (goToNext)
+                        mViewPager.setCurrentItem(getItem(+1), true);
+                }
+
+
                 break;
             default:
                 break;
         }
     }
 
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        setResult(RESULT_CANCELED);
+        finish();
+    }
 
-//    @Override
+    //    @Override
 //    public boolean onCreateOptionsMenu(Menu menu) {
 //        // Inflate the menu; this adds items to the action bar if it is present.
-//        getMenuInflater().inflate(R.menu.menu_signup, menu);
+//        getMenuInflater().inflate(R.menu.menu_sign_up, menu);
 //        return true;
 //    }
 
-//    @Override
+    //    @Override
 //    public boolean onOptionsItemSelected(MenuItem item) {
 //        // Handle action bar item clicks here. The action bar will
 //        // automatically handle clicks on the Home/Up button, so long
@@ -190,7 +300,8 @@ public class SignUpActivity extends MainActivity implements View.OnClickListener
 //        return super.onOptionsItemSelected(item);
 //    }
 
-    class Holder {
+
+    private static class Holder {
         private int drawRes, strResTitle;
 
         Holder(int drawRes, int strResTitle) {
@@ -219,9 +330,6 @@ public class SignUpActivity extends MainActivity implements View.OnClickListener
         private static final String ARG_SECTION_NUMBER = "section_number";
         private static final String ARG_TITLE_IMAGE = "title_image";
         private static final String ARG_TITLE_TEXT = "title_text";
-
-        public PlaceholderFragment() {
-        }
 
         /**
          * Returns a new instance of this fragment for the given section
@@ -275,70 +383,145 @@ public class SignUpActivity extends MainActivity implements View.OnClickListener
                                  Bundle savedInstanceState) {
 
 
-            View rootView = null;
             switch (getArguments().getInt(ARG_SECTION_NUMBER)) {
                 case 1:
-                    rootView = inflater.inflate(R.layout.fragment_name, container, false);
-                    final TextInputEditText editFirstName = (TextInputEditText) rootView.findViewById(R.id.edit_first_name);
-                    final TextInputEditText editLastName = (TextInputEditText) rootView.findViewById(R.id.edit_last_name);
+                    return inflater.inflate(R.layout.fragment_name, container, false);
+                case 2:
+                    return inflater.inflate(R.layout.fragment_gender, container, false);
+                case 3:
+                    return inflater.inflate(R.layout.fragment_birthday, container, false);
+                case 4:
+                    return inflater.inflate(R.layout.fragment_height, container, false);
+                case 5:
+                    return inflater.inflate(R.layout.fragment_weight, container, false);
+                case 6:
+                    return inflater.inflate(R.layout.fragment_activity, container, false);
+                case 7:
+                    return inflater.inflate(R.layout.fragment_sickness, container, false);
+                case 8:
+                    return inflater.inflate(R.layout.fragment_submit, container, false);
+            }
+
+            return null;
+        }
+
+        @Override
+        public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+            super.onViewCreated(view, savedInstanceState);
+
+            switch (getArguments().getInt(ARG_SECTION_NUMBER)) {
+                case 1:
+                    final TextInputEditText editFirstName = (TextInputEditText) view.findViewById(R.id.edit_first_name);
+                    final TextInputEditText editLastName = (TextInputEditText) view.findViewById(R.id.edit_last_name);
                     editFirstName.setWidth((int) (mDisplayMetrics.widthPixels / 1.25));
                     editLastName.setWidth((int) (mDisplayMetrics.widthPixels / 1.25));
+
+                    editFirstName.addTextChangedListener(new TextWatcher() {
+                        @Override
+                        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                        }
+
+                        @Override
+                        public void onTextChanged(CharSequence s, int start, int before, int count) {
+                            if (!editFirstName.getText().toString().trim().equals("") && !editLastName.getText().toString().trim().equals(""))
+                                mUser.setName(editFirstName.getText().toString().trim() + " " + editLastName.getText().toString().trim());
+                        }
+
+                        @Override
+                        public void afterTextChanged(Editable s) {
+
+                        }
+                    });
+
+                    editLastName.addTextChangedListener(new TextWatcher() {
+                        @Override
+                        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                        }
+
+                        @Override
+                        public void onTextChanged(CharSequence s, int start, int before, int count) {
+                            if (!editLastName.getText().toString().trim().equals("") && !editFirstName.getText().toString().trim().equals(""))
+                                mUser.setName(editFirstName.getText().toString().trim() + " " + editLastName.getText().toString().trim());
+                        }
+
+                        @Override
+                        public void afterTextChanged(Editable s) {
+
+                        }
+                    });
+
                     break;
                 case 2:
-                    rootView = inflater.inflate(R.layout.fragment_gender, container, false);
-                    final RadioButton radioFemale = ((RadioButton) rootView.findViewById(R.id.radio_female));
-                    final RadioButton radioMale = ((RadioButton) rootView.findViewById(R.id.radio_male));
+                    final RadioButton radioFemale = ((RadioButton) view.findViewById(R.id.radio_female));
+                    final RadioButton radioMale = ((RadioButton) view.findViewById(R.id.radio_male));
                     radioFemale.setWidth((int) (mDisplayMetrics.widthPixels / 1.25));
                     radioMale.setWidth((int) (mDisplayMetrics.widthPixels / 1.25));
+
+                    radioFemale.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            mUser.setGender(1);
+                        }
+                    });
+
+                    radioMale.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            mUser.setGender(0);
+                        }
+                    });
+
+
                     break;
                 case 3:
-                    rootView = inflater.inflate(R.layout.fragment_birthday, container, false);
-                    final WheelView wheelYear = (WheelView) rootView.findViewById(R.id.wheel_year);
-                    final WheelView wheelMonth = (WheelView) rootView.findViewById(R.id.wheel_month);
-                    final WheelView wheelDay = (WheelView) rootView.findViewById(R.id.wheel_day);
+                    final WheelView wheelYear = (WheelView) view.findViewById(R.id.wheel_year);
+                    final WheelView wheelMonth = (WheelView) view.findViewById(R.id.wheel_month);
+                    final WheelView wheelDay = (WheelView) view.findViewById(R.id.wheel_day);
 //                    LinearLayout.LayoutParams layoutParams = new android.widget.LinearLayout.LayoutParams(SignUpActivity.getDisplayMetrics().widthPixels / 3, SignUpActivity.getDisplayMetrics().widthPixels / 5);
 //                    wheelDay.setLayoutParams(layoutParams);
 //                    wheelMonth.setLayoutParams(layoutParams);
 //                    wheelYear.setLayoutParams(layoutParams);
+                    mDay = wheelDay.getSelectedItem();
+                    mMonth = wheelMonth.getSelectedItem();
+                    mYear = wheelYear.getSelectedItem();
 
-                    List<String> yearList = new ArrayList();
-                    for(int i = 1300; i <= 1396; i++)
+                    final List<String> yearList = new ArrayList();
+                    for (int i = 1300; i <= 1396; i++)
                         yearList.add(String.valueOf(i));
                     wheelYear.setItems(yearList);
                     wheelYear.setLoopListener(new LoopScrollListener() {
                         @Override
                         public void onItemSelect(int i) {
-
+                            mDay = Integer.valueOf(yearList.get(i));
                         }
                     });
-
-
 
                     wheelMonth.setItems(Arrays.asList(new String[]{"فروردین", "اردیبهشت", "خرداد", "تیر", "مرداد", "شهریور", "مهر", "آبان", "آذر", "دی", "بهمن", "اسفند"}));
                     wheelMonth.setLoopListener(new LoopScrollListener() {
                         @Override
                         public void onItemSelect(int i) {
-
+                            mMonth = i;
                         }
                     });
 
 
-
-                    List<String> dayList = new ArrayList<>();
-                    for(int i = 1; i <= 31; i++)
+                    final List<String> dayList = new ArrayList<>();
+                    for (int i = 1; i <= 31; i++)
                         dayList.add(String.valueOf(i));
                     wheelDay.setItems(dayList);
                     wheelDay.setLoopListener(new LoopScrollListener() {
                         @Override
                         public void onItemSelect(int i) {
-
+                            mYear = Integer.valueOf(dayList.get(i));
                         }
                     });
+
                     break;
 
                 case 4:
-                    rootView = inflater.inflate(R.layout.fragment_height, container, false);
-                    final EditText editHeight = (EditText) rootView.findViewById(R.id.edit_height);
+                    final EditText editHeight = (EditText) view.findViewById(R.id.edit_height);
                     editHeight.setWidth(mDisplayMetrics.widthPixels / 4);
                     editHeight.setHeight(mDisplayMetrics.widthPixels / 8);
 
@@ -350,10 +533,14 @@ public class SignUpActivity extends MainActivity implements View.OnClickListener
 
                         @Override
                         public void onTextChanged(CharSequence s, int start, int before, int count) {
-                            if(s.length() > 3){
+                            if (s.length() > 3) {
                                 editHeight.setText(s.subSequence(0, 3));
                                 editHeight.setSelection(3);
                             }
+
+                            if (!editHeight.getText().toString().trim().equals(""))
+                                mUser.setHeight(Float.valueOf(editHeight.getText().toString().trim()));
+
 
                         }
 
@@ -366,21 +553,39 @@ public class SignUpActivity extends MainActivity implements View.OnClickListener
 
                     break;
                 case 5:
-                    rootView = inflater.inflate(R.layout.fragment_weight, container, false);
-
-                    final EditText editWeight = (EditText) rootView.findViewById(R.id.edit_weight);
+                    final EditText editWeight = (EditText) view.findViewById(R.id.edit_weight);
                     editWeight.setWidth(mDisplayMetrics.widthPixels / 4);
                     editWeight.setHeight(mDisplayMetrics.widthPixels / 8);
+
+                    editWeight.addTextChangedListener(new TextWatcher() {
+                        @Override
+                        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                        }
+
+                        @Override
+                        public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+                            if (!editWeight.getText().toString().trim().equals(""))
+                                mUser.setWeight(Float.valueOf(editWeight.getText().toString().trim()));
+
+                        }
+
+                        @Override
+                        public void afterTextChanged(Editable s) {
+
+                        }
+                    });
 
 
                     break;
                 case 6:
-                    rootView = inflater.inflate(R.layout.fragment_activity, container, false);
-                    final RadioButton radioLow = (RadioButton) rootView.findViewById(R.id.radio_low);
-                    final RadioButton radioVeryLow = (RadioButton) rootView.findViewById(R.id.radio_very_low);
-                    final RadioButton radioNormal = (RadioButton) rootView.findViewById(R.id.radio_normal);
-                    final RadioButton radioHigh = (RadioButton) rootView.findViewById(R.id.radio_high);
-                    final RadioButton radioVeryHigh = (RadioButton) rootView.findViewById(R.id.radio_very_high);
+                    final ToggleButtonGroupTableLayout radioGroup = (ToggleButtonGroupTableLayout) view.findViewById(R.id.radio_group);
+                    final RadioButton radioLow = (RadioButton) view.findViewById(R.id.radio_low);
+                    final RadioButton radioVeryLow = (RadioButton) view.findViewById(R.id.radio_very_low);
+                    final RadioButton radioNormal = (RadioButton) view.findViewById(R.id.radio_normal);
+                    final RadioButton radioHigh = (RadioButton) view.findViewById(R.id.radio_high);
+                    final RadioButton radioVeryHigh = (RadioButton) view.findViewById(R.id.radio_very_high);
 
                     radioVeryLow.setWidth((int) (mDisplayMetrics.widthPixels / 2.5));
                     radioVeryLow.setHeight(mDisplayMetrics.heightPixels / 15);
@@ -398,13 +603,36 @@ public class SignUpActivity extends MainActivity implements View.OnClickListener
                     radioVeryHigh.setHeight(mDisplayMetrics.heightPixels / 15);
 
 
+                    radioGroup.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            switch (((ToggleButtonGroupTableLayout) v).getActiveId()) {
+                                case R.id.radio_very_low:
+                                    mUser.setActivityLevel(1);
+                                    break;
+                                case R.id.radio_low:
+                                    mUser.setActivityLevel(2);
+                                    break;
+                                case R.id.radio_normal:
+                                    mUser.setActivityLevel(3);
+                                    break;
+                                case R.id.radio_high:
+                                    mUser.setActivityLevel(4);
+                                    break;
+                                case R.id.radio_very_high:
+                                    mUser.setActivityLevel(5);
+                                    break;
+                            }
+                        }
+                    });
+
                     break;
+
                 case 7:
-                    rootView = inflater.inflate(R.layout.fragment_sickness, container, false);
-                    final CheckBox checkKidney = (CheckBox) rootView.findViewById(R.id.check_kidney);
-                    final CheckBox checkHeart = (CheckBox) rootView.findViewById(R.id.check_heart);
-                    final CheckBox checkFat = (CheckBox) rootView.findViewById(R.id.check_fat);
-                    final CheckBox checkDiabetes = (CheckBox) rootView.findViewById(R.id.check_diabetes);
+                    final CheckBox checkKidney = (CheckBox) view.findViewById(R.id.check_kidney);
+                    final CheckBox checkHeart = (CheckBox) view.findViewById(R.id.check_heart);
+                    final CheckBox checkFat = (CheckBox) view.findViewById(R.id.check_fat);
+                    final CheckBox checkDiabetes = (CheckBox) view.findViewById(R.id.check_diabetes);
 
                     checkKidney.setWidth((int) (mDisplayMetrics.widthPixels / 2.5));
                     checkKidney.setHeight(mDisplayMetrics.heightPixels / 15);
@@ -418,14 +646,41 @@ public class SignUpActivity extends MainActivity implements View.OnClickListener
                     checkDiabetes.setWidth((int) (mDisplayMetrics.widthPixels / 2.5));
                     checkDiabetes.setHeight(mDisplayMetrics.heightPixels / 15);
 
+                    checkKidney.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+
+                        }
+                    });
+
+                    checkHeart.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+
+                        }
+                    });
+
+                    checkFat.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+
+                        }
+                    });
+
+                    checkDiabetes.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+
+                        }
+                    });
+
 
                     break;
                 case 8:
-                    rootView = inflater.inflate(R.layout.fragment_submit, container, false);
-                    final TextInputEditText editPhone = (TextInputEditText) rootView.findViewById(R.id.edit_phone);
-                    final TextInputEditText editPass = (TextInputEditText) rootView.findViewById(R.id.edit_password);
+                    final TextInputEditText editPhone = (TextInputEditText) view.findViewById(R.id.edit_phone);
+                    final TextInputEditText editPass = (TextInputEditText) view.findViewById(R.id.edit_password);
 
-                    final JustifiedTextView txtPolicy = (JustifiedTextView) rootView.findViewById(R.id.txt_policy);
+                    final JustifiedTextView txtPolicy = (JustifiedTextView) view.findViewById(R.id.txt_policy);
                     txtPolicy.setLineSpacing(20);
                     txtPolicy.setAlignment(Paint.Align.RIGHT);
                     txtPolicy.setText(R.string.policy);
@@ -445,16 +700,16 @@ public class SignUpActivity extends MainActivity implements View.OnClickListener
                             final int DRAWABLE_TOP = 1;
                             final int DRAWABLE_RIGHT = 2;
                             final int DRAWABLE_BOTTOM = 3;
-                            if(event.getAction() == MotionEvent.ACTION_UP) {
-                                if(event.getX() <= (editPass.getCompoundDrawables()[DRAWABLE_LEFT].getBounds().width()))          // your action here
+                            if (event.getAction() == MotionEvent.ACTION_UP) {
+                                if (event.getX() <= (editPass.getCompoundDrawables()[DRAWABLE_LEFT].getBounds().width()))          // your action here
                                 {
                                     // changePasswordVisibility(v);
                                     String temporary_stored_text = editPass.getText().toString().trim();
-                                    if(!showPassword[0]) {
+                                    if (!showPassword[0]) {
                                         editPass.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_visibility_off_black_18dp, 0, 0, 0);
                                         editPass.setTransformationMethod(null);
                                         showPassword[0] = true;
-                                    }else{
+                                    } else {
                                         editPass.setCompoundDrawablesWithIntrinsicBounds(R.drawable.ic_visibility_black_18dp, 0, 0, 0);
                                         editPass.setTransformationMethod(PasswordTransformationMethod.getInstance());
                                         showPassword[0] = false;
@@ -469,12 +724,47 @@ public class SignUpActivity extends MainActivity implements View.OnClickListener
                         }
                     });
 
+                    editPhone.addTextChangedListener(new TextWatcher() {
+                        @Override
+                        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                        }
+
+                        @Override
+                        public void onTextChanged(CharSequence s, int start, int before, int count) {
+                            if (!editPhone.getText().toString().trim().equals(""))
+                                mPhoneNumber = editPhone.getText().toString().trim();
+                        }
+
+                        @Override
+                        public void afterTextChanged(Editable s) {
+
+                        }
+                    });
+
+                    editPass.addTextChangedListener(new TextWatcher() {
+                        @Override
+                        public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+                        }
+
+                        @Override
+                        public void onTextChanged(CharSequence s, int start, int before, int count) {
+                            if (!editPass.getText().toString().trim().equals(""))
+                                mPassword = editPass.getText().toString().trim();
+                        }
+
+                        @Override
+                        public void afterTextChanged(Editable s) {
+
+                        }
+                    });
+
                     break;
             }
-            ((TextView) rootView.findViewById(R.id.txt_title)).setText(getString(getArguments().getInt(ARG_TITLE_TEXT)));
-            ((ImageView) rootView.findViewById(R.id.img_title)).setImageResource(getArguments().getInt(ARG_TITLE_IMAGE));
+            ((TextView) view.findViewById(R.id.txt_title)).setText(getString(getArguments().getInt(ARG_TITLE_TEXT)));
+            ((ImageView) view.findViewById(R.id.img_title)).setImageResource(getArguments().getInt(ARG_TITLE_IMAGE));
 
-            return rootView;
         }
     }
 

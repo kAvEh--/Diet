@@ -1,0 +1,230 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginLeft="@dimen/activity_orientation_margin"
+    android:layout_marginRight="@dimen/activity_orientation_margin"
+    android:focusable="true"
+    android:layout_centerInParent="true"
+    android:weightSum="4">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:orientation="horizontal"
+        android:weightSum="2">
+
+        <RelativeLayout
+            android:id="@+id/layout_eggplant"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_margin="@dimen/activity_orientation_margin"
+            android:layout_weight="1"
+            android:tag="unchecked"
+            android:background="@drawable/background_radio_button">
+
+            <ir.eynakgroup.diet.utils.view.CustomTextView
+                android:id="@+id/txt_eggplant"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:padding="16dp"
+                android:text="بادمجان"
+                android:textColor="@color/colorEditText"
+                android:textSize="18dp" />
+
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/layout_zucchini"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:layout_margin="@dimen/activity_orientation_margin"
+            android:layout_weight="1"
+            android:tag="unchecked"
+            android:background="@drawable/background_radio_button">
+
+            <ir.eynakgroup.diet.utils.view.CustomTextView
+                android:id="@+id/txt_zucchini"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:padding="16dp"
+                android:text="کدو"
+                android:textColor="@color/colorEditText"
+                android:textSize="18dp" />
+
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:weightSum="2"
+        android:orientation="horizontal">
+
+        <RelativeLayout
+            android:id="@+id/layout_peanut"
+            android:layout_width="0dp"
+            android:layout_margin="@dimen/activity_orientation_margin"
+            android:layout_height="match_parent"
+            android:background="@drawable/background_radio_button"
+            android:tag="unchecked"
+            android:layout_weight="1">
+
+            <ir.eynakgroup.diet.utils.view.CustomTextView
+                android:id="@+id/txt_peanut"
+                android:textSize="18dp"
+                android:padding="16dp"
+                android:text="بادام زمینی"
+                android:textColor="@color/colorEditText"
+                android:layout_centerInParent="true"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                />
+
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/layout_egg"
+            android:layout_width="0dp"
+            android:layout_margin="@dimen/activity_orientation_margin"
+            android:layout_height="match_parent"
+            android:background="@drawable/background_radio_button"
+            android:tag="unchecked"
+            android:layout_weight="1">
+
+            <ir.eynakgroup.diet.utils.view.CustomTextView
+                android:id="@+id/txt_egg"
+                android:textSize="18dp"
+                android:padding="16dp"
+                android:text="تخم مرغ"
+                android:textColor="@color/colorEditText"
+                android:layout_centerInParent="true"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                />
+
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:weightSum="2"
+        android:orientation="horizontal">
+
+        <RelativeLayout
+            android:id="@+id/layout_shrimp"
+            android:layout_width="0dp"
+            android:layout_margin="@dimen/activity_orientation_margin"
+            android:layout_height="match_parent"
+            android:tag="unchecked"
+            android:background="@drawable/background_radio_button"
+            android:layout_weight="1">
+
+            <ir.eynakgroup.diet.utils.view.CustomTextView
+                android:id="@+id/txt_shrimp"
+                android:textSize="18dp"
+                android:padding="16dp"
+                android:text="میگو"
+                android:textColor="@color/colorEditText"
+                android:layout_centerInParent="true"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                />
+
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/layout_soya"
+            android:layout_width="0dp"
+            android:tag="unchecked"
+            android:layout_margin="@dimen/activity_orientation_margin"
+            android:layout_height="match_parent"
+            android:background="@drawable/background_radio_button"
+            android:layout_weight="1">
+
+            <ir.eynakgroup.diet.utils.view.CustomTextView
+                android:id="@+id/txt_soya"
+                android:textSize="18dp"
+                android:padding="16dp"
+                android:text="سویا"
+                android:textColor="@color/colorEditText"
+                android:layout_centerInParent="true"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                />
+
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
+        android:weightSum="2"
+        android:orientation="horizontal">
+
+        <RelativeLayout
+            android:id="@+id/layout_walnut"
+            android:layout_width="0dp"
+            android:tag="unchecked"
+            android:layout_margin="@dimen/activity_orientation_margin"
+            android:layout_height="match_parent"
+            android:background="@drawable/background_radio_button"
+            android:layout_weight="1">
+
+            <ir.eynakgroup.diet.utils.view.CustomTextView
+                android:id="@+id/txt_walnut"
+                android:textSize="18dp"
+                android:padding="16dp"
+                android:text="گردو"
+                android:textColor="@color/colorEditText"
+                android:layout_centerInParent="true"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                />
+
+
+        </RelativeLayout>
+
+        <RelativeLayout
+            android:id="@+id/layout_fava"
+            android:layout_width="0dp"
+            android:tag="unchecked"
+            android:layout_margin="@dimen/activity_orientation_margin"
+            android:layout_height="match_parent"
+            android:background="@drawable/background_radio_button"
+            android:layout_weight="1">
+
+            <ir.eynakgroup.diet.utils.view.CustomTextView
+                android:id="@+id/txt_fava"
+                android:textSize="18dp"
+                android:padding="16dp"
+                android:text="باقالی"
+                android:textColor="@color/colorEditText"
+                android:layout_centerInParent="true"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                />
+
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
+</LinearLayout>

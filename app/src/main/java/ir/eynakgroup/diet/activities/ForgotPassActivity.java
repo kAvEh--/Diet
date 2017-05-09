@@ -1,6 +1,7 @@
 package ir.eynakgroup.diet.activities;
 
 import android.graphics.Rect;
+import android.support.annotation.Nullable;
 import android.support.design.widget.TextInputEditText;
 import android.support.v7.widget.Toolbar;
 
@@ -10,7 +11,9 @@ import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
 import android.text.Editable;
+import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -22,13 +25,17 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.lang.ref.WeakReference;
 
 import ir.eynakgroup.diet.R;
+import ir.eynakgroup.diet.network.response_models.CommonResponse;
 import ir.eynakgroup.diet.utils.view.JustifiedTextView;
+import retrofit2.Call;
+import retrofit2.Callback;
 
-public class ForgotPassActivity extends MainActivity implements View.OnClickListener {
+public class ForgotPassActivity extends BaseActivity implements View.OnClickListener {
 
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
@@ -45,6 +52,9 @@ public class ForgotPassActivity extends MainActivity implements View.OnClickList
      */
     private ViewPager mViewPager;
     private ImageView mBackView;
+
+    private static String phoneNumber;
+    private static String code;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -109,7 +119,7 @@ public class ForgotPassActivity extends MainActivity implements View.OnClickList
                     onBackFragment();
                 break;
             default:
-                mViewPager.setCurrentItem(getItem(+1), true);
+
                 break;
         }
     }
@@ -204,14 +214,27 @@ public class ForgotPassActivity extends MainActivity implements View.OnClickList
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
 
-            final ViewPager viewPager = ((ForgotPassActivity) getActivity()).getViewPager();
-            View rootView = null;
             switch (getArguments().getInt(ARG_SECTION_NUMBER)){
                 case 1:
-                    rootView = inflater.inflate(R.layout.fragment_forgot_pass_phone, container, false);
+                    return inflater.inflate(R.layout.fragment_forgot_pass_phone, container, false);
+                case 2:
+                    return inflater.inflate(R.layout.fragment_forgot_pass_recovery_code, container, false);
+                case 3:
+                    return inflater.inflate(R.layout.fragment_forgot_pass_recovery_pass, container, false);
+                default:
+                    return null;
+            }
+        }
 
-                    final Button btnNext = (Button) rootView.findViewById(R.id.btn_next);
-                    final TextInputEditText editPhone = (TextInputEditText) rootView.findViewById(R.id.edit_phone);
+        @Override
+        public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+            super.onViewCreated(view, savedInstanceState);
+
+            final ViewPager viewPager = ((ForgotPassActivity) getActivity()).getViewPager();
+            switch (getArguments().getInt(ARG_SECTION_NUMBER)){
+                case 1:
+                    final Button btnNext = (Button) view.findViewById(R.id.btn_next);
+                    final TextInputEditText editPhone = (TextInputEditText) view.findViewById(R.id.edit_phone);
                     btnNext.setWidth(mDisplayMetrics.widthPixels / 2);
                     btnNext.setHeight(mDisplayMetrics.heightPixels / 100);
                     editPhone.setWidth((int)(mDisplayMetrics.widthPixels / 1.25));
@@ -219,17 +242,36 @@ public class ForgotPassActivity extends MainActivity implements View.OnClickList
                     btnNext.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            viewPager.setCurrentItem(((ForgotPassActivity) getActivity()).getItem(+1), true);
+
+                            if(!TextUtils.isEmpty(editPhone.getText().toString().trim()) && editPhone.getText().toString().trim().length() == 11){
+                                phoneNumber = editPhone.getText().toString().trim();
+                                Call<Void> call = mRequestMethod.forgotPass(phoneNumber);
+                                call.enqueue(new Callback<Void>() {
+                                    @Override
+                                    public void onResponse(Call<Void> call, retrofit2.Response<Void> response) {
+                                        System.out.println(response.raw().body().toString());
+                                        viewPager.setCurrentItem(((ForgotPassActivity) getActivity()).getItem(+1), true);
+                                    }
+
+                                    @Override
+                                    public void onFailure(Call<Void> call, Throwable t) {
+
+                                    }
+                                });
+
+                            }else{
+                                editPhone.setError(getString(R.string.reg8_phone_error));
+                                editPhone.requestFocus();
+                            }
+
+
                         }
                     });
-
-
-
                     break;
                 case 2:
-                    rootView = inflater.inflate(R.layout.fragment_forgot_pass_recovery_code, container, false);
-                    final Button btnCode = (Button) rootView.findViewById(R.id.btn_code);
-                    final EditText editCode = (EditText) rootView.findViewById(R.id.edit_code);
+
+                    final Button btnCode = (Button) view.findViewById(R.id.btn_code);
+                    final EditText editCode = (EditText) view.findViewById(R.id.edit_code);
                     btnCode.setWidth(mDisplayMetrics.widthPixels / 2);
                     btnCode.setHeight(mDisplayMetrics.heightPixels / 100);
                     editCode.setWidth(mDisplayMetrics.widthPixels / 2);
@@ -259,38 +301,97 @@ public class ForgotPassActivity extends MainActivity implements View.OnClickList
                     btnCode.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            viewPager.setCurrentItem(((ForgotPassActivity) getActivity()).getItem(+1), true);
+                            if(!TextUtils.isEmpty(editCode.getText().toString().trim()) && editCode.getText().toString().trim().length() == 11){
+                                code = editCode.getText().toString().trim();
+                                Call<CommonResponse> call = mRequestMethod.forgotPassCode(phoneNumber, code);
+                                call.enqueue(new Callback<CommonResponse>() {
+                                    @Override
+                                    public void onResponse(Call<CommonResponse> call, retrofit2.Response<CommonResponse> response) {
+
+                                        if(response.body().getStatus() !=  null && response.body().getStatus().equalsIgnoreCase("success"))
+                                            viewPager.setCurrentItem(((ForgotPassActivity) getActivity()).getItem(+1), true);
+
+                                        else if(response.body().getError() != null){
+                                            editCode.setError(getString(R.string.code_error));
+                                            editCode.requestFocus();
+                                        }
+
+                                    }
+
+                                    @Override
+                                    public void onFailure(Call<CommonResponse> call, Throwable t) {
+
+                                    }
+                                });
+
+                            }else{
+                                editCode.setError(getString(R.string.code_error));
+                                editCode.requestFocus();
+                            }
+
+
                         }
                     });
-
                     break;
                 case 3:
-                    rootView = inflater.inflate(R.layout.fragment_forgot_pass_recovery_pass, container, false);
-                    final TextInputEditText editPass = (TextInputEditText) rootView.findViewById(R.id.edit_pass);
-                    final TextInputEditText editRePass = (TextInputEditText) rootView.findViewById(R.id.edit_re_pass);
+                    final TextInputEditText editPass = (TextInputEditText) view.findViewById(R.id.edit_pass);
+                    final TextInputEditText editRePass = (TextInputEditText) view.findViewById(R.id.edit_re_pass);
                     editPass.setWidth((int) (mDisplayMetrics.widthPixels / 1.25));
                     editRePass.setWidth((int) (mDisplayMetrics.widthPixels / 1.25));
 
-                    final Button btnSubmit = (Button) rootView.findViewById(R.id.btn_submit);
+                    final Button btnSubmit = (Button) view.findViewById(R.id.btn_submit);
                     btnSubmit.setWidth(mDisplayMetrics.widthPixels / 2);
                     btnSubmit.setHeight(mDisplayMetrics.heightPixels / 100);
 
                     btnSubmit.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
+                            if(!TextUtils.isEmpty(editPass.getText().toString().trim()) && !TextUtils.isEmpty(editRePass.getText().toString().trim()) && editPass.getText().toString().trim().equals(editRePass.getText().toString().trim())){
+                                Call<CommonResponse> call = mRequestMethod.resetPass(phoneNumber, code, editPass.getText().toString().trim());
+                                call.enqueue(new Callback<CommonResponse>() {
+                                    @Override
+                                    public void onResponse(Call<CommonResponse> call, retrofit2.Response<CommonResponse> response) {
+
+                                        if(response.body().getStatus() != null && response.body().getStatus().equalsIgnoreCase("success"))
+                                            viewPager.setCurrentItem(((ForgotPassActivity) getActivity()).getItem(+1), true);
+
+                                        else if(response.body().getError() != null)
+                                            getToast(getString(R.string.reg8_password_error)).show();
+
+                                    }
+
+                                    @Override
+                                    public void onFailure(Call<CommonResponse> call, Throwable t) {
+
+                                    }
+                                });
+
+                            }else
+                                getToast(getString(R.string.reg8_password_error)).show();
 
                         }
                     });
+                    break;
 
-                    break;
                 default:
-                    break;
             }
 
-            ((TextView)rootView.findViewById(R.id.title)).setText(getString(getArguments().getInt(ARG_TITLE)));
-            ((JustifiedTextView)rootView.findViewById(R.id.description)).setText(getString(getArguments().getInt(ARG_DESCRIPTION)));
+            ((TextView)view.findViewById(R.id.title)).setText(getString(getArguments().getInt(ARG_TITLE)));
+            ((JustifiedTextView)view.findViewById(R.id.description)).setText(getString(getArguments().getInt(ARG_DESCRIPTION)));
+        }
 
-            return rootView;
+        private Toast getToast(String message) {
+            LayoutInflater inflater = getActivity().getLayoutInflater();
+            View layout = inflater.inflate(R.layout.toast_custom,
+                    (ViewGroup) getActivity().findViewById(R.id.toast_layout_root));
+
+            TextView text = (TextView) layout.findViewById(R.id.text);
+            text.setText(message);
+            Toast toast = new Toast(getContext());
+            toast.setGravity(Gravity.BOTTOM, 0, 0);
+            toast.setDuration(Toast.LENGTH_SHORT);
+            toast.setView(layout);
+            return toast;
         }
     }
 

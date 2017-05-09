@@ -1,6 +1,5 @@
 package ir.eynakgroup.diet.activities;
 
-import android.content.Intent;
 import android.graphics.Paint;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -26,7 +25,7 @@ import ir.eynakgroup.diet.R;
 import ir.eynakgroup.diet.utils.view.JustifiedTextView;
 
 
-public class IntroActivity extends MainActivity {
+public class IntroActivity extends BaseActivity {
 
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide
@@ -58,7 +57,6 @@ public class IntroActivity extends MainActivity {
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
 
-        getWindowManager().getDefaultDisplay().getMetrics(mDisplayMetrics);
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
 
         // Set up the ViewPager with the sections adapter.
@@ -76,7 +74,7 @@ public class IntroActivity extends MainActivity {
             @Override
             public void onClick(View v) {
                 System.out.println("clicked!");
-                startActivity(new Intent(IntroActivity.this, LoginActivity.class));
+                setResult(RESULT_OK);
                 finish();
             }
         });
@@ -120,6 +118,13 @@ public class IntroActivity extends MainActivity {
 //            }
 //        });
 
+    }
+
+    @Override
+    public void onBackPressed() {
+        super.onBackPressed();
+        setResult(RESULT_CANCELED);
+        finish();
     }
 
     @Override

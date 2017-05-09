@@ -12,7 +12,7 @@ import android.widget.TableRow;
  * Created by Shayan on 2/16/2017.
  */
 
-public class ToggleButtonGroupTableLayout extends TableLayout  implements OnClickListener {
+public class ToggleButtonGroupTableLayout extends TableLayout implements OnClickListener {
 
     private static final String TAG = "ToggleButtonGroupTableLayout";
     private RadioButton activeRadioButton;
@@ -42,6 +42,13 @@ public class ToggleButtonGroupTableLayout extends TableLayout  implements OnClic
         }
         rb.setChecked(true);
         activeRadioButton = rb;
+    }
+
+    public int getActiveId(){
+        if(activeRadioButton != null)
+            return activeRadioButton.getId();
+
+        return -1;
     }
 
     /* (non-Javadoc)

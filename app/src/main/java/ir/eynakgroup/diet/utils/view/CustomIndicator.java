@@ -18,7 +18,6 @@ public class CustomIndicator extends CirclePageIndicator {
         super(context, attrs);
     }
 
-
     @Override
     public boolean onTouchEvent(MotionEvent ev) {
         return false;
