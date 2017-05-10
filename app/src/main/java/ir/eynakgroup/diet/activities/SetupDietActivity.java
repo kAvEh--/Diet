@@ -11,6 +11,7 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
+import android.view.TouchDelegate;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -44,6 +45,19 @@ public class SetupDietActivity extends BaseActivity implements View.OnClickListe
         setContentView(R.layout.activity_setup);
 
         imageBack = (ImageView) findViewById(R.id.img_back);
+        final View backParent = (View) imageBack.getParent();  // button: the view you want to enlarge hit area
+        backParent.post(new Runnable() {
+            public void run() {
+                final Rect rect = new Rect();
+                imageBack.getHitRect(rect);
+                rect.top -= 50;    // increase top hit area
+                rect.left -= 50;   // increase left hit area
+                rect.bottom += 50; // increase bottom hit area
+                rect.right += 50;  // increase right hit area
+                backParent.setTouchDelegate(new TouchDelegate(rect, imageBack));
+            }
+        });
+
         imageBack.setOnClickListener(this);
         flexBox = (FlexboxLayout) findViewById(R.id.flexbox_layout);
         recyclerView = (RecyclerView) findViewById(R.id.recycler_view);

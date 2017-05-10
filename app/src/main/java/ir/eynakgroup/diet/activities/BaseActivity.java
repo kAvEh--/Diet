@@ -18,6 +18,7 @@ import ir.eynakgroup.diet.R;
 import ir.eynakgroup.diet.network.ClientFactory;
 import ir.eynakgroup.diet.network.RequestMethod;
 import ir.eynakgroup.diet.utils.AppPreferences;
+import ir.eynakgroup.diet.utils.view.CustomTextView;
 
 class BaseActivity extends AppCompatActivity {
 
@@ -49,7 +50,7 @@ class BaseActivity extends AppCompatActivity {
         View layout = inflater.inflate(R.layout.toast_custom,
                 (ViewGroup) findViewById(R.id.toast_layout_root));
 
-        TextView text = (TextView) layout.findViewById(R.id.text);
+        CustomTextView text = (CustomTextView) layout.findViewById(R.id.text);
         text.setText(message);
         Toast toast = new Toast(this);
         toast.setGravity(Gravity.BOTTOM, 0, 0);

@@ -154,7 +154,7 @@ public class RegisterActivity extends BaseActivity {
                                 startActivityForResult(new Intent(RegisterActivity.this, IntroActivity.class), INTRO_REQUEST_CODE);
                             else{
                                 System.out.println(accountProperty.get(KarafsAccountConfig.ACCOUNT_NAME));
-                                startActivity(new Intent(RegisterActivity.this, ProfileFragment.class));
+                                startActivity(new Intent(RegisterActivity.this, MainActivity.class));
                                 finish();
                             }
 
@@ -215,6 +215,8 @@ public class RegisterActivity extends BaseActivity {
                     break;
                 case SIGN_UP_REQUEST_CODE:
                     System.out.println("Account created!");
+                    startActivity(new Intent(RegisterActivity.this, MainActivity.class));
+                    finish();
                     break;
 
                 default:
@@ -528,7 +530,7 @@ public class RegisterActivity extends BaseActivity {
                                 protected void onPostExecute(Account result) {
                                     super.onPostExecute(result);
                                     System.out.println("Account created!");
-                                    startActivity(new Intent(mContext, ProfileFragment.class));
+                                    startActivity(new Intent(mContext, MainActivity.class));
                                     ((Activity) mContext).finish();
 
                                 }

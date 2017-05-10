@@ -41,6 +41,7 @@ import ir.eynakgroup.diet.account.tasks.CreateAccountTask;
 import ir.eynakgroup.diet.network.response_models.User;
 import ir.eynakgroup.diet.utils.JDateFormat;
 import ir.eynakgroup.diet.utils.view.CustomIndicator;
+import ir.eynakgroup.diet.utils.view.CustomTextView;
 import ir.eynakgroup.diet.utils.view.CustomViewPager;
 import ir.eynakgroup.diet.utils.view.JustifiedTextView;
 import ir.eynakgroup.diet.utils.view.ToggleButtonGroupTableLayout;
@@ -97,7 +98,7 @@ public class SignUpActivity extends BaseActivity implements View.OnClickListener
         mIndicator.setRadius(mDisplayMetrics.widthPixels / 100);
         mIndicator.setViewPager(mViewPager);
 
-        mNextView = (TextView) findViewById(R.id.next_step);
+        mNextView = (CustomTextView) findViewById(R.id.next_step);
         mBackView = (ImageView) findViewById(R.id.back_step);
 
         final View nextParent = (View) mNextView.getParent();  // button: the view you want to enlarge hit area
