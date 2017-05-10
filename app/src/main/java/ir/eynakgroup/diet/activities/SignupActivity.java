@@ -459,6 +459,7 @@ public class SignUpActivity extends BaseActivity implements View.OnClickListener
                     radioFemale.setWidth((int) (mDisplayMetrics.widthPixels / 1.25));
                     radioMale.setWidth((int) (mDisplayMetrics.widthPixels / 1.25));
 
+
                     radioFemale.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {

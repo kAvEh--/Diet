@@ -37,7 +37,10 @@
                 android:layout_gravity="center_horizontal"
                 android:orientation="vertical"
                 >
-                <RadioButton
+
+                <android.support.v7.widget.AppCompatRadioButton
+                    android:button="@null"
+                    android:drawableLeft="?android:attr/listChoiceIndicatorSingle"
                     android:id="@+id/radio_female"
                     android:layout_width="wrap_content"
                     android:layout_height="@dimen/indicator_padding"
@@ -50,7 +53,9 @@
                     android:layout_marginBottom="@dimen/button_margin"
                     android:layout_gravity="center_horizontal"/>
 
-                <RadioButton
+                <android.support.v7.widget.AppCompatRadioButton
+                    android:button="@null"
+                    android:drawableLeft="?android:attr/listChoiceIndicatorSingle"
                     android:id="@+id/radio_male"
                     android:layout_width="wrap_content"
                     android:layout_height="@dimen/indicator_padding"

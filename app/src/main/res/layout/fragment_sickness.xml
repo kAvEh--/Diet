@@ -33,8 +33,9 @@
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true">
             <TableRow>
-                <CheckBox
-                    style="@android:style/Widget.CompoundButton.RadioButton"
+                <android.support.v7.widget.AppCompatCheckBox
+                    android:button="@null"
+                    android:drawableLeft="?android:attr/listChoiceIndicatorSingle"
                     android:id="@+id/check_kidney"
                     android:text="@string/kidney_disease"
                     android:textColor="@color/colorDescription"
@@ -47,8 +48,9 @@
                     android:paddingRight="@dimen/activity_orientation_margin"
                     android:layout_marginBottom="@dimen/button_margin"
                     android:background="@drawable/background_radio_button"/>
-                <CheckBox
-                    style="@android:style/Widget.CompoundButton.RadioButton"
+                <android.support.v7.widget.AppCompatCheckBox
+                    android:button="@null"
+                    android:drawableLeft="?android:attr/listChoiceIndicatorSingle"
                     android:id="@+id/check_heart"
                     android:text="@string/heart_disease"
                     android:textColor="@color/colorDescription"
@@ -62,8 +64,9 @@
                     android:background="@drawable/background_radio_button"/>
             </TableRow>
             <TableRow>
-                <CheckBox
-                    style="@android:style/Widget.CompoundButton.RadioButton"
+                <android.support.v7.widget.AppCompatCheckBox
+                    android:button="@null"
+                    android:drawableLeft="?android:attr/listChoiceIndicatorSingle"
                     android:id="@+id/check_fat"
                     android:text="@string/fat_disease"
                     android:textColor="@color/colorDescription"
@@ -77,8 +80,9 @@
                     android:layout_height="wrap_content"
                     android:background="@drawable/background_radio_button"/>
 
-                <CheckBox
-                    style="@android:style/Widget.CompoundButton.RadioButton"
+                <android.support.v7.widget.AppCompatCheckBox
+                    android:button="@null"
+                    android:drawableLeft="?android:attr/listChoiceIndicatorSingle"
                     android:id="@+id/check_diabetes"
                     android:text="@string/diabetes_disease"
                     android:textColor="@color/colorDescription"

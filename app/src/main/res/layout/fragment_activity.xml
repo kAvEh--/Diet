@@ -34,11 +34,15 @@
             android:layout_centerHorizontal="true"
             android:id="@+id/radio_group">
             <TableRow>
-                <RadioButton
+                <android.support.v7.widget.AppCompatRadioButton
+                    android:button="@null"
+                    android:drawableLeft="?android:attr/listChoiceIndicatorSingle"
                     android:layout_width="0dp"
                     android:layout_height="0dp"
                     android:visibility="invisible" />
-                <RadioButton
+                <android.support.v7.widget.AppCompatRadioButton
+                    android:button="@null"
+                    android:drawableLeft="?android:attr/listChoiceIndicatorSingle"
                     android:id="@+id/radio_low"
                     android:text="@string/low"
                     android:textColor="@color/colorDescription"
@@ -50,7 +54,9 @@
                     android:paddingRight="@dimen/activity_orientation_margin"
                     android:layout_marginBottom="@dimen/button_margin"
                     android:background="@drawable/background_radio_button"/>
-                <RadioButton
+                <android.support.v7.widget.AppCompatRadioButton
+                    android:button="@null"
+                    android:drawableLeft="?android:attr/listChoiceIndicatorSingle"
                     android:id="@+id/radio_very_low"
                     android:text="@string/very_low"
                     android:textColor="@color/colorDescription"
@@ -63,11 +69,15 @@
                     android:background="@drawable/background_radio_button"/>
             </TableRow>
             <TableRow>
-                <RadioButton
+                <android.support.v7.widget.AppCompatRadioButton
+                    android:button="@null"
+                    android:drawableLeft="?android:attr/listChoiceIndicatorSingle"
                     android:layout_width="0dp"
                     android:layout_height="0dp"
                     android:visibility="invisible" />
-                <RadioButton
+                <android.support.v7.widget.AppCompatRadioButton
+                    android:button="@null"
+                    android:drawableLeft="?android:attr/listChoiceIndicatorSingle"
                     android:id="@+id/radio_high"
                     android:text="@string/high"
                     android:textColor="@color/colorDescription"
@@ -80,7 +90,9 @@
                     android:layout_height="wrap_content"
                     android:background="@drawable/background_radio_button"/>
 
-                <RadioButton
+                <android.support.v7.widget.AppCompatRadioButton
+                    android:button="@null"
+                    android:drawableLeft="?android:attr/listChoiceIndicatorSingle"
                     android:id="@+id/radio_normal"
                     android:text="@string/normal"
                     android:textColor="@color/colorDescription"
@@ -94,17 +106,23 @@
 
             </TableRow>
             <TableRow>
-                <RadioButton
+                <android.support.v7.widget.AppCompatRadioButton
+                    android:button="@null"
+                    android:drawableLeft="?android:attr/listChoiceIndicatorSingle"
                     android:layout_width="0dp"
                     android:layout_height="0dp"
                     android:visibility="invisible"
                     />
-                <RadioButton
+                <android.support.v7.widget.AppCompatRadioButton
+                    android:button="@null"
+                    android:drawableLeft="?android:attr/listChoiceIndicatorSingle"
                     android:layout_width="0dp"
                     android:visibility="invisible"
                     android:layout_height="0dp" />
 
-                <RadioButton
+                <android.support.v7.widget.AppCompatRadioButton
+                    android:button="@null"
+                    android:drawableLeft="?android:attr/listChoiceIndicatorSingle"
                     android:id="@+id/radio_very_high"
                     android:text="@string/very_high"
                     android:textColor="@color/colorDescription"

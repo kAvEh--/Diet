@@ -32,7 +32,7 @@
                 android:layout_centerInParent="true"
                 android:padding="16dp"
                 android:text="بادمجان"
-                android:textColor="@color/colorEditText"
+                android:textColor="@color/colorDescription"
                 android:textSize="18dp" />
 
 
@@ -54,7 +54,7 @@
                 android:layout_centerInParent="true"
                 android:padding="16dp"
                 android:text="کدو"
-                android:textColor="@color/colorEditText"
+                android:textColor="@color/colorDescription"
                 android:textSize="18dp" />
 
 
@@ -83,7 +83,7 @@
                 android:textSize="18dp"
                 android:padding="16dp"
                 android:text="بادام زمینی"
-                android:textColor="@color/colorEditText"
+                android:textColor="@color/colorDescription"
                 android:layout_centerInParent="true"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -106,7 +106,7 @@
                 android:textSize="18dp"
                 android:padding="16dp"
                 android:text="تخم مرغ"
-                android:textColor="@color/colorEditText"
+                android:textColor="@color/colorDescription"
                 android:layout_centerInParent="true"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -138,7 +138,7 @@
                 android:textSize="18dp"
                 android:padding="16dp"
                 android:text="میگو"
-                android:textColor="@color/colorEditText"
+                android:textColor="@color/colorDescription"
                 android:layout_centerInParent="true"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -161,7 +161,7 @@
                 android:textSize="18dp"
                 android:padding="16dp"
                 android:text="سویا"
-                android:textColor="@color/colorEditText"
+                android:textColor="@color/colorDescription"
                 android:layout_centerInParent="true"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -193,7 +193,7 @@
                 android:textSize="18dp"
                 android:padding="16dp"
                 android:text="گردو"
-                android:textColor="@color/colorEditText"
+                android:textColor="@color/colorDescription"
                 android:layout_centerInParent="true"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -216,7 +216,7 @@
                 android:textSize="18dp"
                 android:padding="16dp"
                 android:text="باقالی"
-                android:textColor="@color/colorEditText"
+                android:textColor="@color/colorDescription"
                 android:layout_centerInParent="true"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
