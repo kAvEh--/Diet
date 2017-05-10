@@ -22,7 +22,7 @@
             android:layout_height="match_parent"
             android:layout_margin="@dimen/activity_orientation_margin"
             android:layout_weight="1"
-            android:tag="unchecked"
+            android:tag="0"
             android:background="@drawable/background_radio_button">
 
             <ir.eynakgroup.diet.utils.view.CustomTextView
@@ -44,7 +44,7 @@
             android:layout_height="match_parent"
             android:layout_margin="@dimen/activity_orientation_margin"
             android:layout_weight="1"
-            android:tag="unchecked"
+            android:tag="1"
             android:background="@drawable/background_radio_button">
 
             <ir.eynakgroup.diet.utils.view.CustomTextView
@@ -75,7 +75,7 @@
             android:layout_margin="@dimen/activity_orientation_margin"
             android:layout_height="match_parent"
             android:background="@drawable/background_radio_button"
-            android:tag="unchecked"
+            android:tag="2"
             android:layout_weight="1">
 
             <ir.eynakgroup.diet.utils.view.CustomTextView
@@ -98,7 +98,7 @@
             android:layout_margin="@dimen/activity_orientation_margin"
             android:layout_height="match_parent"
             android:background="@drawable/background_radio_button"
-            android:tag="unchecked"
+            android:tag="3"
             android:layout_weight="1">
 
             <ir.eynakgroup.diet.utils.view.CustomTextView
@@ -129,7 +129,7 @@
             android:layout_width="0dp"
             android:layout_margin="@dimen/activity_orientation_margin"
             android:layout_height="match_parent"
-            android:tag="unchecked"
+            android:tag="4"
             android:background="@drawable/background_radio_button"
             android:layout_weight="1">
 
@@ -150,7 +150,7 @@
         <RelativeLayout
             android:id="@+id/layout_soya"
             android:layout_width="0dp"
-            android:tag="unchecked"
+            android:tag="5"
             android:layout_margin="@dimen/activity_orientation_margin"
             android:layout_height="match_parent"
             android:background="@drawable/background_radio_button"
@@ -182,7 +182,7 @@
         <RelativeLayout
             android:id="@+id/layout_walnut"
             android:layout_width="0dp"
-            android:tag="unchecked"
+            android:tag="6"
             android:layout_margin="@dimen/activity_orientation_margin"
             android:layout_height="match_parent"
             android:background="@drawable/background_radio_button"
@@ -205,7 +205,7 @@
         <RelativeLayout
             android:id="@+id/layout_fava"
             android:layout_width="0dp"
-            android:tag="unchecked"
+            android:tag="7"
             android:layout_margin="@dimen/activity_orientation_margin"
             android:layout_height="match_parent"
             android:background="@drawable/background_radio_button"
@@ -221,7 +221,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 />
-
 
         </RelativeLayout>
 

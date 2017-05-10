@@ -197,7 +197,9 @@
 
     //setup
     <string name="karafs_avatar">رژیم کرفس</string>
-
+    <string name="exit_alert">با خروج از این بخش رژیم شما آغاز نخواهد شد.</string>
+    <string name="exit_cancel">ادامه میدم</string>
+    <string name="ok">تایید</string>
 
 
 </resources>

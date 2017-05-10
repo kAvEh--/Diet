@@ -1,9 +1,11 @@
 package ir.eynakgroup.diet.activities;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -63,6 +65,28 @@ public class SetupDietActivity extends BaseActivity implements View.OnClickListe
                 break;
             default:
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+//        super.onBackPressed();
+        showExitDialog();
+    }
+
+    private void showExitDialog(){
+        new AlertDialog.Builder(this)
+                .setMessage(R.string.exit_alert)
+                .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        finish();
+                    }
+                })
+                .setNegativeButton(R.string.exit_cancel, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                }).show();
     }
 
     private class Chat {
@@ -171,15 +195,17 @@ public class SetupDietActivity extends BaseActivity implements View.OnClickListe
         }
     }
 
-    private class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.MyViewHolder> implements View.OnClickListener{
+    private class ChatAdapter extends RecyclerView.Adapter<ChatAdapter.MyViewHolder> implements View.OnClickListener {
 
         private List<Chat> chatList;
         private Context context;
+        private boolean[] checked = new boolean[8];
 
         public class MyViewHolder extends RecyclerView.ViewHolder {
             CustomTextView chatText;
             RelativeLayout chatLayout;
             LinearLayout allergyLayout;
+
 
             public MyViewHolder(View view) {
                 super(view);
@@ -187,11 +213,18 @@ public class SetupDietActivity extends BaseActivity implements View.OnClickListe
                 chatText = (CustomTextView) view.findViewById(R.id.text_chat);
                 allergyLayout = (LinearLayout) view.findViewById(R.id.layout_allergy);
             }
+
         }
 
         public ChatAdapter(Context context, List<Chat> chatList) {
             this.chatList = chatList;
             this.context = context;
+            init();
+        }
+
+        private void init(){
+            for(int i = 0; i < checked.length; i++)
+                checked[i] = false;
         }
 
         @Override
@@ -229,15 +262,71 @@ public class SetupDietActivity extends BaseActivity implements View.OnClickListe
                 holder.chatText.setVisibility(View.GONE);
                 holder.allergyLayout.setVisibility(View.VISIBLE);
 
-                holder.allergyLayout.findViewById(R.id.layout_egg).setOnClickListener(this);
-                holder.allergyLayout.findViewById(R.id.layout_eggplant).setOnClickListener(this);
-                holder.allergyLayout.findViewById(R.id.layout_fava).setOnClickListener(this);
-                holder.allergyLayout.findViewById(R.id.layout_peanut).setOnClickListener(this);
-                holder.allergyLayout.findViewById(R.id.layout_shrimp).setOnClickListener(this);
-                holder.allergyLayout.findViewById(R.id.layout_soya).setOnClickListener(this);
-                holder.allergyLayout.findViewById(R.id.layout_walnut).setOnClickListener(this);
-                holder.allergyLayout.findViewById(R.id.layout_zucchini).setOnClickListener(this);
+                if(checked[Integer.valueOf(holder.allergyLayout.findViewById(R.id.layout_egg).getTag().toString())]){
+                    holder.allergyLayout.findViewById(R.id.layout_egg).setBackgroundResource(R.drawable.background_allergy_solid);
+                    ((TextView)holder.allergyLayout.findViewById(R.id.layout_egg).findViewById(R.id.txt_egg)).setTextColor(ContextCompat.getColor(context, R.color.colorWhite));
+                }else{
+                    holder.allergyLayout.findViewById(R.id.layout_egg).setBackgroundResource(R.drawable.background_radio_button);
+                    ((TextView)holder.allergyLayout.findViewById(R.id.layout_egg).findViewById(R.id.txt_egg)).setTextColor(ContextCompat.getColor(context, R.color.colorEditText));
+                }
 
+                if(checked[Integer.valueOf(holder.allergyLayout.findViewById(R.id.layout_eggplant).getTag().toString())]){
+                    holder.allergyLayout.findViewById(R.id.layout_eggplant).setBackgroundResource(R.drawable.background_allergy_solid);
+                    ((TextView)holder.allergyLayout.findViewById(R.id.layout_eggplant).findViewById(R.id.txt_eggplant)).setTextColor(ContextCompat.getColor(context, R.color.colorWhite));
+                }else{
+                    holder.allergyLayout.findViewById(R.id.layout_eggplant).setBackgroundResource(R.drawable.background_radio_button);
+                    ((TextView)holder.allergyLayout.findViewById(R.id.layout_eggplant).findViewById(R.id.txt_eggplant)).setTextColor(ContextCompat.getColor(context, R.color.colorEditText));
+                }
+
+                if(checked[Integer.valueOf(holder.allergyLayout.findViewById(R.id.layout_zucchini).getTag().toString())]){
+                    holder.allergyLayout.findViewById(R.id.layout_zucchini).setBackgroundResource(R.drawable.background_allergy_solid);
+                    ((TextView)holder.allergyLayout.findViewById(R.id.layout_zucchini).findViewById(R.id.txt_zucchini)).setTextColor(ContextCompat.getColor(context, R.color.colorWhite));
+                }else{
+                    holder.allergyLayout.findViewById(R.id.layout_zucchini).setBackgroundResource(R.drawable.background_radio_button);
+                    ((TextView)holder.allergyLayout.findViewById(R.id.layout_zucchini).findViewById(R.id.txt_zucchini)).setTextColor(ContextCompat.getColor(context, R.color.colorEditText));
+                }
+
+                if(checked[Integer.valueOf(holder.allergyLayout.findViewById(R.id.layout_walnut).getTag().toString())]){
+                    holder.allergyLayout.findViewById(R.id.layout_walnut).setBackgroundResource(R.drawable.background_allergy_solid);
+                    ((TextView)holder.allergyLayout.findViewById(R.id.layout_walnut).findViewById(R.id.txt_walnut)).setTextColor(ContextCompat.getColor(context, R.color.colorWhite));
+                }else{
+                    holder.allergyLayout.findViewById(R.id.layout_walnut).setBackgroundResource(R.drawable.background_radio_button);
+                    ((TextView)holder.allergyLayout.findViewById(R.id.layout_walnut).findViewById(R.id.txt_walnut)).setTextColor(ContextCompat.getColor(context, R.color.colorEditText));
+                }
+
+                if(checked[Integer.valueOf(holder.allergyLayout.findViewById(R.id.layout_fava).getTag().toString())]){
+                    holder.allergyLayout.findViewById(R.id.layout_fava).setBackgroundResource(R.drawable.background_allergy_solid);
+                    ((TextView)holder.allergyLayout.findViewById(R.id.layout_fava).findViewById(R.id.txt_fava)).setTextColor(ContextCompat.getColor(context, R.color.colorWhite));
+                }else{
+                    holder.allergyLayout.findViewById(R.id.layout_fava).setBackgroundResource(R.drawable.background_radio_button);
+                    ((TextView)holder.allergyLayout.findViewById(R.id.layout_fava).findViewById(R.id.txt_fava)).setTextColor(ContextCompat.getColor(context, R.color.colorEditText));
+                }
+
+                if(checked[Integer.valueOf(holder.allergyLayout.findViewById(R.id.layout_peanut).getTag().toString())]){
+                    holder.allergyLayout.findViewById(R.id.layout_peanut).setBackgroundResource(R.drawable.background_allergy_solid);
+                    ((TextView)holder.allergyLayout.findViewById(R.id.layout_peanut).findViewById(R.id.txt_peanut)).setTextColor(ContextCompat.getColor(context, R.color.colorWhite));
+                }else{
+                    holder.allergyLayout.findViewById(R.id.layout_peanut).setBackgroundResource(R.drawable.background_radio_button);
+                    ((TextView)holder.allergyLayout.findViewById(R.id.layout_peanut).findViewById(R.id.txt_peanut)).setTextColor(ContextCompat.getColor(context, R.color.colorEditText));
+                }
+
+                if(checked[Integer.valueOf(holder.allergyLayout.findViewById(R.id.layout_shrimp).getTag().toString())]){
+                    holder.allergyLayout.findViewById(R.id.layout_shrimp).setBackgroundResource(R.drawable.background_allergy_solid);
+                    ((TextView)holder.allergyLayout.findViewById(R.id.layout_shrimp).findViewById(R.id.txt_shrimp)).setTextColor(ContextCompat.getColor(context, R.color.colorWhite));
+                }else{
+                    holder.allergyLayout.findViewById(R.id.layout_shrimp).setBackgroundResource(R.drawable.background_radio_button);
+                    ((TextView)holder.allergyLayout.findViewById(R.id.layout_shrimp).findViewById(R.id.txt_shrimp)).setTextColor(ContextCompat.getColor(context, R.color.colorEditText));
+                }
+
+                if(checked[Integer.valueOf(holder.allergyLayout.findViewById(R.id.layout_soya).getTag().toString())]){
+                    holder.allergyLayout.findViewById(R.id.layout_soya).setBackgroundResource(R.drawable.background_allergy_solid);
+                    ((TextView)holder.allergyLayout.findViewById(R.id.layout_soya).findViewById(R.id.txt_soya)).setTextColor(ContextCompat.getColor(context, R.color.colorWhite));
+                }else{
+                    holder.allergyLayout.findViewById(R.id.layout_soya).setBackgroundResource(R.drawable.background_radio_button);
+                    ((TextView)holder.allergyLayout.findViewById(R.id.layout_soya).findViewById(R.id.txt_soya)).setTextColor(ContextCompat.getColor(context, R.color.colorEditText));
+                }
+
+                setClickListener(holder);
             }
             holder.chatLayout.setLayoutParams(params);
         }
@@ -247,101 +336,113 @@ public class SetupDietActivity extends BaseActivity implements View.OnClickListe
             return chatList.size();
         }
 
+        private void setClickListener(MyViewHolder holder){
+            holder.allergyLayout.findViewById(R.id.layout_egg).setOnClickListener(this);
+            holder.allergyLayout.findViewById(R.id.layout_eggplant).setOnClickListener(this);
+            holder.allergyLayout.findViewById(R.id.layout_fava).setOnClickListener(this);
+            holder.allergyLayout.findViewById(R.id.layout_peanut).setOnClickListener(this);
+            holder.allergyLayout.findViewById(R.id.layout_shrimp).setOnClickListener(this);
+            holder.allergyLayout.findViewById(R.id.layout_soya).setOnClickListener(this);
+            holder.allergyLayout.findViewById(R.id.layout_walnut).setOnClickListener(this);
+            holder.allergyLayout.findViewById(R.id.layout_zucchini).setOnClickListener(this);
+        }
+
         @Override
         public void onClick(View v) {
             switch (v.getId()){
                 case R.id.layout_egg:
-                    if(!v.getTag().equals("checked")){
+                    if(!checked[Integer.valueOf(v.getTag().toString())]){
                         v.setBackgroundResource(R.drawable.background_allergy_solid);
                         ((TextView)v.findViewById(R.id.txt_egg)).setTextColor(ContextCompat.getColor(context, R.color.colorWhite));
-                        v.setTag("checked");
+                        checked[Integer.valueOf(v.getTag().toString())] = true;
                     }else{
                         v.setBackgroundResource(R.drawable.background_radio_button);
                         ((TextView)v.findViewById(R.id.txt_egg)).setTextColor(ContextCompat.getColor(context, R.color.colorEditText));
-                        v.setTag("unchecked");
+                        checked[Integer.valueOf(v.getTag().toString())] = false;
                     }
                     break;
                 case R.id.layout_eggplant:
-                    if(!v.getTag().equals("checked")){
+                    if(!checked[Integer.valueOf(v.getTag().toString())]){
                         v.setBackgroundResource(R.drawable.background_allergy_solid);
                         ((TextView)v.findViewById(R.id.txt_eggplant)).setTextColor(ContextCompat.getColor(context, R.color.colorWhite));
-                        v.setTag("checked");
+                        checked[Integer.valueOf(v.getTag().toString())] = true;
                     }else{
                         v.setBackgroundResource(R.drawable.background_radio_button);
                         ((TextView)v.findViewById(R.id.txt_eggplant)).setTextColor(ContextCompat.getColor(context, R.color.colorEditText));
-                        v.setTag("unchecked");
+                        checked[Integer.valueOf(v.getTag().toString())] = false;
                     }
                     break;
                 case R.id.layout_peanut:
-                    if(!v.getTag().equals("checked")){
+                    if(!checked[Integer.valueOf(v.getTag().toString())]){
                         v.setBackgroundResource(R.drawable.background_allergy_solid);
                         ((TextView)v.findViewById(R.id.txt_peanut)).setTextColor(ContextCompat.getColor(context, R.color.colorWhite));
-                        v.setTag("checked");
+                        checked[Integer.valueOf(v.getTag().toString())] = true;
                     }else{
                         v.setBackgroundResource(R.drawable.background_radio_button);
                         ((TextView)v.findViewById(R.id.txt_peanut)).setTextColor(ContextCompat.getColor(context, R.color.colorEditText));
-                        v.setTag("unchecked");
+                        checked[Integer.valueOf(v.getTag().toString())] = false;
                     }
                     break;
                 case R.id.layout_fava:
-                    if(!v.getTag().equals("checked")){
+                    if(!checked[Integer.valueOf(v.getTag().toString())]){
                         v.setBackgroundResource(R.drawable.background_allergy_solid);
                         ((TextView)v.findViewById(R.id.txt_fava)).setTextColor(ContextCompat.getColor(context, R.color.colorWhite));
-                        v.setTag("checked");
+                        checked[Integer.valueOf(v.getTag().toString())] = true;
                     }else{
                         v.setBackgroundResource(R.drawable.background_radio_button);
                         ((TextView)v.findViewById(R.id.txt_fava)).setTextColor(ContextCompat.getColor(context, R.color.colorEditText));
-                        v.setTag("unchecked");
+                        checked[Integer.valueOf(v.getTag().toString())] = false;
                     }
                     break;
                 case R.id.layout_shrimp:
-                    if(!v.getTag().equals("checked")){
+                    if(!checked[Integer.valueOf(v.getTag().toString())]){
                         v.setBackgroundResource(R.drawable.background_allergy_solid);
                         ((TextView)v.findViewById(R.id.txt_shrimp)).setTextColor(ContextCompat.getColor(context, R.color.colorWhite));
-                        v.setTag("checked");
+                        checked[Integer.valueOf(v.getTag().toString())] = true;
                     }else{
                         v.setBackgroundResource(R.drawable.background_radio_button);
                         ((TextView)v.findViewById(R.id.txt_shrimp)).setTextColor(ContextCompat.getColor(context, R.color.colorEditText));
-                        v.setTag("unchecked");
+                        checked[Integer.valueOf(v.getTag().toString())] = false;
                     }
                     break;
                 case R.id.layout_soya:
-                    if(!v.getTag().equals("checked")){
+                    if(!checked[Integer.valueOf(v.getTag().toString())]){
                         v.setBackgroundResource(R.drawable.background_allergy_solid);
                         ((TextView)v.findViewById(R.id.txt_soya)).setTextColor(ContextCompat.getColor(context, R.color.colorWhite));
-                        v.setTag("checked");
+                        checked[Integer.valueOf(v.getTag().toString())] = true;
                     }else{
                         v.setBackgroundResource(R.drawable.background_radio_button);
                         ((TextView)v.findViewById(R.id.txt_soya)).setTextColor(ContextCompat.getColor(context, R.color.colorEditText));
-                        v.setTag("unchecked");
+                        checked[Integer.valueOf(v.getTag().toString())] = false;
                     }
                     break;
                 case R.id.layout_walnut:
-                    if(!v.getTag().equals("checked")){
+                    if(!checked[Integer.valueOf(v.getTag().toString())]){
                         v.setBackgroundResource(R.drawable.background_allergy_solid);
                         ((TextView)v.findViewById(R.id.txt_walnut)).setTextColor(ContextCompat.getColor(context, R.color.colorWhite));
-                        v.setTag("checked");
+                        checked[Integer.valueOf(v.getTag().toString())] = true;
                     }else{
                         v.setBackgroundResource(R.drawable.background_radio_button);
                         ((TextView)v.findViewById(R.id.txt_walnut)).setTextColor(ContextCompat.getColor(context, R.color.colorEditText));
-                        v.setTag("unchecked");
+                        checked[Integer.valueOf(v.getTag().toString())] = false;
                     }
                     break;
                 case R.id.layout_zucchini:
-                    if(!v.getTag().equals("checked")){
+                    if(!checked[Integer.valueOf(v.getTag().toString())]){
                         v.setBackgroundResource(R.drawable.background_allergy_solid);
                         ((TextView)v.findViewById(R.id.txt_zucchini)).setTextColor(ContextCompat.getColor(context, R.color.colorWhite));
-                        v.setTag("checked");
+                        checked[Integer.valueOf(v.getTag().toString())] = true;
                     }else{
                         v.setBackgroundResource(R.drawable.background_radio_button);
                         ((TextView)v.findViewById(R.id.txt_zucchini)).setTextColor(ContextCompat.getColor(context, R.color.colorEditText));
-                        v.setTag("unchecked");
+                        checked[Integer.valueOf(v.getTag().toString())] = false;
                     }
                     break;
                 default:
 
             }
         }
+
     }
 
 
