@@ -11,9 +11,5 @@ public class DietApp extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
-
-
-
-
     }
 }

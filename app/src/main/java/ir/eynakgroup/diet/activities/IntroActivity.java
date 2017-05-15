@@ -63,12 +63,12 @@ public class IntroActivity extends BaseActivity {
         mViewPager = (ViewPager) findViewById(R.id.container);
         mViewPager.setAdapter(mSectionsPagerAdapter);
         mIndicator = (CirclePageIndicator) findViewById(R.id.indicator);
-        mIndicator.setRadius(mDisplayMetrics.widthPixels / 100);
+        mIndicator.setRadius(getDisplayMetrics().widthPixels / 100);
         mIndicator.setViewPager(mViewPager);
 
         mButton = (Button) findViewById(R.id.btn_enter);
-        mButton.setWidth(mDisplayMetrics.widthPixels / 2);
-        mButton.setHeight(mDisplayMetrics.heightPixels / 100);
+        mButton.setWidth(getDisplayMetrics().widthPixels / 2);
+        mButton.setHeight(getDisplayMetrics().heightPixels / 100);
 
         mButton.setOnClickListener(new View.OnClickListener() {
             @Override

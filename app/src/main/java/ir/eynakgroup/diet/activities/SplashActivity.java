@@ -37,8 +37,8 @@ public class SplashActivity extends BaseActivity {
         setContentView(R.layout.activity_splash);
 
         GifImageView gifSplash = (GifImageView)findViewById(R.id.gif_splash);
-        gifSplash.getLayoutParams().width = (int)(mDisplayMetrics.widthPixels / 1.9);
-        gifSplash.getLayoutParams().height = (int)(mDisplayMetrics.widthPixels / 1.9);
+        gifSplash.getLayoutParams().width = (int)(getDisplayMetrics().widthPixels / 1.9);
+        gifSplash.getLayoutParams().height = (int)(getDisplayMetrics().widthPixels / 1.9);
         gifSplash.requestLayout();
 
     }
@@ -64,7 +64,7 @@ public class SplashActivity extends BaseActivity {
                             System.out.println(accountProperty.get(KarafsAccountConfig.ACCOUNT_NAME));
 
                         } else {
-                            if(mAppPreferences.getFirstTime())
+                            if(getAppPreferences().getFirstTime())
                                 startActivity(new Intent(SplashActivity.this, IntroActivity.class));
                             else
                                 startActivity(new Intent(SplashActivity.this, RegisterActivity.class));

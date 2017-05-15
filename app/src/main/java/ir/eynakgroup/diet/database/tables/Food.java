@@ -1,4 +1,4 @@
-package ir.eynakgroup.diet.database;
+package ir.eynakgroup.diet.database.tables;
 
 import com.j256.ormlite.table.DatabaseTable;
 

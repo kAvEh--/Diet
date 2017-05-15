@@ -23,6 +23,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.text.TextUtils;
 import android.text.method.PasswordTransformationMethod;
+import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
@@ -41,6 +42,7 @@ import ir.eynakgroup.diet.account.KarafsAccountConfig;
 import ir.eynakgroup.diet.account.tasks.CreateAccountTask;
 import ir.eynakgroup.diet.activities.fragments.DietFragment;
 import ir.eynakgroup.diet.activities.fragments.ProfileFragment;
+import ir.eynakgroup.diet.network.RequestMethod;
 import ir.eynakgroup.diet.network.response_models.LoginResponse;
 import ir.eynakgroup.diet.services.AuthenticationService;
 import ir.eynakgroup.diet.utils.view.CustomViewPager;
@@ -73,6 +75,9 @@ public class RegisterActivity extends BaseActivity {
     private PagerAdapter pagerAdapter;
     private static CustomViewPager viewPager;
 
+    private static DisplayMetrics mDisplayMetrics;
+    private static RequestMethod mRequestMethod;
+
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_register);
@@ -81,6 +86,9 @@ public class RegisterActivity extends BaseActivity {
         toolbar.setCollapsible(false);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
+
+        mDisplayMetrics = getDisplayMetrics();
+        mRequestMethod = getRequestMethod();
 
         viewPager = (CustomViewPager) findViewById(R.id.container_fragment);
         pagerAdapter = new PagerAdapter(getSupportFragmentManager(), this);
@@ -95,7 +103,7 @@ public class RegisterActivity extends BaseActivity {
         });
 
         int waiting;
-        if (mAppPreferences.getFirstTime())
+        if (getAppPreferences().getFirstTime())
             waiting = 3000;
         else
             waiting = 2150;
@@ -150,7 +158,7 @@ public class RegisterActivity extends BaseActivity {
                         }
 
                         if (accountProperty != null && accountProperty.size() != 0) {
-                            if (mAppPreferences.getFirstTime())
+                            if (getAppPreferences().getFirstTime())
                                 startActivityForResult(new Intent(RegisterActivity.this, IntroActivity.class), INTRO_REQUEST_CODE);
                             else{
                                 System.out.println(accountProperty.get(KarafsAccountConfig.ACCOUNT_NAME));
@@ -160,7 +168,7 @@ public class RegisterActivity extends BaseActivity {
 
 
                         } else {
-                            if (mAppPreferences.getFirstTime())
+                            if (getAppPreferences().getFirstTime())
                                 startActivityForResult(new Intent(RegisterActivity.this, IntroActivity.class), INTRO_REQUEST_CODE);
 
                             else {
@@ -205,7 +213,7 @@ public class RegisterActivity extends BaseActivity {
         if (resultCode == RESULT_OK) {
             switch (requestCode) {
                 case INTRO_REQUEST_CODE:
-                    mAppPreferences.setFirstTime(false);
+                    getAppPreferences().setFirstTime(false);
 //                    if(mSignInBtn.getVisibility() == View.GONE){
 //                        mSignInBtn.setVisibility(View.VISIBLE);
 //                        mSignUpBtn.setVisibility(View.VISIBLE);

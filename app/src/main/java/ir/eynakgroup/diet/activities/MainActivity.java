@@ -33,6 +33,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
     private CustomViewPager viewPager;
     private PagerAdapter mPagerAdapter;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -83,7 +84,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
 
     }
     private void setLightStatusBar(){
-
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             View view = getWindow().getDecorView();
             int flags = view.getSystemUiVisibility();
@@ -94,8 +94,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
     }
 
     private void clearLightStatusBar() {
-
-
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             View view = getWindow().getDecorView();
             int flags = view.getSystemUiVisibility();

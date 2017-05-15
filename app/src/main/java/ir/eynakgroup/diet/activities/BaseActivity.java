@@ -1,7 +1,5 @@
 package ir.eynakgroup.diet.activities;
 
-import android.app.job.JobScheduler;
-import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
@@ -9,12 +7,12 @@ import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.Window;
-import android.view.WindowManager;
-import android.widget.TextView;
 import android.widget.Toast;
 
+import com.j256.ormlite.android.apptools.OpenHelperManager;
+
 import ir.eynakgroup.diet.R;
+import ir.eynakgroup.diet.database.DatabaseHelper;
 import ir.eynakgroup.diet.network.ClientFactory;
 import ir.eynakgroup.diet.network.RequestMethod;
 import ir.eynakgroup.diet.utils.AppPreferences;
@@ -22,16 +20,14 @@ import ir.eynakgroup.diet.utils.view.CustomTextView;
 
 class BaseActivity extends AppCompatActivity {
 
-    protected static DisplayMetrics mDisplayMetrics = new DisplayMetrics();
-    protected AppPreferences mAppPreferences;
-    protected static RequestMethod mRequestMethod;
+    private DisplayMetrics mDisplayMetrics = null;
+    private AppPreferences mAppPreferences = null;
+    private RequestMethod mRequestMethod = null;
+    private DatabaseHelper mDatabaseHelper = null;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-        mAppPreferences = AppPreferences.getInstance(this);
-        getWindowManager().getDefaultDisplay().getMetrics(mDisplayMetrics);
-        mRequestMethod = ClientFactory.getClientInstance().create(RequestMethod.class);
 
 //        Window window = getWindow();
 //        window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
@@ -43,6 +39,55 @@ class BaseActivity extends AppCompatActivity {
 //        else if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
 //            window.setStatusBarColor(getResources().getColor(R.color.colorWhite));
 
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        if (mDatabaseHelper != null) {
+            OpenHelperManager.releaseHelper();
+            mDatabaseHelper = null;
+        }
+
+        if(mDisplayMetrics != null)
+            mDisplayMetrics = null;
+
+        if(mAppPreferences != null)
+            mAppPreferences = null;
+
+        if(mRequestMethod != null)
+            mRequestMethod = null;
+    }
+
+    protected DisplayMetrics getDisplayMetrics(){
+        if(mDisplayMetrics == null)
+            mDisplayMetrics = new DisplayMetrics();
+
+        getWindowManager().getDefaultDisplay().getMetrics(mDisplayMetrics);
+        return mDisplayMetrics;
+    }
+
+
+    protected DatabaseHelper getDBHelper() {
+        if (mDatabaseHelper == null) {
+            mDatabaseHelper =
+                    OpenHelperManager.getHelper(this, DatabaseHelper.class);
+        }
+        return mDatabaseHelper;
+    }
+
+    protected AppPreferences getAppPreferences(){
+        if(mAppPreferences == null)
+            mAppPreferences = AppPreferences.getInstance(this);
+
+        return mAppPreferences;
+    }
+
+    protected RequestMethod getRequestMethod(){
+        if(mRequestMethod == null)
+            mRequestMethod = ClientFactory.getClientInstance().create(RequestMethod.class);
+
+        return mRequestMethod;
     }
 
     protected Toast getToast(String message) {

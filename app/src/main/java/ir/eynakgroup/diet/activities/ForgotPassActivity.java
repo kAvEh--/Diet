@@ -13,6 +13,7 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.util.DisplayMetrics;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -30,6 +31,7 @@ import android.widget.Toast;
 import java.lang.ref.WeakReference;
 
 import ir.eynakgroup.diet.R;
+import ir.eynakgroup.diet.network.RequestMethod;
 import ir.eynakgroup.diet.network.response_models.CommonResponse;
 import ir.eynakgroup.diet.utils.view.JustifiedTextView;
 import retrofit2.Call;
@@ -56,6 +58,10 @@ public class ForgotPassActivity extends BaseActivity implements View.OnClickList
     private static String phoneNumber;
     private static String code;
 
+    private static DisplayMetrics mDisplayMetrics;
+    private static RequestMethod mRequestMethod;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -65,6 +71,9 @@ public class ForgotPassActivity extends BaseActivity implements View.OnClickList
         toolbar.setCollapsible(false);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
+
+        mDisplayMetrics = getDisplayMetrics();
+        mRequestMethod = getRequestMethod();
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
