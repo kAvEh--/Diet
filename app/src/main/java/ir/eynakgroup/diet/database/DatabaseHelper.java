@@ -46,7 +46,6 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
     private void copyDB(Context context){
         System.out.println(checkDB()+"---------------------");
         if (!checkDB()) {
-            // If database did not exist, try copying existing database from assets folder.
             try {
                 File dir = new File(DATABASE_PATH);
                 dir.mkdirs();
