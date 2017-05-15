@@ -44,8 +44,8 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
     }
 
     private void copyDB(Context context){
-        System.out.println(checkDB()+"---------------------");
-        if (!checkDB()) {
+        System.out.println(existDB()+"---------------------");
+        if (!existDB()) {
             try {
                 File dir = new File(DATABASE_PATH);
                 dir.mkdirs();
@@ -68,7 +68,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
         }
     }
 
-    private boolean checkDB() {
+    private boolean existDB() {
         String dbPath = DATABASE_PATH + DATABASE_NAME;
         return new File(dbPath).exists();
     }

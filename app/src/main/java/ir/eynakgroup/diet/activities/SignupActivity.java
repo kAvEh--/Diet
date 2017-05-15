@@ -15,6 +15,7 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.text.method.PasswordTransformationMethod;
+import android.util.DisplayMetrics;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.TouchDelegate;
@@ -38,6 +39,7 @@ import io.blackbox_vision.wheelview.view.WheelView;
 import ir.eynakgroup.diet.R;
 import ir.eynakgroup.diet.account.KarafsAccountConfig;
 import ir.eynakgroup.diet.account.tasks.CreateAccountTask;
+import ir.eynakgroup.diet.network.RequestMethod;
 import ir.eynakgroup.diet.network.response_models.User;
 import ir.eynakgroup.diet.utils.JDateFormat;
 import ir.eynakgroup.diet.utils.view.CustomIndicator;
@@ -75,6 +77,8 @@ public class SignUpActivity extends BaseActivity implements View.OnClickListener
     private final static JDateFormat mDateFormat = new JDateFormat();
     private static final User mUser = new User();
 
+    private static DisplayMetrics mDisplayMetrics;
+    private static RequestMethod mRequestMethod;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -86,6 +90,9 @@ public class SignUpActivity extends BaseActivity implements View.OnClickListener
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
 
+        mDisplayMetrics = getDisplayMetrics();
+        mRequestMethod = getRequestMethod();
+
         // Create the adapter that will return a fragment for each of the three
         // primary sections of the activity.
         mSectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
@@ -95,7 +102,7 @@ public class SignUpActivity extends BaseActivity implements View.OnClickListener
         mViewPager.setAdapter(mSectionsPagerAdapter);
 
         mIndicator = (CustomIndicator) findViewById(R.id.indicator);
-        mIndicator.setRadius(mDisplayMetrics.widthPixels / 100);
+        mIndicator.setRadius(getDisplayMetrics().widthPixels / 100);
         mIndicator.setViewPager(mViewPager);
 
         mNextView = (CustomTextView) findViewById(R.id.next_step);
