@@ -15,6 +15,7 @@ import android.view.Window;
 import ir.eynakgroup.diet.R;
 import ir.eynakgroup.diet.activities.fragments.DietFragment;
 import ir.eynakgroup.diet.activities.fragments.ProfileFragment;
+import ir.eynakgroup.diet.schedule.jobs.NotificationJob;
 import ir.eynakgroup.diet.utils.view.CustomViewPager;
 
 /**
@@ -81,6 +82,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
             }
         });
 
+        NotificationJob.scheduleJob();
 
     }
     private void setLightStatusBar(){
