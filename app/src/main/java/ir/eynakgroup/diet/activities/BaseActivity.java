@@ -85,7 +85,7 @@ class BaseActivity extends AppCompatActivity {
 
     protected RequestMethod getRequestMethod(){
         if(mRequestMethod == null)
-            mRequestMethod = ClientFactory.getClientInstance().create(RequestMethod.class);
+            mRequestMethod = ClientFactory.getRetrofitInstance().create(RequestMethod.class);
 
         return mRequestMethod;
     }

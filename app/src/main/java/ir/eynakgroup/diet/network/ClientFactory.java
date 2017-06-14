@@ -12,7 +12,7 @@ public class ClientFactory {
 
     private ClientFactory(){}
 
-    public static Retrofit getClientInstance(){
+    public static Retrofit getRetrofitInstance(){
         if(retrofit == null){
             retrofit = new Retrofit.Builder()
                     .baseUrl(BASE_URL)

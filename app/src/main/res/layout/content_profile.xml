@@ -8,6 +8,5 @@
     tools:context="ir.eynakgroup.diet.activities.fragments.ProfileFragment"
     tools:showIn="@layout/fragment_profile">
 
-
-
+     
 </android.support.v4.widget.NestedScrollView>

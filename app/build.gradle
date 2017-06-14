@@ -35,7 +35,7 @@ dependencies {
     compile 'fr.avianey.com.viewpagerindicator:library:2.4.1.1@aar'
     compile 'com.github.BlackBoxVision:material-wheel-view:v0.0.1'
     compile 'com.squareup.retrofit2:retrofit:2.2.0'
-    compile 'com.google.code.gson:gson:2.6.2'
+    compile 'com.google.code.gson:gson:2.7'
     compile 'com.squareup.retrofit2:converter-gson:2.2.0'
     compile 'pl.droidsonroids.gif:android-gif-drawable:1.2.6'
 //    compile 'com.wefika:horizontal-picker:1.1.1'
@@ -43,7 +43,7 @@ dependencies {
     compile 'com.android.support:recyclerview-v7:25.3.1'
     compile group: 'com.j256.ormlite', name: 'ormlite-android', version: '5.0'
     compile 'com.google.android:flexbox:0.2.6'
-    compile 'org.cyanogenmod:platform.sdk:4.+'
     compile 'com.evernote:android-job:1.1.10'
     compile "com.google.android.gms:play-services-gcm:10.2.4"
+
 }
