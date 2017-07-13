@@ -225,11 +225,7 @@ public class SignUpActivity extends BaseActivity implements View.OnClickListener
                             break;
                         case 2:
                             mDateFormat.setIranianDate(mYear, mMonth, mDay);
-                            try {
-                                mUser.setBirthday(new SimpleDateFormat("yyyy/mm/dd").parse(mDateFormat.getGregorianDate()));
-                            } catch (ParseException e) {
-                                e.printStackTrace();
-                            }
+                            mUser.setBirthday(mDateFormat.getGregorianDate());
 
                             if (mUser.getBirthday() == null) {
                                 goToNext = false;
@@ -548,7 +544,7 @@ public class SignUpActivity extends BaseActivity implements View.OnClickListener
                             }
 
                             if (!editHeight.getText().toString().trim().equals(""))
-                                mUser.setHeight(Float.valueOf(editHeight.getText().toString().trim()));
+                                mUser.setHeight(Integer.valueOf(editHeight.getText().toString().trim()));
 
 
                         }

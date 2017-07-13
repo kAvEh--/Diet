@@ -33,7 +33,13 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.j256.ormlite.android.apptools.OpenHelperManager;
+import com.j256.ormlite.table.TableUtils;
+
 import java.lang.reflect.Field;
+import java.sql.SQLException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Map;
 
@@ -42,8 +48,11 @@ import ir.eynakgroup.diet.account.KarafsAccountConfig;
 import ir.eynakgroup.diet.account.tasks.CreateAccountTask;
 import ir.eynakgroup.diet.activities.fragments.DietFragment;
 import ir.eynakgroup.diet.activities.fragments.ProfileFragment;
+import ir.eynakgroup.diet.database.DatabaseHelper;
+import ir.eynakgroup.diet.database.tables.UserInfo;
 import ir.eynakgroup.diet.network.RequestMethod;
 import ir.eynakgroup.diet.network.response_models.LoginResponse;
+import ir.eynakgroup.diet.network.response_models.User;
 import ir.eynakgroup.diet.services.AuthenticationService;
 import ir.eynakgroup.diet.utils.view.CustomViewPager;
 import ir.eynakgroup.karafs.account.IAuthentication;
@@ -77,6 +86,7 @@ public class RegisterActivity extends BaseActivity {
 
     private static DisplayMetrics mDisplayMetrics;
     private static RequestMethod mRequestMethod;
+    private static DatabaseHelper mDatabaseHelper;
 
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -89,6 +99,7 @@ public class RegisterActivity extends BaseActivity {
 
         mDisplayMetrics = getDisplayMetrics();
         mRequestMethod = getRequestMethod();
+        mDatabaseHelper = getDBHelper();
 
         viewPager = (CustomViewPager) findViewById(R.id.container_fragment);
         pagerAdapter = new PagerAdapter(getSupportFragmentManager(), this);
@@ -160,7 +171,7 @@ public class RegisterActivity extends BaseActivity {
                         if (accountProperty != null && accountProperty.size() != 0) {
                             if (getAppPreferences().getFirstTime())
                                 startActivityForResult(new Intent(RegisterActivity.this, IntroActivity.class), INTRO_REQUEST_CODE);
-                            else{
+                            else {
                                 System.out.println(accountProperty.get(KarafsAccountConfig.ACCOUNT_NAME));
                                 startActivity(new Intent(RegisterActivity.this, MainActivity.class));
                                 finish();
@@ -257,7 +268,6 @@ public class RegisterActivity extends BaseActivity {
     }
 
 
-
     @Override
     protected void onPause() {
         super.onPause();
@@ -289,6 +299,7 @@ public class RegisterActivity extends BaseActivity {
     private class PagerAdapter extends FragmentPagerAdapter {
 
         private Context mContext;
+
         public PagerAdapter(FragmentManager fm, Context context) {
             super(fm);
             mContext = context;
@@ -533,17 +544,39 @@ public class RegisterActivity extends BaseActivity {
                     call.enqueue(new Callback<LoginResponse>() {
                         @Override
                         public void onResponse(Call<LoginResponse> call, Response<LoginResponse> response) {
-                            new CreateAccountTask(mContext, getString(R.string.type_account)) {
-                                @Override
-                                protected void onPostExecute(Account result) {
-                                    super.onPostExecute(result);
-                                    System.out.println("Account created!");
-                                    startActivity(new Intent(mContext, MainActivity.class));
-                                    ((Activity) mContext).finish();
+                            try {
+                                UserInfo userInfo = new UserInfo();
+                                User responseUser = response.body().getUser();
+                                userInfo.setActivityLevel(responseUser.getActivityLevel());
+                                userInfo.setAge(responseUser.getAge());
+                                userInfo.setApiKey(responseUser.getApiKey());
+                                userInfo.setBirthday(responseUser.getBirthday());
+                                userInfo.setDisease(responseUser.getDiseases().toString());
+                                userInfo.setEmail(responseUser.getEmail());
+                                userInfo.setGender(responseUser.getGender().ordinal());
+                                userInfo.setHeight(responseUser.getHeight());
+                                userInfo.setWeight(responseUser.getWeight()+"");
+                                userInfo.setUserId(responseUser.getUserId());
+                                userInfo.setName(responseUser.getName());
+                                mDatabaseHelper.getUserDao().create(userInfo);
 
-                                }
+                                System.out.println("--------------------------- column created !!!!");
+                                getActivity().startActivity(new Intent(mContext, MainActivity.class));
+                                getActivity().finish();
+                            } catch (SQLException e) {
+                                e.printStackTrace();
                             }
-                                    .execute(new CreateAccountTask.AccountInfo(phone, pass, response.body().getUser()));
+
+//                            new CreateAccountTask(mContext, getString(R.string.type_account)) {
+//                                @Override
+//                                protected void onPostExecute(Account result) {
+//                                    super.onPostExecute(result);
+//
+//                                    ((Activity) mContext).finish();
+//
+//                                }
+//                            }
+//                                    .execute(new CreateAccountTask.AccountInfo(phone, pass, response.body().getUser()));
 
                         }
 

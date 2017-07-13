@@ -1,0 +1,144 @@
+package ir.eynakgroup.diet.database.tables;
+
+import com.j256.ormlite.field.DataType;
+import com.j256.ormlite.field.DatabaseField;
+import com.j256.ormlite.table.DatabaseTable;
+
+/**
+ * Created by Shayan on 4/30/2017.
+ */
+@DatabaseTable(tableName = "Users")
+public class UserInfo {
+    @DatabaseField(columnName = "Activity_Level", dataType = DataType.INTEGER)
+    private int activityLevel;
+    @DatabaseField(columnName = "Age", dataType = DataType.INTEGER)
+    private int age;
+    @DatabaseField(columnName = "Api_Key", dataType = DataType.STRING)
+    private String apiKey;
+    @DatabaseField(columnName = "BirthDay", dataType = DataType.STRING)
+    private String birthday;
+    @DatabaseField(columnName = "Disease", dataType = DataType.STRING)
+    private String disease;
+    @DatabaseField(columnName = "Email", dataType = DataType.STRING)
+    private String email;
+    @DatabaseField(columnName = "Height", dataType = DataType.INTEGER)
+    private int height;
+    @DatabaseField(columnName = "Last_Login_Date", dataType = DataType.STRING)
+    private String lastLoginDate;
+    @DatabaseField(columnName = "Name", dataType = DataType.STRING)
+    private String name;
+    @DatabaseField(columnName = "Gender", dataType = DataType.INTEGER)
+    private int gender;
+    @DatabaseField(columnName = "User_ID", dataType = DataType.STRING)
+    private String userId;
+    @DatabaseField(columnName = "Session_ID", dataType = DataType.STRING)
+    private String sessionId;
+    @DatabaseField(columnName = "Weight", dataType = DataType.STRING)
+    private String weight;
+
+
+    public int getActivityLevel() {
+        return activityLevel;
+    }
+
+    public void setActivityLevel(int activityLevel) {
+        this.activityLevel = activityLevel;
+    }
+
+    public int getAge() {
+        return age;
+    }
+
+    public void setAge(int age) {
+        this.age = age;
+    }
+
+    public String getApiKey() {
+        return apiKey;
+    }
+
+    public void setApiKey(String apiKey) {
+        this.apiKey = apiKey;
+    }
+
+    public String getBirthday() {
+        return birthday;
+    }
+
+    public void setBirthday(String birthday) {
+        this.birthday = birthday;
+    }
+
+    public String getDisease() {
+        return disease;
+    }
+
+    public void setDisease(String disease) {
+        this.disease = disease;
+    }
+
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+    public int getHeight() {
+        return height;
+    }
+
+    public void setHeight(int height) {
+        this.height = height;
+    }
+
+    public String getLastLoginDate() {
+        return lastLoginDate;
+    }
+
+    public void setLastLoginDate(String lastLoginDate) {
+        this.lastLoginDate = lastLoginDate;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public int getGender() {
+        return this.gender;
+    }
+
+    public void setGender(int gender) {
+        this.gender = gender;
+    }
+
+
+    public String getUserId() {
+        return userId;
+    }
+
+    public void setUserId(String userId) {
+        this.userId = userId;
+    }
+
+    public String getSessionId() {
+        return sessionId;
+    }
+
+    public void setSessionId(String sessionId) {
+        this.sessionId = sessionId;
+    }
+
+    public float getWeight() {
+        return Float.parseFloat(weight.trim());
+    }
+
+    public void setWeight(String weight) {
+        this.weight = weight;
+    }
+}

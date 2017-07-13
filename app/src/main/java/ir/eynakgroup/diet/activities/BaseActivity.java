@@ -1,5 +1,6 @@
 package ir.eynakgroup.diet.activities;
 
+import android.content.Context;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
@@ -20,10 +21,10 @@ import ir.eynakgroup.diet.utils.view.CustomTextView;
 
 class BaseActivity extends AppCompatActivity {
 
-    private DisplayMetrics mDisplayMetrics = null;
-    private AppPreferences mAppPreferences = null;
-    private RequestMethod mRequestMethod = null;
-    private DatabaseHelper mDatabaseHelper = null;
+    private DisplayMetrics mDisplayMetrics;
+    private AppPreferences mAppPreferences;
+    private RequestMethod mRequestMethod;
+    private DatabaseHelper mDatabaseHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,7 +46,8 @@ class BaseActivity extends AppCompatActivity {
     protected void onDestroy() {
         super.onDestroy();
         if (mDatabaseHelper != null) {
-            OpenHelperManager.releaseHelper();
+//            OpenHelperManager.releaseHelper();
+            mDatabaseHelper.close();
             mDatabaseHelper = null;
         }
 
@@ -57,6 +59,7 @@ class BaseActivity extends AppCompatActivity {
 
         if(mRequestMethod != null)
             mRequestMethod = null;
+
     }
 
     protected DisplayMetrics getDisplayMetrics(){
@@ -70,15 +73,15 @@ class BaseActivity extends AppCompatActivity {
 
     protected DatabaseHelper getDBHelper() {
         if (mDatabaseHelper == null) {
-            mDatabaseHelper =
-                    OpenHelperManager.getHelper(this, DatabaseHelper.class);
+            mDatabaseHelper = new DatabaseHelper(this);
+
         }
         return mDatabaseHelper;
     }
 
     protected AppPreferences getAppPreferences(){
         if(mAppPreferences == null)
-            mAppPreferences = AppPreferences.getInstance(this);
+            mAppPreferences = new AppPreferences(this);
 
         return mAppPreferences;
     }
@@ -103,5 +106,6 @@ class BaseActivity extends AppCompatActivity {
         toast.setView(layout);
         return toast;
     }
+
 
 }

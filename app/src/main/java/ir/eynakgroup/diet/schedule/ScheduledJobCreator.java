@@ -15,7 +15,7 @@ import ir.eynakgroup.diet.schedule.jobs.NotificationJob;
  * Created by Shayan on 5/17/2017.
  */
 
-public class ScheduleJobCreator implements JobCreator {
+public class ScheduledJobCreator implements JobCreator {
     @Override
     public Job create(String tag) {
         switch (tag){

@@ -20,11 +20,15 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.google.android.flexbox.FlexboxLayout;
+import com.j256.ormlite.stmt.QueryBuilder;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
 import ir.eynakgroup.diet.R;
+import ir.eynakgroup.diet.database.tables.UserInfo;
+import ir.eynakgroup.diet.network.response_models.User;
 import ir.eynakgroup.diet.utils.view.CustomTextView;
 
 /**
@@ -458,6 +462,48 @@ public class SetupDietActivity extends BaseActivity implements View.OnClickListe
         }
 
     }
+
+    private void generateDiet(){
+
+    }
+
+    private float calculateRegisteredCalorie() throws SQLException {
+        UserInfo user = getDBHelper().getUserDao().queryForAll().get(0);
+        if(user.getGender() == User.Gender.Female.ordinal())
+            return (float) (655 + (9.479866 * user.getWeight()) + (1.8503947 * user.getHeight()) - (4.7 * user.getAge()));
+        else
+            return (float) (66 + (13.889106 * user.getWeight()) + (5.0787429 * user.getHeight()) - (6.8 * user.getAge()));
+    }
+
+    private float calculateBMI() throws SQLException {
+        UserInfo user = getDBHelper().getUserDao().queryForAll().get(0);
+        return (float) (user.getWeight() / Math.pow(user.getHeight(), 2));
+    }
+
+    private void generateDietDB1000(){
+
+    }
+
+    private void generateDietDB1250(){
+
+    }
+
+    private void generateDietDB1500(){
+
+    }
+
+    private void generateDietDB1750(){
+
+    }
+
+    private void generateDietDB2000(){
+
+    }
+
+    private void generateDietDB2250(){
+
+    }
+
 
 
 }

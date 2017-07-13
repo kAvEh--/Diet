@@ -82,7 +82,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
             }
         });
 
-        NotificationJob.scheduleJob();
 
     }
     private void setLightStatusBar(){
@@ -160,12 +159,9 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
             // Return a PlaceholderFragment (defined as a static inner class below).
             switch (position + 1) {
                 case 1:
-
                     return DietFragment.getInstance(mContext);
-
                 case 2:
                     return ProfileFragment.getInstance(mContext);
-
                 default:
                     return null;
             }

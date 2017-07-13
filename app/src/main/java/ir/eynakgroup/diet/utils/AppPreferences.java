@@ -8,12 +8,12 @@ import android.content.SharedPreferences;
 public class AppPreferences {
 
     private SharedPreferences mPref;
-    private AppPreferences(Context context){
+    public AppPreferences(Context context){
         mPref = context.getSharedPreferences(context.getPackageName(), Context.MODE_PRIVATE);
     }
-    public static AppPreferences getInstance(Context context){
-        return new AppPreferences(context);
-    }
+//    public static AppPreferences getInstance(Context context){
+//        return new AppPreferences(context);
+//    }
     public void setFirstTime(boolean status){
         mPref.edit().putBoolean("first", status).commit();
     }

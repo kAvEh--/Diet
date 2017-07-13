@@ -1,5 +1,6 @@
 package ir.eynakgroup.diet.network.response_models;
 
+import com.google.gson.JsonArray;
 import com.google.gson.annotations.SerializedName;
 
 import org.json.JSONArray;
@@ -25,10 +26,10 @@ public class User {
     private int gender = -1;
 
     @SerializedName("bday")
-    private Date birthday;
+    private String birthday;
 
     @SerializedName("height")
-    private float height = 0;
+    private int height = 0;
 
     @SerializedName("weight")
     private float weight = 0;
@@ -44,6 +45,10 @@ public class User {
 
     @SerializedName("activityLevel")
     private int activityLevel = -1;
+
+
+    @SerializedName("diseases")
+    private JsonArray diseases = new JsonArray();
 
 //    @SerializedName("diseases")
 //    private JSONArray diseases;
@@ -100,19 +105,19 @@ public class User {
         this.gender = gender;
     }
 
-    public Date getBirthday() {
+    public String getBirthday() {
         return birthday;
     }
 
-    public void setBirthday(Date birthday) {
+    public void setBirthday(String birthday) {
         this.birthday = birthday;
     }
 
-    public float getHeight() {
+    public int getHeight() {
         return height;
     }
 
-    public void setHeight(float height) {
+    public void setHeight(int height) {
         this.height = height;
     }
 
@@ -148,11 +153,16 @@ public class User {
         this.userId = userId;
     }
 
-//    public JSONArray getDiseases() {
-//        return diseases;
-//    }
-//
-//    public void setDiseases(JSONArray diseases) {
-//        this.diseases = diseases;
-//    }
+
+    public JsonArray getDiseases() {
+        return diseases;
+    }
+
+    public void setDiseases(JsonArray diseases) {
+        this.diseases = diseases;
+    }
+    @Override
+    public String toString() {
+        return getUserId()+" : " + getBirthday()+ " : " + getName();
+    }
 }

@@ -92,20 +92,21 @@
 
         </RelativeLayout>
 
+
         <RelativeLayout
-            android:id="@+id/layout_egg"
+            android:id="@+id/layout_walnut"
             android:layout_width="0dp"
+            android:tag="6"
             android:layout_margin="@dimen/activity_orientation_margin"
             android:layout_height="match_parent"
             android:background="@drawable/background_radio_button"
-            android:tag="3"
             android:layout_weight="1">
 
             <ir.eynakgroup.diet.utils.view.CustomTextView
-                android:id="@+id/txt_egg"
+                android:id="@+id/txt_walnut"
                 android:textSize="18dp"
                 android:padding="16dp"
-                android:text="تخم مرغ"
+                android:text="گردو"
                 android:textColor="@color/colorDescription"
                 android:layout_centerInParent="true"
                 android:layout_width="wrap_content"
@@ -180,19 +181,20 @@
         android:orientation="horizontal">
 
         <RelativeLayout
-            android:id="@+id/layout_walnut"
+            android:id="@+id/layout_egg"
             android:layout_width="0dp"
-            android:tag="6"
+            android:visibility="invisible"
             android:layout_margin="@dimen/activity_orientation_margin"
             android:layout_height="match_parent"
             android:background="@drawable/background_radio_button"
+            android:tag="3"
             android:layout_weight="1">
 
             <ir.eynakgroup.diet.utils.view.CustomTextView
-                android:id="@+id/txt_walnut"
+                android:id="@+id/txt_egg"
                 android:textSize="18dp"
                 android:padding="16dp"
-                android:text="گردو"
+                android:text="تخم مرغ"
                 android:textColor="@color/colorDescription"
                 android:layout_centerInParent="true"
                 android:layout_width="wrap_content"
