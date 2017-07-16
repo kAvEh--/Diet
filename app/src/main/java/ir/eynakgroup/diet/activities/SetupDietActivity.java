@@ -3,6 +3,7 @@ package ir.eynakgroup.diet.activities;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Rect;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
@@ -20,11 +21,16 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.google.android.flexbox.FlexboxLayout;
-import com.j256.ormlite.stmt.QueryBuilder;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.lang.ref.WeakReference;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import ir.eynakgroup.diet.R;
 import ir.eynakgroup.diet.database.tables.UserInfo;
@@ -42,12 +48,14 @@ public class SetupDietActivity extends BaseActivity implements View.OnClickListe
     private ChatAdapter mAdapter;
     private FlexboxLayout flexBox;
     private ImageView imageBack;
+    private TextView textTyping;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_setup);
 
+        textTyping = (TextView) findViewById(R.id.txt_typing);
         imageBack = (ImageView) findViewById(R.id.img_back);
         final View backParent = (View) imageBack.getParent();  // button: the view you want to enlarge hit area
         backParent.post(new Runnable() {
@@ -72,12 +80,11 @@ public class SetupDietActivity extends BaseActivity implements View.OnClickListe
         recyclerView.addItemDecoration(new VerticalSpaceItemDecoration(getResources().getDimensionPixelSize(R.dimen.activity_orientation_margin_2x)));
         recyclerView.setAdapter(mAdapter);
 
-        prepareChatData();
     }
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.img_back:
                 onBackPressed();
                 break;
@@ -91,8 +98,8 @@ public class SetupDietActivity extends BaseActivity implements View.OnClickListe
         showExitDialog();
     }
 
-    private void showExitDialog(){
-        new AlertDialog.Builder(this)
+    private void showExitDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this)
                 .setMessage(R.string.exit_alert)
                 .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
@@ -104,7 +111,14 @@ public class SetupDietActivity extends BaseActivity implements View.OnClickListe
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.cancel();
                     }
-                }).show();
+                });
+
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
+        Typeface typeface = Typeface.createFromAsset(getAssets(), "fonts/iran_sans.ttf");
+        ((TextView) alertDialog.findViewById(android.R.id.message)).setTypeface(typeface);
+        alertDialog.getButton(DialogInterface.BUTTON_NEGATIVE).setTypeface(typeface);
+        alertDialog.getButton(DialogInterface.BUTTON_POSITIVE).setTypeface(typeface);
     }
 
     private class Chat {
@@ -138,41 +152,133 @@ public class SetupDietActivity extends BaseActivity implements View.OnClickListe
     }
 
     private enum Type {
-        SELF_APP, USER, ALLERGY
+        APP, USER, ALLERGY
     }
 
     private void prepareChatData() {
-        chatList.add(new Chat("سلام شایان، خوشحالم که تصمیم گرفتی رژیمت رو شروع کنی.", Type.SELF_APP));
-        chatList.add(new Chat("سلام", Type.USER));
-        chatList.add(new Chat("سلام شایان، خوشحالم که تصمیم گرفتی رژیمت رو شروع کنی.", Type.SELF_APP));
-        chatList.add(new Chat("سلام", Type.USER));
-        chatList.add(new Chat("سلام شایان، خوشحالم که تصمیم گرفتی رژیمت رو شروع کنی.", Type.SELF_APP));
-        chatList.add(new Chat("سلام", Type.USER));
-        chatList.add(new Chat("سلام شایان، خوشحالم که تصمیم گرفتی رژیمت رو شروع کنی.", Type.SELF_APP));
-        chatList.add(new Chat("سلام", Type.USER));
-        chatList.add(new Chat("سلام شایان، خوشحالم که تصمیم گرفتی رژیمت رو شروع کنی.", Type.SELF_APP));
-        chatList.add(new Chat("سلام", Type.USER));
-        chatList.add(new Chat("سلام شایان، خوشحالم که تصمیم گرفتی رژیمت رو شروع کنی.", Type.SELF_APP));
-        chatList.add(new Chat("سلام", Type.USER));
-        chatList.add(new Chat("سلام شایان، خوشحالم که تصمیم گرفتی رژیمت رو شروع کنی.", Type.SELF_APP));
-        chatList.add(new Chat("سلام", Type.USER));
-        chatList.add(new Chat("از طریق لیست زیر غذاهایی را که به آن‌ها حساسیت دارید، انتخاب کنید.", Type.SELF_APP));
-        chatList.add(new Chat(Type.ALLERGY));
+        BufferedReader reader;
+        try {
+            UserInfo user = getDBHelper().getUserDao().queryForAll().get(0);
+            reader = new BufferedReader(new InputStreamReader(getAssets().open("chat.txt")));
+            // do reading, usually loop until end of file reading
+            String line = reader.readLine();
+            while (line != null) {
+                String[] splits = line.split(":");
+                if (line.startsWith("app")) {
+
+                    if (line.contains("[first_time]")) {
+                        addListItem(splits[1].trim().replace("[name]", user.getName()), Type.APP);
+                    } else if (line.contains("[ideal]")) {
+                        addListItem(splits[1].trim().replace("[ideal_weight]", round(calculateIdealWeight(user), 1) + ""), Type.APP);
+                    } else if (line.contains("[weight]")) {
+                        addListItem(splits[1].trim().replace("[weight_loss]", round(user.getWeight() - calculateIdealWeight(user), 1) + ""), Type.APP);
+                    } else if (line.contains("[step]")) {
+                        addListItem(splits[1].trim().replace("[diet_step]", Math.round(round(user.getWeight() - calculateIdealWeight(user), 1)) + ""), Type.APP);
+                    } else if (line.contains("[type]")) {
+                        Map<Integer, Float> difficulty = calculateDietTypes(user);
+                        if (difficulty.containsKey(Integer.valueOf(3))) {
+                            addListItem(splits[1].trim().replace("[diet_type]", "3"), Type.APP);
+                        }
+                        else if (difficulty.containsKey(Integer.valueOf(2))) {
+                            addListItem(splits[1].trim().replace("[diet_type]", "2"), Type.APP);
+                        }
+                        else if (difficulty.containsKey(Integer.valueOf(1)) || difficulty.containsKey(Integer.valueOf(0))) {
+                            addListItem(splits[1].trim().replace("[diet_type]", "1"), Type.APP);
+                        }
+
+                        else if(difficulty.containsKey(Integer.valueOf(-1))){
+                            addListItem(getString(R.string.no_diet), Type.APP);
+                        }
 
 
-        addResponseView("باشه");
-        addResponseView("حمید پسر خوبی است.");
-        addResponseView("باشه");
-        addResponseView("حمید پسر خوبی است.");
+                    }
+                    else if (line.contains("[prefer]")) {
+                        if(!calculateDietTypes(user).containsKey(Integer.valueOf(-1)))
+                            addListItem(splits[1].trim(), Type.APP);
 
-        mAdapter.notifyDataSetChanged();
-        recyclerView.smoothScrollToPosition(mAdapter.getItemCount() - 1);
+                    }
+                    else if (line.contains("[allergy]")) {
+
+                    } else {
+                        addListItem(splits[1].trim(), Type.APP);
+                    }
+
+
+                }
+//                else if(line.contains("user")){
+//                    String[] responses;
+//                    if(splits[1].contains(","))
+//                        responses = splits[1].trim().split(",");
+//                    else
+//                        responses = new String[]{splits[1].trim()};
+//
+//                    for(String response: responses)
+//                        addResponseView(response.trim());
+//
+//                }
+
+                line = reader.readLine();
+            }
+            reader.close();
+
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+
+//        addListItem("من دستیار کرفس هستم.", Type.APP);
+//        addListItem("سلام شایان، خوشحالم که تصمیم گرفتی رژیمت رو شروع کنی.", Type.APP);
+//        addListItem("سلام شایان، خوشحالم که تصمیم گرفتی رژیمت رو شروع کنی.", Type.APP);
+//        addListItem("سلام شایان، خوشحالم که تصمیم گرفتی رژیمت رو شروع کنی.", Type.APP);
+//        addAllergyItem();
+//
+//        addResponseView("باشه");
+//        addResponseView("حمید پسر خوبی است.");
+//        addResponseView("باشه");
+//        addResponseView("حمید پسر خوبی است.");
+
     }
 
-    private void addListItem(String chatText, Type chatType){
-        chatList.add(new Chat(chatText, chatType));
+    public float round(float value, int places) {
+        if (places < 0) throw new IllegalArgumentException();
+
+        long factor = (long) Math.pow(10, places);
+        value = value * factor;
+        long tmp = Math.round(value);
+        return (float) tmp / factor;
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        prepareChatData();
+    }
+
+    private void addAllergyItem() {
+        textTyping.setVisibility(View.VISIBLE);
+        chatList.add(new WeakReference<>(new Chat(Type.ALLERGY)).get());
         mAdapter.notifyDataSetChanged();
         recyclerView.smoothScrollToPosition(mAdapter.getItemCount() - 1);
+        textTyping.setVisibility(View.GONE);
+    }
+
+    private void addListItem(final String chatText, final Type chatType) {
+        if (!chatType.equals(Type.USER)) {
+            textTyping.setVisibility(View.VISIBLE);
+            chatList.add(new WeakReference<>(new Chat(chatText, chatType)).get());
+            mAdapter.notifyDataSetChanged();
+            recyclerView.smoothScrollToPosition(mAdapter.getItemCount() - 1);
+            textTyping.setVisibility(View.GONE);
+
+        } else {
+            chatList.add(new WeakReference<>(new Chat(chatText, chatType)).get());
+            mAdapter.notifyDataSetChanged();
+            recyclerView.smoothScrollToPosition(mAdapter.getItemCount() - 1);
+        }
+
     }
 
     private void addResponseView(String response) {
@@ -221,13 +327,13 @@ public class SetupDietActivity extends BaseActivity implements View.OnClickListe
 
         public class MyViewHolder extends RecyclerView.ViewHolder {
             CustomTextView chatText;
-            RelativeLayout chatLayout;
+            //            RelativeLayout chatLayout;
             LinearLayout allergyLayout;
 
 
             public MyViewHolder(View view) {
                 super(view);
-                chatLayout = (RelativeLayout) view;
+//                chatLayout = (RelativeLayout) view;
                 chatText = (CustomTextView) view.findViewById(R.id.text_chat);
                 allergyLayout = (LinearLayout) view.findViewById(R.id.layout_allergy);
             }
@@ -240,8 +346,8 @@ public class SetupDietActivity extends BaseActivity implements View.OnClickListe
             init();
         }
 
-        private void init(){
-            for(int i = 0; i < checked.length; i++)
+        private void init() {
+            for (int i = 0; i < checked.length; i++)
                 checked[i] = false;
         }
 
@@ -259,19 +365,21 @@ public class SetupDietActivity extends BaseActivity implements View.OnClickListe
         public void onBindViewHolder(MyViewHolder holder, int position) {
             RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
 
-            if (chatList.get(position).getChatType().equals(Type.SELF_APP)) {
+            if (chatList.get(position).getChatType().equals(Type.APP)) {
                 holder.chatText.setVisibility(View.VISIBLE);
                 holder.chatText.setBackgroundResource(R.drawable.background_text_stroke);
                 holder.chatText.setTextColor(ContextCompat.getColor(context, R.color.colorDescription));
                 params.setMargins(0, 0, context.getResources().getDimensionPixelSize(R.dimen.indicator_padding), 0);
+                params.addRule(RelativeLayout.ALIGN_PARENT_LEFT);
                 holder.chatText.setText(chatList.get(position).getChatText());
                 holder.allergyLayout.setVisibility(View.GONE);
 
-            } else if (chatList.get(position).getChatType().equals(Type.USER)){
+            } else if (chatList.get(position).getChatType().equals(Type.USER)) {
                 holder.chatText.setVisibility(View.VISIBLE);
                 holder.chatText.setBackgroundResource(R.drawable.background_text_solid);
                 holder.chatText.setTextColor(ContextCompat.getColor(context, R.color.colorWhite));
                 params.setMargins(context.getResources().getDimensionPixelSize(R.dimen.indicator_padding), 0, 0, 0);
+                params.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
                 holder.chatText.setText(chatList.get(position).getChatText());
                 holder.allergyLayout.setVisibility(View.GONE);
 
@@ -280,73 +388,73 @@ public class SetupDietActivity extends BaseActivity implements View.OnClickListe
                 holder.chatText.setVisibility(View.GONE);
                 holder.allergyLayout.setVisibility(View.VISIBLE);
 
-                if(checked[Integer.valueOf(holder.allergyLayout.findViewById(R.id.layout_egg).getTag().toString())]){
+                if (checked[Integer.valueOf(holder.allergyLayout.findViewById(R.id.layout_egg).getTag().toString())]) {
                     holder.allergyLayout.findViewById(R.id.layout_egg).setBackgroundResource(R.drawable.background_allergy_solid);
-                    ((TextView)holder.allergyLayout.findViewById(R.id.layout_egg).findViewById(R.id.txt_egg)).setTextColor(ContextCompat.getColor(context, R.color.colorWhite));
-                }else{
+                    ((TextView) holder.allergyLayout.findViewById(R.id.layout_egg).findViewById(R.id.txt_egg)).setTextColor(ContextCompat.getColor(context, R.color.colorWhite));
+                } else {
                     holder.allergyLayout.findViewById(R.id.layout_egg).setBackgroundResource(R.drawable.background_radio_button);
-                    ((TextView)holder.allergyLayout.findViewById(R.id.layout_egg).findViewById(R.id.txt_egg)).setTextColor(ContextCompat.getColor(context, R.color.colorEditText));
+                    ((TextView) holder.allergyLayout.findViewById(R.id.layout_egg).findViewById(R.id.txt_egg)).setTextColor(ContextCompat.getColor(context, R.color.colorEditText));
                 }
 
-                if(checked[Integer.valueOf(holder.allergyLayout.findViewById(R.id.layout_eggplant).getTag().toString())]){
+                if (checked[Integer.valueOf(holder.allergyLayout.findViewById(R.id.layout_eggplant).getTag().toString())]) {
                     holder.allergyLayout.findViewById(R.id.layout_eggplant).setBackgroundResource(R.drawable.background_allergy_solid);
-                    ((TextView)holder.allergyLayout.findViewById(R.id.layout_eggplant).findViewById(R.id.txt_eggplant)).setTextColor(ContextCompat.getColor(context, R.color.colorWhite));
-                }else{
+                    ((TextView) holder.allergyLayout.findViewById(R.id.layout_eggplant).findViewById(R.id.txt_eggplant)).setTextColor(ContextCompat.getColor(context, R.color.colorWhite));
+                } else {
                     holder.allergyLayout.findViewById(R.id.layout_eggplant).setBackgroundResource(R.drawable.background_radio_button);
-                    ((TextView)holder.allergyLayout.findViewById(R.id.layout_eggplant).findViewById(R.id.txt_eggplant)).setTextColor(ContextCompat.getColor(context, R.color.colorEditText));
+                    ((TextView) holder.allergyLayout.findViewById(R.id.layout_eggplant).findViewById(R.id.txt_eggplant)).setTextColor(ContextCompat.getColor(context, R.color.colorEditText));
                 }
 
-                if(checked[Integer.valueOf(holder.allergyLayout.findViewById(R.id.layout_zucchini).getTag().toString())]){
+                if (checked[Integer.valueOf(holder.allergyLayout.findViewById(R.id.layout_zucchini).getTag().toString())]) {
                     holder.allergyLayout.findViewById(R.id.layout_zucchini).setBackgroundResource(R.drawable.background_allergy_solid);
-                    ((TextView)holder.allergyLayout.findViewById(R.id.layout_zucchini).findViewById(R.id.txt_zucchini)).setTextColor(ContextCompat.getColor(context, R.color.colorWhite));
-                }else{
+                    ((TextView) holder.allergyLayout.findViewById(R.id.layout_zucchini).findViewById(R.id.txt_zucchini)).setTextColor(ContextCompat.getColor(context, R.color.colorWhite));
+                } else {
                     holder.allergyLayout.findViewById(R.id.layout_zucchini).setBackgroundResource(R.drawable.background_radio_button);
-                    ((TextView)holder.allergyLayout.findViewById(R.id.layout_zucchini).findViewById(R.id.txt_zucchini)).setTextColor(ContextCompat.getColor(context, R.color.colorEditText));
+                    ((TextView) holder.allergyLayout.findViewById(R.id.layout_zucchini).findViewById(R.id.txt_zucchini)).setTextColor(ContextCompat.getColor(context, R.color.colorEditText));
                 }
 
-                if(checked[Integer.valueOf(holder.allergyLayout.findViewById(R.id.layout_walnut).getTag().toString())]){
+                if (checked[Integer.valueOf(holder.allergyLayout.findViewById(R.id.layout_walnut).getTag().toString())]) {
                     holder.allergyLayout.findViewById(R.id.layout_walnut).setBackgroundResource(R.drawable.background_allergy_solid);
-                    ((TextView)holder.allergyLayout.findViewById(R.id.layout_walnut).findViewById(R.id.txt_walnut)).setTextColor(ContextCompat.getColor(context, R.color.colorWhite));
-                }else{
+                    ((TextView) holder.allergyLayout.findViewById(R.id.layout_walnut).findViewById(R.id.txt_walnut)).setTextColor(ContextCompat.getColor(context, R.color.colorWhite));
+                } else {
                     holder.allergyLayout.findViewById(R.id.layout_walnut).setBackgroundResource(R.drawable.background_radio_button);
-                    ((TextView)holder.allergyLayout.findViewById(R.id.layout_walnut).findViewById(R.id.txt_walnut)).setTextColor(ContextCompat.getColor(context, R.color.colorEditText));
+                    ((TextView) holder.allergyLayout.findViewById(R.id.layout_walnut).findViewById(R.id.txt_walnut)).setTextColor(ContextCompat.getColor(context, R.color.colorEditText));
                 }
 
-                if(checked[Integer.valueOf(holder.allergyLayout.findViewById(R.id.layout_fava).getTag().toString())]){
+                if (checked[Integer.valueOf(holder.allergyLayout.findViewById(R.id.layout_fava).getTag().toString())]) {
                     holder.allergyLayout.findViewById(R.id.layout_fava).setBackgroundResource(R.drawable.background_allergy_solid);
-                    ((TextView)holder.allergyLayout.findViewById(R.id.layout_fava).findViewById(R.id.txt_fava)).setTextColor(ContextCompat.getColor(context, R.color.colorWhite));
-                }else{
+                    ((TextView) holder.allergyLayout.findViewById(R.id.layout_fava).findViewById(R.id.txt_fava)).setTextColor(ContextCompat.getColor(context, R.color.colorWhite));
+                } else {
                     holder.allergyLayout.findViewById(R.id.layout_fava).setBackgroundResource(R.drawable.background_radio_button);
-                    ((TextView)holder.allergyLayout.findViewById(R.id.layout_fava).findViewById(R.id.txt_fava)).setTextColor(ContextCompat.getColor(context, R.color.colorEditText));
+                    ((TextView) holder.allergyLayout.findViewById(R.id.layout_fava).findViewById(R.id.txt_fava)).setTextColor(ContextCompat.getColor(context, R.color.colorEditText));
                 }
 
-                if(checked[Integer.valueOf(holder.allergyLayout.findViewById(R.id.layout_peanut).getTag().toString())]){
+                if (checked[Integer.valueOf(holder.allergyLayout.findViewById(R.id.layout_peanut).getTag().toString())]) {
                     holder.allergyLayout.findViewById(R.id.layout_peanut).setBackgroundResource(R.drawable.background_allergy_solid);
-                    ((TextView)holder.allergyLayout.findViewById(R.id.layout_peanut).findViewById(R.id.txt_peanut)).setTextColor(ContextCompat.getColor(context, R.color.colorWhite));
-                }else{
+                    ((TextView) holder.allergyLayout.findViewById(R.id.layout_peanut).findViewById(R.id.txt_peanut)).setTextColor(ContextCompat.getColor(context, R.color.colorWhite));
+                } else {
                     holder.allergyLayout.findViewById(R.id.layout_peanut).setBackgroundResource(R.drawable.background_radio_button);
-                    ((TextView)holder.allergyLayout.findViewById(R.id.layout_peanut).findViewById(R.id.txt_peanut)).setTextColor(ContextCompat.getColor(context, R.color.colorEditText));
+                    ((TextView) holder.allergyLayout.findViewById(R.id.layout_peanut).findViewById(R.id.txt_peanut)).setTextColor(ContextCompat.getColor(context, R.color.colorEditText));
                 }
 
-                if(checked[Integer.valueOf(holder.allergyLayout.findViewById(R.id.layout_shrimp).getTag().toString())]){
+                if (checked[Integer.valueOf(holder.allergyLayout.findViewById(R.id.layout_shrimp).getTag().toString())]) {
                     holder.allergyLayout.findViewById(R.id.layout_shrimp).setBackgroundResource(R.drawable.background_allergy_solid);
-                    ((TextView)holder.allergyLayout.findViewById(R.id.layout_shrimp).findViewById(R.id.txt_shrimp)).setTextColor(ContextCompat.getColor(context, R.color.colorWhite));
-                }else{
+                    ((TextView) holder.allergyLayout.findViewById(R.id.layout_shrimp).findViewById(R.id.txt_shrimp)).setTextColor(ContextCompat.getColor(context, R.color.colorWhite));
+                } else {
                     holder.allergyLayout.findViewById(R.id.layout_shrimp).setBackgroundResource(R.drawable.background_radio_button);
-                    ((TextView)holder.allergyLayout.findViewById(R.id.layout_shrimp).findViewById(R.id.txt_shrimp)).setTextColor(ContextCompat.getColor(context, R.color.colorEditText));
+                    ((TextView) holder.allergyLayout.findViewById(R.id.layout_shrimp).findViewById(R.id.txt_shrimp)).setTextColor(ContextCompat.getColor(context, R.color.colorEditText));
                 }
 
-                if(checked[Integer.valueOf(holder.allergyLayout.findViewById(R.id.layout_soya).getTag().toString())]){
+                if (checked[Integer.valueOf(holder.allergyLayout.findViewById(R.id.layout_soya).getTag().toString())]) {
                     holder.allergyLayout.findViewById(R.id.layout_soya).setBackgroundResource(R.drawable.background_allergy_solid);
-                    ((TextView)holder.allergyLayout.findViewById(R.id.layout_soya).findViewById(R.id.txt_soya)).setTextColor(ContextCompat.getColor(context, R.color.colorWhite));
-                }else{
+                    ((TextView) holder.allergyLayout.findViewById(R.id.layout_soya).findViewById(R.id.txt_soya)).setTextColor(ContextCompat.getColor(context, R.color.colorWhite));
+                } else {
                     holder.allergyLayout.findViewById(R.id.layout_soya).setBackgroundResource(R.drawable.background_radio_button);
-                    ((TextView)holder.allergyLayout.findViewById(R.id.layout_soya).findViewById(R.id.txt_soya)).setTextColor(ContextCompat.getColor(context, R.color.colorEditText));
+                    ((TextView) holder.allergyLayout.findViewById(R.id.layout_soya).findViewById(R.id.txt_soya)).setTextColor(ContextCompat.getColor(context, R.color.colorEditText));
                 }
 
                 setClickListener(holder);
             }
-            holder.chatLayout.setLayoutParams(params);
+            holder.chatText.setLayoutParams(params);
         }
 
         @Override
@@ -354,7 +462,7 @@ public class SetupDietActivity extends BaseActivity implements View.OnClickListe
             return chatList.size();
         }
 
-        private void setClickListener(MyViewHolder holder){
+        private void setClickListener(MyViewHolder holder) {
             holder.allergyLayout.findViewById(R.id.layout_egg).setOnClickListener(this);
             holder.allergyLayout.findViewById(R.id.layout_eggplant).setOnClickListener(this);
             holder.allergyLayout.findViewById(R.id.layout_fava).setOnClickListener(this);
@@ -367,92 +475,92 @@ public class SetupDietActivity extends BaseActivity implements View.OnClickListe
 
         @Override
         public void onClick(View v) {
-            switch (v.getId()){
+            switch (v.getId()) {
                 case R.id.layout_egg:
-                    if(!checked[Integer.valueOf(v.getTag().toString())]){
+                    if (!checked[Integer.valueOf(v.getTag().toString())]) {
                         v.setBackgroundResource(R.drawable.background_allergy_solid);
-                        ((TextView)v.findViewById(R.id.txt_egg)).setTextColor(ContextCompat.getColor(context, R.color.colorWhite));
+                        ((TextView) v.findViewById(R.id.txt_egg)).setTextColor(ContextCompat.getColor(context, R.color.colorWhite));
                         checked[Integer.valueOf(v.getTag().toString())] = true;
-                    }else{
+                    } else {
                         v.setBackgroundResource(R.drawable.background_radio_button);
-                        ((TextView)v.findViewById(R.id.txt_egg)).setTextColor(ContextCompat.getColor(context, R.color.colorEditText));
+                        ((TextView) v.findViewById(R.id.txt_egg)).setTextColor(ContextCompat.getColor(context, R.color.colorEditText));
                         checked[Integer.valueOf(v.getTag().toString())] = false;
                     }
                     break;
                 case R.id.layout_eggplant:
-                    if(!checked[Integer.valueOf(v.getTag().toString())]){
+                    if (!checked[Integer.valueOf(v.getTag().toString())]) {
                         v.setBackgroundResource(R.drawable.background_allergy_solid);
-                        ((TextView)v.findViewById(R.id.txt_eggplant)).setTextColor(ContextCompat.getColor(context, R.color.colorWhite));
+                        ((TextView) v.findViewById(R.id.txt_eggplant)).setTextColor(ContextCompat.getColor(context, R.color.colorWhite));
                         checked[Integer.valueOf(v.getTag().toString())] = true;
-                    }else{
+                    } else {
                         v.setBackgroundResource(R.drawable.background_radio_button);
-                        ((TextView)v.findViewById(R.id.txt_eggplant)).setTextColor(ContextCompat.getColor(context, R.color.colorEditText));
+                        ((TextView) v.findViewById(R.id.txt_eggplant)).setTextColor(ContextCompat.getColor(context, R.color.colorEditText));
                         checked[Integer.valueOf(v.getTag().toString())] = false;
                     }
                     break;
                 case R.id.layout_peanut:
-                    if(!checked[Integer.valueOf(v.getTag().toString())]){
+                    if (!checked[Integer.valueOf(v.getTag().toString())]) {
                         v.setBackgroundResource(R.drawable.background_allergy_solid);
-                        ((TextView)v.findViewById(R.id.txt_peanut)).setTextColor(ContextCompat.getColor(context, R.color.colorWhite));
+                        ((TextView) v.findViewById(R.id.txt_peanut)).setTextColor(ContextCompat.getColor(context, R.color.colorWhite));
                         checked[Integer.valueOf(v.getTag().toString())] = true;
-                    }else{
+                    } else {
                         v.setBackgroundResource(R.drawable.background_radio_button);
-                        ((TextView)v.findViewById(R.id.txt_peanut)).setTextColor(ContextCompat.getColor(context, R.color.colorEditText));
+                        ((TextView) v.findViewById(R.id.txt_peanut)).setTextColor(ContextCompat.getColor(context, R.color.colorEditText));
                         checked[Integer.valueOf(v.getTag().toString())] = false;
                     }
                     break;
                 case R.id.layout_fava:
-                    if(!checked[Integer.valueOf(v.getTag().toString())]){
+                    if (!checked[Integer.valueOf(v.getTag().toString())]) {
                         v.setBackgroundResource(R.drawable.background_allergy_solid);
-                        ((TextView)v.findViewById(R.id.txt_fava)).setTextColor(ContextCompat.getColor(context, R.color.colorWhite));
+                        ((TextView) v.findViewById(R.id.txt_fava)).setTextColor(ContextCompat.getColor(context, R.color.colorWhite));
                         checked[Integer.valueOf(v.getTag().toString())] = true;
-                    }else{
+                    } else {
                         v.setBackgroundResource(R.drawable.background_radio_button);
-                        ((TextView)v.findViewById(R.id.txt_fava)).setTextColor(ContextCompat.getColor(context, R.color.colorEditText));
+                        ((TextView) v.findViewById(R.id.txt_fava)).setTextColor(ContextCompat.getColor(context, R.color.colorEditText));
                         checked[Integer.valueOf(v.getTag().toString())] = false;
                     }
                     break;
                 case R.id.layout_shrimp:
-                    if(!checked[Integer.valueOf(v.getTag().toString())]){
+                    if (!checked[Integer.valueOf(v.getTag().toString())]) {
                         v.setBackgroundResource(R.drawable.background_allergy_solid);
-                        ((TextView)v.findViewById(R.id.txt_shrimp)).setTextColor(ContextCompat.getColor(context, R.color.colorWhite));
+                        ((TextView) v.findViewById(R.id.txt_shrimp)).setTextColor(ContextCompat.getColor(context, R.color.colorWhite));
                         checked[Integer.valueOf(v.getTag().toString())] = true;
-                    }else{
+                    } else {
                         v.setBackgroundResource(R.drawable.background_radio_button);
-                        ((TextView)v.findViewById(R.id.txt_shrimp)).setTextColor(ContextCompat.getColor(context, R.color.colorEditText));
+                        ((TextView) v.findViewById(R.id.txt_shrimp)).setTextColor(ContextCompat.getColor(context, R.color.colorEditText));
                         checked[Integer.valueOf(v.getTag().toString())] = false;
                     }
                     break;
                 case R.id.layout_soya:
-                    if(!checked[Integer.valueOf(v.getTag().toString())]){
+                    if (!checked[Integer.valueOf(v.getTag().toString())]) {
                         v.setBackgroundResource(R.drawable.background_allergy_solid);
-                        ((TextView)v.findViewById(R.id.txt_soya)).setTextColor(ContextCompat.getColor(context, R.color.colorWhite));
+                        ((TextView) v.findViewById(R.id.txt_soya)).setTextColor(ContextCompat.getColor(context, R.color.colorWhite));
                         checked[Integer.valueOf(v.getTag().toString())] = true;
-                    }else{
+                    } else {
                         v.setBackgroundResource(R.drawable.background_radio_button);
-                        ((TextView)v.findViewById(R.id.txt_soya)).setTextColor(ContextCompat.getColor(context, R.color.colorEditText));
+                        ((TextView) v.findViewById(R.id.txt_soya)).setTextColor(ContextCompat.getColor(context, R.color.colorEditText));
                         checked[Integer.valueOf(v.getTag().toString())] = false;
                     }
                     break;
                 case R.id.layout_walnut:
-                    if(!checked[Integer.valueOf(v.getTag().toString())]){
+                    if (!checked[Integer.valueOf(v.getTag().toString())]) {
                         v.setBackgroundResource(R.drawable.background_allergy_solid);
-                        ((TextView)v.findViewById(R.id.txt_walnut)).setTextColor(ContextCompat.getColor(context, R.color.colorWhite));
+                        ((TextView) v.findViewById(R.id.txt_walnut)).setTextColor(ContextCompat.getColor(context, R.color.colorWhite));
                         checked[Integer.valueOf(v.getTag().toString())] = true;
-                    }else{
+                    } else {
                         v.setBackgroundResource(R.drawable.background_radio_button);
-                        ((TextView)v.findViewById(R.id.txt_walnut)).setTextColor(ContextCompat.getColor(context, R.color.colorEditText));
+                        ((TextView) v.findViewById(R.id.txt_walnut)).setTextColor(ContextCompat.getColor(context, R.color.colorEditText));
                         checked[Integer.valueOf(v.getTag().toString())] = false;
                     }
                     break;
                 case R.id.layout_zucchini:
-                    if(!checked[Integer.valueOf(v.getTag().toString())]){
+                    if (!checked[Integer.valueOf(v.getTag().toString())]) {
                         v.setBackgroundResource(R.drawable.background_allergy_solid);
-                        ((TextView)v.findViewById(R.id.txt_zucchini)).setTextColor(ContextCompat.getColor(context, R.color.colorWhite));
+                        ((TextView) v.findViewById(R.id.txt_zucchini)).setTextColor(ContextCompat.getColor(context, R.color.colorWhite));
                         checked[Integer.valueOf(v.getTag().toString())] = true;
-                    }else{
+                    } else {
                         v.setBackgroundResource(R.drawable.background_radio_button);
-                        ((TextView)v.findViewById(R.id.txt_zucchini)).setTextColor(ContextCompat.getColor(context, R.color.colorEditText));
+                        ((TextView) v.findViewById(R.id.txt_zucchini)).setTextColor(ContextCompat.getColor(context, R.color.colorEditText));
                         checked[Integer.valueOf(v.getTag().toString())] = false;
                     }
                     break;
@@ -463,47 +571,142 @@ public class SetupDietActivity extends BaseActivity implements View.OnClickListe
 
     }
 
-    private void generateDiet(){
+    private void generateDiet() {
 
     }
 
-    private float calculateRegisteredCalorie() throws SQLException {
-        UserInfo user = getDBHelper().getUserDao().queryForAll().get(0);
-        if(user.getGender() == User.Gender.Female.ordinal())
-            return (float) (655 + (9.479866 * user.getWeight()) + (1.8503947 * user.getHeight()) - (4.7 * user.getAge()));
+    private float calculateRequiredDailyCalorie(UserInfo user) throws SQLException {
+//        UserInfo user = getDBHelper().getUserDao().queryForAll().get(0);
+        float tmp;
+        if (user.getGender() == User.Gender.Female.ordinal())
+            tmp = (float) (655 + (9.479866 * user.getWeight()) + (1.8503947 * (user.getHeight() / 100)) - (4.7 * user.getAge()));
         else
-            return (float) (66 + (13.889106 * user.getWeight()) + (5.0787429 * user.getHeight()) - (6.8 * user.getAge()));
+            tmp = (float) (66 + (13.889106 * user.getWeight()) + (5.0787429 * (user.getHeight() / 100)) - (6.8 * user.getAge()));
+
+        return Math.round(tmp * getActivityProportion(user));
     }
 
-    private float calculateBMI() throws SQLException {
-        UserInfo user = getDBHelper().getUserDao().queryForAll().get(0);
-        return (float) (user.getWeight() / Math.pow(user.getHeight(), 2));
+    private float getActivityProportion(UserInfo user) {
+        float temp;
+        switch (user.getActivityLevel()) {
+            case 1:
+                temp = 1.2f;
+                break;
+            case 2:
+                temp = 1.3f;
+                break;
+            case 3:
+                temp = 1.4f;
+                break;
+            case 4:
+                temp = 1.6f;
+                break;
+            case 5:
+                temp = 1.8f;
+                break;
+            default:
+                temp = 1.2f;
+                break;
+        }
+        return temp;
     }
 
-    private void generateDietDB1000(){
+    private float calculateBMI(UserInfo user) throws SQLException {
+//        UserInfo user = getDBHelper().getUserDao().queryForAll().get(0);
+        float height = user.getHeight() / 100;
+        return user.getWeight() / (height * height);
+    }
+
+    private float calculateIdealWeight(UserInfo user) throws SQLException {
+//        UserInfo user = getDBHelper().getUserDao().queryForAll().get(0);
+        float height = user.getHeight() / 100;
+        if (user.getGender() == User.Gender.Female.ordinal())
+            return 22 * height * height;
+        else
+            return 23 * height * height;
 
     }
 
-    private void generateDietDB1250(){
+//    private class Difficulty{
+//        private int level;
+//        private float amount;
+//
+//        public Difficulty(int level, float amount) {
+//            this.level = level;
+//            this.amount = amount;
+//        }
+//
+//        public int getLevel(){
+//            return this.level;
+//        }
+//
+//        public float getAmount(){
+//            return this.amount;
+//        }
+//    }
+
+    private Map<Integer, Float> calculateDietTypes(UserInfo user) throws SQLException {
+        float bmi = calculateBMI(user);
+        int pivotCal;
+        if (user.getGender() == User.Gender.Female.ordinal()) {
+            if (bmi <= 25)
+                pivotCal = 7700;
+            else
+                pivotCal = 7000;
+        } else {
+            if (bmi <= 25)
+                pivotCal = 8400;
+            else
+                pivotCal = 7700;
+        }
+        float reqCal = calculateRequiredDailyCalorie(user);
+        float appropriateCal;
+        Map<Integer, Float> difficulty = new HashMap();
+        if ((appropriateCal = reqCal - ((pivotCal * 1.2f) / 7)) > 1000)
+            difficulty.put(3, appropriateCal);
+        if ((appropriateCal = reqCal - pivotCal / 7) > 1000)
+            difficulty.put(2, appropriateCal);
+        if ((appropriateCal = reqCal - pivotCal / 14) > 1000)
+            difficulty.put(1, appropriateCal);
+
+        if (user.getGender() == User.Gender.Female.ordinal()) {
+            if (bmi >= 21 && bmi <= 23)
+                difficulty.put(0, reqCal);
+            if (bmi < 21)
+                difficulty.put(-1, 0.0f);
+        } else {
+            if (bmi >= 22 && bmi <= 24)
+                difficulty.put(0, reqCal);
+            if (bmi < 22)
+                difficulty.put(-1, 0.0f);
+        }
+
+        return difficulty;
+    }
+
+    private void generateDietDB1000() {
 
     }
 
-    private void generateDietDB1500(){
+    private void generateDietDB1250() {
 
     }
 
-    private void generateDietDB1750(){
+    private void generateDietDB1500() {
 
     }
 
-    private void generateDietDB2000(){
+    private void generateDietDB1750() {
 
     }
 
-    private void generateDietDB2250(){
+    private void generateDietDB2000() {
 
     }
 
+    private void generateDietDB2250() {
+
+    }
 
 
 }

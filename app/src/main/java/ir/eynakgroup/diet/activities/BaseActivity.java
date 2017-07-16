@@ -1,6 +1,5 @@
 package ir.eynakgroup.diet.activities;
 
-import android.content.Context;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.DisplayMetrics;
@@ -9,8 +8,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
-
-import com.j256.ormlite.android.apptools.OpenHelperManager;
 
 import ir.eynakgroup.diet.R;
 import ir.eynakgroup.diet.database.DatabaseHelper;

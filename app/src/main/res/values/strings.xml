@@ -196,10 +196,12 @@
     <string name="trial_description">پیش از پرداخت اشتراک رژیم کرفس، می‌توانید در یک بازه زمانی هفت روزه، از تمامی امکانات این برنامه به صورت رایگان و بدون محدودیت بهره‌مند شوید.</string>
 
     //setup
-    <string name="karafs_avatar">رژیم کرفس</string>
+    <string name="diet_avatar">رژیم کرفس</string>
+    <string name="diet_typing">... typing</string>
     <string name="exit_alert">با خروج از این بخش رژیم شما آغاز نخواهد شد.</string>
     <string name="exit_cancel">ادامه میدم</string>
-    <string name="ok">تایید</string>
+    <string name="ok">باشه</string>
+    <string name="no_diet">شما کمبود وزن دارین و بهتر است رژیم افزایش وزن بگیرین. در حال حاضر پیشنهادی برای شما ندارم.</string>
 
 
 </resources>

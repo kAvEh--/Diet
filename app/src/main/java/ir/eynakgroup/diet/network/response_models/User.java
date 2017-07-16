@@ -28,10 +28,10 @@ public class User {
     @SerializedName("bday")
     private String birthday;
 
-    @SerializedName("height")
-    private int height = 0;
+    @SerializedName("userHeight")
+    private float height = 0;
 
-    @SerializedName("weight")
+    @SerializedName("userWeight")
     private float weight = 0;
 
     @SerializedName("age")
@@ -113,7 +113,7 @@ public class User {
         this.birthday = birthday;
     }
 
-    public int getHeight() {
+    public float getHeight() {
         return height;
     }
 

@@ -554,7 +554,7 @@ public class RegisterActivity extends BaseActivity {
                                 userInfo.setDisease(responseUser.getDiseases().toString());
                                 userInfo.setEmail(responseUser.getEmail());
                                 userInfo.setGender(responseUser.getGender().ordinal());
-                                userInfo.setHeight(responseUser.getHeight());
+                                userInfo.setHeight(responseUser.getHeight()+"");
                                 userInfo.setWeight(responseUser.getWeight()+"");
                                 userInfo.setUserId(responseUser.getUserId());
                                 userInfo.setName(responseUser.getName());

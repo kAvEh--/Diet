@@ -2,6 +2,7 @@ package ir.eynakgroup.diet.database.tables;
 
 import com.j256.ormlite.field.DataType;
 import com.j256.ormlite.field.DatabaseField;
+import com.j256.ormlite.field.types.DoubleObjectType;
 import com.j256.ormlite.table.DatabaseTable;
 
 /**
@@ -15,14 +16,14 @@ public class UserInfo {
     private int age;
     @DatabaseField(columnName = "Api_Key", dataType = DataType.STRING)
     private String apiKey;
-    @DatabaseField(columnName = "BirthDay", dataType = DataType.STRING)
+    @DatabaseField(columnName = "Birthday", dataType = DataType.STRING)
     private String birthday;
     @DatabaseField(columnName = "Disease", dataType = DataType.STRING)
     private String disease;
     @DatabaseField(columnName = "Email", dataType = DataType.STRING)
     private String email;
-    @DatabaseField(columnName = "Height", dataType = DataType.INTEGER)
-    private int height;
+    @DatabaseField(columnName = "Height", dataType = DataType.STRING)
+    private String height;
     @DatabaseField(columnName = "Last_Login_Date", dataType = DataType.STRING)
     private String lastLoginDate;
     @DatabaseField(columnName = "Name", dataType = DataType.STRING)
@@ -85,11 +86,11 @@ public class UserInfo {
         this.email = email;
     }
 
-    public int getHeight() {
-        return height;
+    public float getHeight() {
+        return Float.valueOf(height.trim());
     }
 
-    public void setHeight(int height) {
+    public void setHeight(String height) {
         this.height = height;
     }
 
@@ -135,7 +136,7 @@ public class UserInfo {
     }
 
     public float getWeight() {
-        return Float.parseFloat(weight.trim());
+        return Float.valueOf(weight.trim());
     }
 
     public void setWeight(String weight) {
