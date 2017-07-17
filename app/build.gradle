@@ -12,7 +12,7 @@ android {
         versionCode 1
         versionName "1.0"
         vectorDrawables.useSupportLibrary = true
-        buildConfigField ("int", "DATABASE_VERSION", databaseVersion)
+        buildConfigField("int", "DATABASE_VERSION", databaseVersion)
     }
 
     buildTypes {
@@ -29,7 +29,9 @@ android {
 
 dependencies {
     compile fileTree(include: ['*.jar'], dir: 'libs')
-    testCompile 'junit:junit:4.12'
+    //    compile 'com.wefika:horizontal-picker:1.1.1'
+    compile group: 'com.j256.ormlite', name: 'ormlite-android', version: '5.0'
+
     compile 'com.android.support:appcompat-v7:25.3.1'
     compile 'com.android.support:design:25.3.1'
     compile 'fr.avianey.com.viewpagerindicator:library:2.4.1.1@aar'
@@ -38,12 +40,11 @@ dependencies {
     compile 'com.google.code.gson:gson:2.7'
     compile 'com.squareup.retrofit2:converter-gson:2.2.0'
     compile 'pl.droidsonroids.gif:android-gif-drawable:1.2.6'
-//    compile 'com.wefika:horizontal-picker:1.1.1'
     compile 'com.shawnlin:number-picker:2.4.3'
     compile 'com.android.support:recyclerview-v7:25.3.1'
-    compile group: 'com.j256.ormlite', name: 'ormlite-android', version: '5.0'
     compile 'com.google.android:flexbox:0.2.6'
     compile 'com.evernote:android-job:1.1.10'
-    compile "com.google.android.gms:play-services-gcm:10.2.4"
-
+    compile 'com.google.android.gms:play-services-gcm:10.2.4'
+    compile 'com.android.support:support-v4:25.3.1'
+    testCompile 'junit:junit:4.12'
 }

@@ -155,50 +155,133 @@ public class SetupDietActivity extends BaseActivity implements View.OnClickListe
         APP, USER, ALLERGY
     }
 
+    boolean hardDiet = false;
+    int lineNumber = 0;
     private void prepareChatData() {
         BufferedReader reader;
         try {
             UserInfo user = getDBHelper().getUserDao().queryForAll().get(0);
             reader = new BufferedReader(new InputStreamReader(getAssets().open("chat.txt")));
             // do reading, usually loop until end of file reading
+            int tmp = lineNumber;
+            while (tmp > 0){
+                reader.readLine();
+                tmp--;
+            }
             String line = reader.readLine();
+            lineNumber++;
             while (line != null) {
                 String[] splits = line.split(":");
                 if (line.startsWith("app")) {
-
-                    if (line.contains("[first_time]")) {
+                    if (line.contains("[first_time]") && lineNumber == 1) {
                         addListItem(splits[1].trim().replace("[name]", user.getName()), Type.APP);
-                    } else if (line.contains("[ideal]")) {
+                    } else if (line.contains("[ideal]") && lineNumber == 3) {
                         addListItem(splits[1].trim().replace("[ideal_weight]", round(calculateIdealWeight(user), 1) + ""), Type.APP);
-                    } else if (line.contains("[weight]")) {
+                    } else if (line.contains("[weight]") && lineNumber == 4) {
                         addListItem(splits[1].trim().replace("[weight_loss]", round(user.getWeight() - calculateIdealWeight(user), 1) + ""), Type.APP);
+                        reader.readLine();
+                        lineNumber++;
+                        addResponseView("باشه");
+                        return;
                     } else if (line.contains("[step]")) {
                         addListItem(splits[1].trim().replace("[diet_step]", Math.round(round(user.getWeight() - calculateIdealWeight(user), 1)) + ""), Type.APP);
-                    } else if (line.contains("[type]")) {
+                    } else if (line.contains("[type]") && lineNumber == 6) {
                         Map<Integer, Difficulty> difficulty = calculateDietTypes(user);
                         if (difficulty.containsKey(Integer.valueOf(3))) {
                             addListItem(splits[1].trim().replace("[diet_type]", "3"), Type.APP);
                         }
                         else if (difficulty.containsKey(Integer.valueOf(2))) {
                             addListItem(splits[1].trim().replace("[diet_type]", "2"), Type.APP);
+
                         }
                         else if (difficulty.containsKey(Integer.valueOf(1)) || difficulty.containsKey(Integer.valueOf(0))) {
                             addListItem(splits[1].trim().replace("[diet_type]", "1"), Type.APP);
+
                         }
 
                         else if(difficulty.containsKey(Integer.valueOf(-1))){
                             addListItem(getString(R.string.no_diet), Type.APP);
+                            return;
                         }
 
                     }
                     else if (line.contains("[prefer]")) {
-                        if(!calculateDietTypes(user).containsKey(Integer.valueOf(-1)))
+//                        if(!calculateDietTypes(user).containsKey(Integer.valueOf(-1)))
+//                            addListItem(splits[1].trim(), Type.APP);
+                        if(lineNumber == 7){
                             addListItem(splits[1].trim(), Type.APP);
+                            Map<Integer, Difficulty> difficulty = calculateDietTypes(user);
+                            if (difficulty.containsKey(Integer.valueOf(3))) {
+                                reader.readLine();
+                                lineNumber++;
+                                addResponseView("ساده"+" "+difficulty.get(Integer.valueOf(1)).getAmount()+" کیلویی");
+                                addResponseView("متوسط"+" "+difficulty.get(Integer.valueOf(2)).getAmount()+" کیلویی");
+                                addResponseView("سخت"+" "+difficulty.get(Integer.valueOf(3)).getAmount()+" کیلویی");
+                                return;
+                            }
+                            else if (difficulty.containsKey(Integer.valueOf(2))) {
+                                reader.readLine();
+                                lineNumber++;
+                                addResponseView("ساده"+" "+difficulty.get(Integer.valueOf(1)).getAmount()+" کیلویی");
+                                addResponseView("متوسط"+" "+difficulty.get(Integer.valueOf(2)).getAmount()+" کیلویی");
+                                return;
+                            }
+                            else if (difficulty.containsKey(Integer.valueOf(1))) {
+                                reader.readLine();
+                                lineNumber++;
+                                addResponseView("ساده"+" "+difficulty.get(Integer.valueOf(1)).getAmount()+" کیلویی");
+                                return;
+                            }
+                            else if (difficulty.containsKey(Integer.valueOf(0))) {
+                                reader.readLine();
+                                lineNumber++;
+                                addResponseView("ساده"+" "+difficulty.get(Integer.valueOf(0)).getAmount()+" کیلویی");
+                                return;
+                            }
+
+                        }else if(lineNumber == 11 && hardDiet){
+                            addListItem(splits[1].trim(), Type.APP);
+                            Map<Integer, Difficulty> difficulty = calculateDietTypes(user);
+                            if (difficulty.containsKey(Integer.valueOf(2))) {
+                                reader.readLine();
+                                lineNumber++;
+                                addResponseView("ساده"+" "+difficulty.get(Integer.valueOf(1)).getAmount()+" کیلویی");
+                                addResponseView("متوسط"+" "+difficulty.get(Integer.valueOf(2)).getAmount()+" کیلویی");
+                                return;
+                            }
+                            else if (difficulty.containsKey(Integer.valueOf(1))) {
+                                reader.readLine();
+                                lineNumber++;
+                                addResponseView("ساده"+" "+difficulty.get(Integer.valueOf(1)).getAmount()+" کیلویی");
+                                return;
+                            }
+                            else if (difficulty.containsKey(Integer.valueOf(0))) {
+                                reader.readLine();
+                                lineNumber++;
+                                addResponseView("ساده"+" "+difficulty.get(Integer.valueOf(0)).getAmount()+" کیلویی");
+                                return;
+                            }
+                        }
+
+
 
                     }
-                    else if (line.contains("[allergy]")) {
+                    else if (line.contains("[allergy]") && lineNumber == 13) {
+                        addListItem(splits[1].trim(), Type.APP);
+                        addAllergyItem();
+                        addResponseView(reader.readLine().split(":")[1].trim());
+                        lineNumber++;
+                        return;
 
-                    } else {
+                    }
+                    else if (line.contains("[hard]") && lineNumber == 9 && hardDiet) {
+                       String[] response = reader.readLine().split(":");
+                        lineNumber++;
+                        addResponseView(response[1].split(",")[0].trim());
+                        addResponseView(response[1].split(",")[1].trim());
+                        return;
+                    }
+                    else if(lineNumber == 2){
                         addListItem(splits[1].trim(), Type.APP);
                     }
 
@@ -217,6 +300,7 @@ public class SetupDietActivity extends BaseActivity implements View.OnClickListe
 //                }
 
                 line = reader.readLine();
+                lineNumber++;
             }
             reader.close();
 
@@ -297,6 +381,14 @@ public class SetupDietActivity extends BaseActivity implements View.OnClickListe
             public void onClick(View v) {
                 TextView tv = (TextView) v;
                 addListItem(tv.getText().toString().trim(), Type.USER);
+                flexBox.removeAllViewsInLayout();
+                flexBox.requestLayout();
+                hardDiet = tv.getText().toString().trim().contains("سخت")? true: false;
+                if(tv.getText().toString().trim().contains("دریافت رژیم")){
+
+                   return;
+                }
+                prepareChatData();
             }
         });
 
@@ -640,7 +732,7 @@ public class SetupDietActivity extends BaseActivity implements View.OnClickListe
         }
 
         public float getAmount(){
-            return this.amount;
+            return round(this.amount, 1);
         }
     }
 
