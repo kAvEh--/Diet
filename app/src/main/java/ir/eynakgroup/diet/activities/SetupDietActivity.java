@@ -175,7 +175,7 @@ public class SetupDietActivity extends BaseActivity implements View.OnClickListe
                     } else if (line.contains("[step]")) {
                         addListItem(splits[1].trim().replace("[diet_step]", Math.round(round(user.getWeight() - calculateIdealWeight(user), 1)) + ""), Type.APP);
                     } else if (line.contains("[type]")) {
-                        Map<Integer, Float> difficulty = calculateDietTypes(user);
+                        Map<Integer, Difficulty> difficulty = calculateDietTypes(user);
                         if (difficulty.containsKey(Integer.valueOf(3))) {
                             addListItem(splits[1].trim().replace("[diet_type]", "3"), Type.APP);
                         }
@@ -189,7 +189,6 @@ public class SetupDietActivity extends BaseActivity implements View.OnClickListe
                         else if(difficulty.containsKey(Integer.valueOf(-1))){
                             addListItem(getString(R.string.no_diet), Type.APP);
                         }
-
 
                     }
                     else if (line.contains("[prefer]")) {
@@ -571,11 +570,11 @@ public class SetupDietActivity extends BaseActivity implements View.OnClickListe
 
     }
 
-    private void generateDiet() {
+    private void generateDiet(float dailyCalorie) {
 
     }
 
-    private float calculateRequiredDailyCalorie(UserInfo user) throws SQLException {
+    private float calculateDailyRequiredCalorie(UserInfo user) throws SQLException {
 //        UserInfo user = getDBHelper().getUserDao().queryForAll().get(0);
         float tmp;
         if (user.getGender() == User.Gender.Female.ordinal())
@@ -627,25 +626,25 @@ public class SetupDietActivity extends BaseActivity implements View.OnClickListe
 
     }
 
-//    private class Difficulty{
-//        private int level;
-//        private float amount;
-//
-//        public Difficulty(int level, float amount) {
-//            this.level = level;
-//            this.amount = amount;
-//        }
-//
-//        public int getLevel(){
-//            return this.level;
-//        }
-//
-//        public float getAmount(){
-//            return this.amount;
-//        }
-//    }
+    private class Difficulty {
+        private float calorie;
+        private float amount;
 
-    private Map<Integer, Float> calculateDietTypes(UserInfo user) throws SQLException {
+        public Difficulty(float calorie, float amount) {
+            this.calorie = calorie;
+            this.amount = amount;
+        }
+
+        public float getCalorie(){
+            return this.calorie;
+        }
+
+        public float getAmount(){
+            return this.amount;
+        }
+    }
+
+    private Map<Integer, Difficulty> calculateDietTypes(UserInfo user) throws SQLException {
         float bmi = calculateBMI(user);
         int pivotCal;
         if (user.getGender() == User.Gender.Female.ordinal()) {
@@ -659,26 +658,26 @@ public class SetupDietActivity extends BaseActivity implements View.OnClickListe
             else
                 pivotCal = 7700;
         }
-        float reqCal = calculateRequiredDailyCalorie(user);
+        float reqCal = calculateDailyRequiredCalorie(user);
         float appropriateCal;
-        Map<Integer, Float> difficulty = new HashMap();
+        Map<Integer, Difficulty> difficulty = new HashMap();
         if ((appropriateCal = reqCal - ((pivotCal * 1.2f) / 7)) > 1000)
-            difficulty.put(3, appropriateCal);
+            difficulty.put(3, new Difficulty(appropriateCal, 4.8f));
         if ((appropriateCal = reqCal - pivotCal / 7) > 1000)
-            difficulty.put(2, appropriateCal);
+            difficulty.put(2, new Difficulty(appropriateCal, 4f));
         if ((appropriateCal = reqCal - pivotCal / 14) > 1000)
-            difficulty.put(1, appropriateCal);
+            difficulty.put(1, new Difficulty(appropriateCal, 2f));
 
         if (user.getGender() == User.Gender.Female.ordinal()) {
             if (bmi >= 21 && bmi <= 23)
-                difficulty.put(0, reqCal);
+                difficulty.put(0, new Difficulty(reqCal, user.getWeight() - calculateIdealWeight(user)));
             if (bmi < 21)
-                difficulty.put(-1, 0.0f);
+                difficulty.put(-1, new Difficulty(0.0f, 0.0f));
         } else {
             if (bmi >= 22 && bmi <= 24)
-                difficulty.put(0, reqCal);
+                difficulty.put(0, new Difficulty(reqCal, user.getWeight() - calculateIdealWeight(user)));
             if (bmi < 22)
-                difficulty.put(-1, 0.0f);
+                difficulty.put(-1, new Difficulty(0.0f, 0.0f));
         }
 
         return difficulty;
