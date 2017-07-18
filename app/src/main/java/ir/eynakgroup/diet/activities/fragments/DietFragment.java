@@ -28,18 +28,25 @@ public class DietFragment extends Fragment {
 
     private Context mContext;
     private static DietFragment mDietFragmentInstance = null;
+    public static final String TAG = "FRAGMENT_DIET";
 
     private DietFragment(Context context) {
         mContext = context;
     }
 
-    public static DietFragment getInstance(Context context) {
+//    public static DietFragment getInstance(Context context) {
+//        if (mDietFragmentInstance == null)
+//            mDietFragmentInstance = new DietFragment(context);
+//
+//        return mDietFragmentInstance;
+//    }
+
+    public static DietFragment newInstance(Context context) {
         if (mDietFragmentInstance == null)
             mDietFragmentInstance = new DietFragment(context);
 
         return mDietFragmentInstance;
     }
-
 
     @Nullable
     @Override

@@ -20,7 +20,7 @@
         <ir.eynakgroup.diet.utils.view.CustomTextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="@string/purchase_message"
+            android:text="@string/dialog_purchase_message"
             android:textSize="18dp"
             android:textStyle="bold"
             android:gravity="right"

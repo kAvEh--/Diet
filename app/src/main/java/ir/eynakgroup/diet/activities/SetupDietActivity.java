@@ -1,5 +1,6 @@
 package ir.eynakgroup.diet.activities;
 
+import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -24,6 +25,7 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.google.android.flexbox.FlexboxLayout;
+import com.j256.ormlite.stmt.UpdateBuilder;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -160,6 +162,7 @@ public class SetupDietActivity extends BaseActivity implements View.OnClickListe
 
     boolean hardDiet = false;
     int lineNumber = 0;
+
     private void prepareChatData() {
         BufferedReader reader;
         try {
@@ -167,7 +170,7 @@ public class SetupDietActivity extends BaseActivity implements View.OnClickListe
             reader = new BufferedReader(new InputStreamReader(getAssets().open("chat.txt")));
             // do reading, usually loop until end of file reading
             int tmp = lineNumber;
-            while (tmp > 0){
+            while (tmp > 0) {
                 reader.readLine();
                 tmp--;
             }
@@ -192,99 +195,85 @@ public class SetupDietActivity extends BaseActivity implements View.OnClickListe
                         Map<Integer, Difficulty> difficulty = calculateDietTypes(user);
                         if (difficulty.containsKey(Integer.valueOf(3))) {
                             addListItem(splits[1].trim().replace("[diet_type]", "3"), Type.APP);
-                        }
-                        else if (difficulty.containsKey(Integer.valueOf(2))) {
+                        } else if (difficulty.containsKey(Integer.valueOf(2))) {
                             addListItem(splits[1].trim().replace("[diet_type]", "2"), Type.APP);
 
-                        }
-                        else if (difficulty.containsKey(Integer.valueOf(1)) || difficulty.containsKey(Integer.valueOf(0))) {
+                        } else if (difficulty.containsKey(Integer.valueOf(1)) || difficulty.containsKey(Integer.valueOf(0))) {
                             addListItem(splits[1].trim().replace("[diet_type]", "1"), Type.APP);
 
-                        }
-
-                        else if(difficulty.containsKey(Integer.valueOf(-1))){
+                        } else if (difficulty.containsKey(Integer.valueOf(-1))) {
                             addListItem(getString(R.string.no_diet), Type.APP);
                             return;
                         }
 
-                    }
-                    else if (line.contains("[prefer]")) {
+                    } else if (line.contains("[prefer]")) {
 //                        if(!calculateDietTypes(user).containsKey(Integer.valueOf(-1)))
 //                            addListItem(splits[1].trim(), Type.APP);
-                        if(lineNumber == 7){
+                        if (lineNumber == 7) {
                             addListItem(splits[1].trim(), Type.APP);
                             Map<Integer, Difficulty> difficulty = calculateDietTypes(user);
                             if (difficulty.containsKey(Integer.valueOf(3))) {
                                 reader.readLine();
                                 lineNumber++;
-                                addResponseView("ساده"+" "+difficulty.get(Integer.valueOf(1)).getAmount()+" کیلویی");
-                                addResponseView("متوسط"+" "+difficulty.get(Integer.valueOf(2)).getAmount()+" کیلویی");
-                                addResponseView("سخت"+" "+difficulty.get(Integer.valueOf(3)).getAmount()+" کیلویی");
+                                addResponseView("ساده" + " " + difficulty.get(Integer.valueOf(1)).getAmount() + " کیلویی");
+                                addResponseView("متوسط" + " " + difficulty.get(Integer.valueOf(2)).getAmount() + " کیلویی");
+                                addResponseView("سخت" + " " + difficulty.get(Integer.valueOf(3)).getAmount() + " کیلویی");
                                 return;
-                            }
-                            else if (difficulty.containsKey(Integer.valueOf(2))) {
+                            } else if (difficulty.containsKey(Integer.valueOf(2))) {
                                 reader.readLine();
                                 lineNumber++;
-                                addResponseView("ساده"+" "+difficulty.get(Integer.valueOf(1)).getAmount()+" کیلویی");
-                                addResponseView("متوسط"+" "+difficulty.get(Integer.valueOf(2)).getAmount()+" کیلویی");
+                                addResponseView("ساده" + " " + difficulty.get(Integer.valueOf(1)).getAmount() + " کیلویی");
+                                addResponseView("متوسط" + " " + difficulty.get(Integer.valueOf(2)).getAmount() + " کیلویی");
                                 return;
-                            }
-                            else if (difficulty.containsKey(Integer.valueOf(1))) {
+                            } else if (difficulty.containsKey(Integer.valueOf(1))) {
                                 reader.readLine();
                                 lineNumber++;
-                                addResponseView("ساده"+" "+difficulty.get(Integer.valueOf(1)).getAmount()+" کیلویی");
+                                addResponseView("ساده" + " " + difficulty.get(Integer.valueOf(1)).getAmount() + " کیلویی");
                                 return;
-                            }
-                            else if (difficulty.containsKey(Integer.valueOf(0))) {
+                            } else if (difficulty.containsKey(Integer.valueOf(0))) {
                                 reader.readLine();
                                 lineNumber++;
-                                addResponseView("ساده"+" "+difficulty.get(Integer.valueOf(0)).getAmount()+" کیلویی");
+                                addResponseView("ساده" + " " + difficulty.get(Integer.valueOf(0)).getAmount() + " کیلویی");
                                 return;
                             }
 
-                        }else if(lineNumber == 11 && hardDiet){
+                        } else if (lineNumber == 11 && hardDiet) {
                             addListItem(splits[1].trim(), Type.APP);
                             Map<Integer, Difficulty> difficulty = calculateDietTypes(user);
                             if (difficulty.containsKey(Integer.valueOf(2))) {
                                 reader.readLine();
                                 lineNumber++;
-                                addResponseView("ساده"+" "+difficulty.get(Integer.valueOf(1)).getAmount()+" کیلویی");
-                                addResponseView("متوسط"+" "+difficulty.get(Integer.valueOf(2)).getAmount()+" کیلویی");
+                                addResponseView("ساده" + " " + difficulty.get(Integer.valueOf(1)).getAmount() + " کیلویی");
+                                addResponseView("متوسط" + " " + difficulty.get(Integer.valueOf(2)).getAmount() + " کیلویی");
                                 return;
-                            }
-                            else if (difficulty.containsKey(Integer.valueOf(1))) {
+                            } else if (difficulty.containsKey(Integer.valueOf(1))) {
                                 reader.readLine();
                                 lineNumber++;
-                                addResponseView("ساده"+" "+difficulty.get(Integer.valueOf(1)).getAmount()+" کیلویی");
+                                addResponseView("ساده" + " " + difficulty.get(Integer.valueOf(1)).getAmount() + " کیلویی");
                                 return;
-                            }
-                            else if (difficulty.containsKey(Integer.valueOf(0))) {
+                            } else if (difficulty.containsKey(Integer.valueOf(0))) {
                                 reader.readLine();
                                 lineNumber++;
-                                addResponseView("ساده"+" "+difficulty.get(Integer.valueOf(0)).getAmount()+" کیلویی");
+                                addResponseView("ساده" + " " + difficulty.get(Integer.valueOf(0)).getAmount() + " کیلویی");
                                 return;
                             }
                         }
 
 
-
-                    }
-                    else if (line.contains("[allergy]") && lineNumber == 13) {
+                    } else if (line.contains("[allergy]") && lineNumber == 13) {
                         addListItem(splits[1].trim(), Type.APP);
                         addAllergyItem();
                         addResponseView(reader.readLine().split(":")[1].trim());
                         lineNumber++;
                         return;
 
-                    }
-                    else if (line.contains("[hard]") && lineNumber == 9 && hardDiet) {
-                       String[] response = reader.readLine().split(":");
+                    } else if (line.contains("[hard]") && lineNumber == 9 && hardDiet) {
+                        String[] response = reader.readLine().split(":");
                         lineNumber++;
                         addResponseView(response[1].split(",")[0].trim());
                         addResponseView(response[1].split(",")[1].trim());
                         return;
-                    }
-                    else if(lineNumber == 2){
+                    } else if (lineNumber == 2) {
                         addListItem(splits[1].trim(), Type.APP);
                     }
 
@@ -386,10 +375,14 @@ public class SetupDietActivity extends BaseActivity implements View.OnClickListe
                 addListItem(tv.getText().toString().trim(), Type.USER);
                 flexBox.removeAllViewsInLayout();
                 flexBox.requestLayout();
-                hardDiet = tv.getText().toString().trim().contains("سخت")? true: false;
-                if(tv.getText().toString().trim().contains("دریافت رژیم")){
-                    showPurchaseDialog();
-                   return;
+                hardDiet = tv.getText().toString().trim().contains("سخت") ? true : false;
+                if (tv.getText().toString().trim().contains("دریافت رژیم")) {
+                    try {
+                        showPurchaseDialog();
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                    }
+                    return;
                 }
                 prepareChatData();
             }
@@ -400,8 +393,13 @@ public class SetupDietActivity extends BaseActivity implements View.OnClickListe
     private class PurchaseDialog extends Dialog implements
             android.view.View.OnClickListener {
 
-        public PurchaseDialog(@NonNull Context context) {
-            super(context);
+        private UserInfo user;
+        private Activity activity;
+
+        public PurchaseDialog(@NonNull Activity activity, UserInfo user) {
+            super(activity);
+            this.user = user;
+            this.activity = activity;
         }
 
         @Override
@@ -409,6 +407,7 @@ public class SetupDietActivity extends BaseActivity implements View.OnClickListe
             super.onCreate(savedInstanceState);
             requestWindowFeature(Window.FEATURE_NO_TITLE);
             setContentView(R.layout.dialog_purchase);
+            setCancelable(false);
             findViewById(R.id.diet_card_1).setOnClickListener(this);
             findViewById(R.id.diet_card_2).setOnClickListener(this);
             findViewById(R.id.diet_card_3).setOnClickListener(this);
@@ -420,29 +419,88 @@ public class SetupDietActivity extends BaseActivity implements View.OnClickListe
 
         @Override
         public void onClick(View v) {
+            int credit = 0;
             switch (v.getId()) {
                 case R.id.diet_card_1:
+                    credit = 1;
                     break;
                 case R.id.diet_card_2:
+                    credit = 2;
                     break;
                 case R.id.diet_card_3:
+                    credit = 3;
                     break;
                 case R.id.diet_card_4:
+                    credit = 4;
                     break;
                 case R.id.diet_card_5:
+                    credit = 5;
                     break;
                 case R.id.diet_card_6:
+                    credit = 6;
                     break;
                 default:
                     break;
             }
-            dismiss();
+            try {
+//                UserInfo user = getDBHelper().getUserDao().queryForAll().get(0);
+                UpdateBuilder<UserInfo, Integer> updateBuilder = getDBHelper().getUserDao().updateBuilder();
+                // set the criteria like you would a QueryBuilder
+                updateBuilder.where().eq("User_ID", user.getUserId());
+                // update the value of your field(s)
+                updateBuilder.updateColumnValue("Credit" /* column */, credit /* value */);
+                updateBuilder.update();
+                System.out.println("------------ user credit updated");
+                dismiss();
+                showPurchaseDialog();
+            } catch (SQLException e) {
+                e.printStackTrace();
+                dismiss();
+            }
+
+
         }
     }
 
-    private void showPurchaseDialog() {
-        PurchaseDialog purchaseDialog = new PurchaseDialog(this);
-        purchaseDialog.show();
+    private void showPurchaseDialog() throws SQLException {
+        final UserInfo user = getDBHelper().getUserDao().queryForAll().get(0);
+        final int credit = user.getCredit();
+        if (credit > 0) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this)
+                    .setMessage(R.string.dialog_diet_message)
+                    .setCancelable(false)
+                    .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int which) {
+                            try {
+                                UpdateBuilder<UserInfo, Integer> updateBuilder = getDBHelper().getUserDao().updateBuilder();
+                                // set the criteria like you would a QueryBuilder
+                                updateBuilder.where().eq("User_ID", user.getUserId());
+                                // update the value of your field(s)
+                                updateBuilder.updateColumnValue("Credit" /* column */, credit - 1 /* value */);
+                                updateBuilder.update();
+                            } catch (SQLException e) {
+                                e.printStackTrace();
+                            }
+                            finish();
+                        }
+                    });
+//                    .setNegativeButton(R.string.exit_cancel, new DialogInterface.OnClickListener() {
+//                        @Override
+//                        public void onClick(DialogInterface dialog, int which) {
+//                            dialog.cancel();
+//                        }
+//                    });
+
+            AlertDialog alertDialog = builder.create();
+            alertDialog.show();
+            Typeface typeface = Typeface.createFromAsset(getAssets(), "fonts/iran_sans.ttf");
+            ((TextView) alertDialog.findViewById(android.R.id.message)).setTypeface(typeface);
+            alertDialog.getButton(DialogInterface.BUTTON_NEGATIVE).setTypeface(typeface);
+            alertDialog.getButton(DialogInterface.BUTTON_POSITIVE).setTypeface(typeface);
+
+        } else
+            new PurchaseDialog(this, user).show();
+
     }
 
     public class VerticalSpaceItemDecoration extends RecyclerView.ItemDecoration {
@@ -777,11 +835,11 @@ public class SetupDietActivity extends BaseActivity implements View.OnClickListe
             this.amount = amount;
         }
 
-        public float getCalorie(){
+        public float getCalorie() {
             return this.calorie;
         }
 
-        public float getAmount(){
+        public float getAmount() {
             return round(this.amount, 1);
         }
     }

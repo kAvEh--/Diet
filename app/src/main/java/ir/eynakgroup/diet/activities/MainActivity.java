@@ -12,10 +12,14 @@ import android.support.v7.widget.AppCompatImageView;
 import android.view.View;
 import android.view.Window;
 
+import java.sql.SQLException;
+
 import ir.eynakgroup.diet.R;
 import ir.eynakgroup.diet.activities.fragments.DietFragment;
 import ir.eynakgroup.diet.activities.fragments.ProfileFragment;
+import ir.eynakgroup.diet.database.tables.UserInfo;
 import ir.eynakgroup.diet.schedule.jobs.NotificationJob;
+import ir.eynakgroup.diet.utils.view.CustomTextView;
 import ir.eynakgroup.diet.utils.view.CustomViewPager;
 
 /**
@@ -23,9 +27,6 @@ import ir.eynakgroup.diet.utils.view.CustomViewPager;
  */
 
 public class MainActivity extends BaseActivity implements View.OnClickListener{
-
-    private static final String FRAGMENT_PROFILE = "profile";
-    private static final String FRAGMENT_DIET = "diet";
 
     private AppCompatImageView imageProfile;
     private AppCompatImageView imageDiet;
@@ -71,8 +72,25 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
             public void onPageSelected(int position) {
                 if(position == 0)
                     setLightStatusBar();
-                else
+
+                else{
                     clearLightStatusBar();
+                    Fragment profile = mPagerAdapter.getItem(position);
+                    if(profile != null){
+                        try {
+                            UserInfo user = getDBHelper().getUserDao().queryForAll().get(0);
+                            ((CustomTextView)profile.getView().findViewById(R.id.txt_credit)).setText(user.getCredit()+"");
+                        } catch (SQLException e) {
+                            e.printStackTrace();
+                        }
+                    }
+
+
+                }
+
+
+
+
 
             }
 
@@ -157,11 +175,11 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
         public Fragment getItem(int position) {
             // getItem is called to instantiate the fragment for the given page.
             // Return a PlaceholderFragment (defined as a static inner class below).
-            switch (position + 1) {
+            switch (position) {
+                case 0:
+                    return DietFragment.newInstance(mContext);
                 case 1:
-                    return DietFragment.getInstance(mContext);
-                case 2:
-                    return ProfileFragment.getInstance(mContext);
+                    return ProfileFragment.newInstance(mContext);
                 default:
                     return null;
             }
@@ -177,9 +195,9 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
         public CharSequence getPageTitle(int position) {
             switch (position) {
                 case 0:
-                    return FRAGMENT_DIET;
+                    return DietFragment.TAG;
                 case 1:
-                    return FRAGMENT_PROFILE;
+                    return ProfileFragment.TAG;
 
                 default:
                     return null;

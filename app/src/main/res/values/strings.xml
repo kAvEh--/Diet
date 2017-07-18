@@ -209,7 +209,8 @@
     <string name="price_5">۴۰ هزار تومان</string>
     <string name="price_6">۴۵ هزار تومان</string>
     <string name="diet">رژیم</string>
-    <string name="purchase_message">برای شروع رژیم، ابتدا باید حساب کاربری خود را شارژ کنید.</string>
+    <string name="dialog_purchase_message">برای شروع رژیم، ابتدا باید حساب کاربری خود را شارژ کنید.</string>
+    <string name="dialog_diet_message">برای دریافت رژیم غذایی ۱ رژیم از حساب کاربری شما کم خواهد شد.</string>
 
 
 </resources>

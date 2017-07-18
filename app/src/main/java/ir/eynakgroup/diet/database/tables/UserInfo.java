@@ -37,7 +37,7 @@ public class UserInfo {
     @DatabaseField(columnName = "Weight", dataType = DataType.STRING)
     private String weight;
     @DatabaseField(columnName = "Credit", dataType = DataType.INTEGER)
-    private String credit;
+    private int credit;
 
 
     public int getActivityLevel() {
@@ -145,11 +145,11 @@ public class UserInfo {
         this.weight = weight;
     }
 
-    public String getCredit() {
+    public int getCredit() {
         return credit;
     }
 
-    public void setCredit(String credit) {
+    public void setCredit(int credit) {
         this.credit = credit;
     }
 }

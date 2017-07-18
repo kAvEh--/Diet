@@ -558,6 +558,7 @@ public class RegisterActivity extends BaseActivity {
                                 userInfo.setWeight(responseUser.getWeight()+"");
                                 userInfo.setUserId(responseUser.getUserId());
                                 userInfo.setName(responseUser.getName());
+                                userInfo.setCredit(0);
                                 mDatabaseHelper.getUserDao().create(userInfo);
 
                                 System.out.println("--------------------------- column created !!!!");

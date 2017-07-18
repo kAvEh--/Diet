@@ -48,7 +48,7 @@
                         android:layout_gravity="center_horizontal"
                         android:src="@drawable/user" />
 
-                    <TextView
+                    <ir.eynakgroup.diet.utils.view.CustomTextView
                         android:id="@+id/txt_name"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -56,7 +56,7 @@
                         android:text="شایان میرجعفری"
                         android:layout_marginTop="@dimen/activity_orientation_margin"
                         android:textColor="@android:color/white"
-                        android:textSize="20sp" />
+                        android:textSize="22dp" />
 
                 </LinearLayout>
 
@@ -72,7 +72,7 @@
                 app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
 
                 <ImageView
-                    android:id="@+id/menu_more"
+                    android:id="@+id/action_more"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="right|center_vertical"
@@ -80,7 +80,7 @@
                     android:src="@drawable/ic_more_vert_white_24dp" />
 
                 <ImageView
-                    android:id="@+id/menu_setting"
+                    android:id="@+id/action_setting"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="right|center_vertical"
@@ -88,6 +88,26 @@
                     android:layout_marginTop="18dp"
                     android:paddingRight="@dimen/appbar_padding_top"
                     android:src="@drawable/icn_setting" />
+
+                <ImageView
+                    android:id="@+id/action_credit"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="left|center_vertical"
+                    android:paddingLeft="@dimen/appbar_padding_top"
+                    android:src="@drawable/ic_shopping_cart_white_24dp" />
+
+                <ir.eynakgroup.diet.utils.view.CustomTextView
+                    android:id="@+id/txt_credit"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textSize="24dp"
+                    android:textStyle="bold"
+                    android:layout_gravity="left|center_vertical"
+                    android:gravity="center"
+                    android:textColor="@color/colorWhite"
+                    android:paddingLeft="@dimen/appbar_padding_top"
+                    />
 
             </android.support.v7.widget.Toolbar>
 
@@ -142,16 +162,16 @@
                 app:np_dividerColor="@android:color/transparent"
                 app:np_selectedTextColor="@color/colorWhite"
                 app:np_textColor="@color/colorDescription"
-                app:np_textSize="20sp"
+                app:np_textSize="20dp"
                 app:np_wheelItemCount="7"
                  />
 
-            <TextView
+            <ir.eynakgroup.diet.utils.view.CustomTextView
                 android:id="@+id/txt_list"
                 android:layout_width="wrap_content"
                 android:layout_height="0dp"
                 android:layout_weight="1"
-                android:textSize="16sp"
+                android:textSize="18dp"
                 android:paddingTop="4dp"
                 android:text="لیست همه رژیم‌ها"
                 android:drawableLeft="@drawable/sort_left"
