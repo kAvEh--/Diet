@@ -5,8 +5,34 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:focusable="true"
+    android:layout_margin="@dimen/activity_orientation_margin"
     android:layout_centerInParent="true"
     android:weightSum="4">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:layout_marginBottom="@dimen/appbar_padding_top"
+        android:orientation="horizontal"
+        android:weightSum="2">
+
+        <ir.eynakgroup.diet.utils.view.CustomTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/purchase_message"
+            android:textSize="18dp"
+            android:textStyle="bold"
+            android:gravity="right"
+            android:textColor="@color/colorDescription"
+            android:layout_centerInParent="true"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentEnd="true" />
+
+    </RelativeLayout>>
+
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -16,6 +42,7 @@
         android:weightSum="2">
 
         <android.support.v7.widget.CardView
+            android:id="@+id/diet_card_2"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_margin="@dimen/appbar_padding_top"
@@ -26,12 +53,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="horizontal"
-                android:weightSum="2">
+                android:weightSum="5">
 
                 <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_weight="1"
+                    android:layout_weight="2"
                     android:orientation="vertical"
                     android:weightSum="2">
 
@@ -44,8 +71,16 @@
                         <ir.eynakgroup.diet.utils.view.CustomTextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:text="2"
+                            android:textSize="20dp"
+                            android:textStyle="bold"
+                            android:gravity="center"
                             android:textColor="@color/colorDescription"
-                            android:layout_centerInParent="true"/>
+                            android:layout_centerInParent="true"
+                            android:layout_alignParentLeft="true"
+                            android:layout_alignParentStart="true"
+                            android:layout_alignParentRight="true"
+                            android:layout_alignParentEnd="true" />
 
                     </RelativeLayout>
 
@@ -58,8 +93,16 @@
                         <ir.eynakgroup.diet.utils.view.CustomTextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:text="@string/diet"
+                            android:textSize="20dp"
+                            android:textStyle="bold"
+                            android:gravity="center"
                             android:textColor="@color/colorWhite"
-                            android:layout_centerInParent="true"/>
+                            android:layout_centerInParent="true"
+                            android:layout_alignParentLeft="true"
+                            android:layout_alignParentStart="true"
+                            android:layout_alignParentRight="true"
+                            android:layout_alignParentEnd="true" />
 
                     </RelativeLayout>
 
@@ -68,13 +111,21 @@
                 <RelativeLayout
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_weight="1">
+                    android:layout_weight="3">
 
                     <ir.eynakgroup.diet.utils.view.CustomTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:text="@string/price_2"
+                        android:textSize="16dp"
+                        android:textStyle="bold"
+                        android:gravity="center"
                         android:textColor="@color/colorDescription"
-                        android:layout_centerInParent="true"/>
+                        android:layout_centerInParent="true"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentStart="true"
+                        android:layout_alignParentRight="true"
+                        android:layout_alignParentEnd="true" />
 
                 </RelativeLayout>
 
@@ -84,6 +135,7 @@
         </android.support.v7.widget.CardView>
 
         <android.support.v7.widget.CardView
+            android:id="@+id/diet_card_1"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_margin="@dimen/appbar_padding_top"
@@ -94,12 +146,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="horizontal"
-                android:weightSum="2">
+                android:weightSum="5">
 
                 <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_weight="1"
+                    android:layout_weight="2"
                     android:orientation="vertical"
                     android:weightSum="2">
 
@@ -112,8 +164,16 @@
                         <ir.eynakgroup.diet.utils.view.CustomTextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:text="1"
+                            android:textSize="20dp"
+                            android:textStyle="bold"
+                            android:gravity="center"
                             android:textColor="@color/colorDescription"
-                            android:layout_centerInParent="true"/>
+                            android:layout_centerInParent="true"
+                            android:layout_alignParentLeft="true"
+                            android:layout_alignParentStart="true"
+                            android:layout_alignParentRight="true"
+                            android:layout_alignParentEnd="true" />
 
                     </RelativeLayout>
 
@@ -126,8 +186,16 @@
                         <ir.eynakgroup.diet.utils.view.CustomTextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:text="@string/diet"
+                            android:textSize="20dp"
+                            android:textStyle="bold"
+                            android:gravity="center"
                             android:textColor="@color/colorWhite"
-                            android:layout_centerInParent="true"/>
+                            android:layout_centerInParent="true"
+                            android:layout_alignParentLeft="true"
+                            android:layout_alignParentStart="true"
+                            android:layout_alignParentRight="true"
+                            android:layout_alignParentEnd="true" />
 
                     </RelativeLayout>
 
@@ -136,13 +204,21 @@
                 <RelativeLayout
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_weight="1">
+                    android:layout_weight="3">
 
                     <ir.eynakgroup.diet.utils.view.CustomTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:text="@string/price_1"
+                        android:textSize="16dp"
+                        android:textStyle="bold"
+                        android:gravity="center"
                         android:textColor="@color/colorDescription"
-                        android:layout_centerInParent="true"/>
+                        android:layout_centerInParent="true"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentStart="true"
+                        android:layout_alignParentRight="true"
+                        android:layout_alignParentEnd="true" />
 
                 </RelativeLayout>
 
@@ -150,6 +226,8 @@
             </LinearLayout>
 
         </android.support.v7.widget.CardView>
+
+
 
     </LinearLayout>
 
@@ -161,6 +239,7 @@
         android:weightSum="2">
 
         <android.support.v7.widget.CardView
+            android:id="@+id/diet_card_4"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_margin="@dimen/appbar_padding_top"
@@ -171,12 +250,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="horizontal"
-                android:weightSum="2">
+                android:weightSum="5">
 
                 <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_weight="1"
+                    android:layout_weight="2"
                     android:orientation="vertical"
                     android:weightSum="2">
 
@@ -189,8 +268,16 @@
                         <ir.eynakgroup.diet.utils.view.CustomTextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:text="4"
+                            android:textSize="20dp"
+                            android:textStyle="bold"
+                            android:gravity="center"
                             android:textColor="@color/colorDescription"
-                            android:layout_centerInParent="true"/>
+                            android:layout_centerInParent="true"
+                            android:layout_alignParentLeft="true"
+                            android:layout_alignParentStart="true"
+                            android:layout_alignParentRight="true"
+                            android:layout_alignParentEnd="true" />
 
                     </RelativeLayout>
 
@@ -203,8 +290,16 @@
                         <ir.eynakgroup.diet.utils.view.CustomTextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:text="@string/diet"
+                            android:textSize="20dp"
+                            android:textStyle="bold"
+                            android:gravity="center"
                             android:textColor="@color/colorWhite"
-                            android:layout_centerInParent="true"/>
+                            android:layout_centerInParent="true"
+                            android:layout_alignParentLeft="true"
+                            android:layout_alignParentStart="true"
+                            android:layout_alignParentRight="true"
+                            android:layout_alignParentEnd="true" />
 
                     </RelativeLayout>
 
@@ -213,13 +308,21 @@
                 <RelativeLayout
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_weight="1">
+                    android:layout_weight="3">
 
                     <ir.eynakgroup.diet.utils.view.CustomTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:text="@string/price_4"
+                        android:textSize="16dp"
+                        android:textStyle="bold"
+                        android:gravity="center"
                         android:textColor="@color/colorDescription"
-                        android:layout_centerInParent="true"/>
+                        android:layout_centerInParent="true"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentStart="true"
+                        android:layout_alignParentRight="true"
+                        android:layout_alignParentEnd="true" />
 
                 </RelativeLayout>
 
@@ -229,6 +332,7 @@
         </android.support.v7.widget.CardView>
 
         <android.support.v7.widget.CardView
+            android:id="@+id/diet_card_3"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_margin="@dimen/appbar_padding_top"
@@ -239,12 +343,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="horizontal"
-                android:weightSum="2">
+                android:weightSum="5">
 
                 <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_weight="1"
+                    android:layout_weight="2"
                     android:orientation="vertical"
                     android:weightSum="2">
 
@@ -257,8 +361,16 @@
                         <ir.eynakgroup.diet.utils.view.CustomTextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:text="3"
+                            android:textSize="20dp"
+                            android:textStyle="bold"
+                            android:gravity="center"
                             android:textColor="@color/colorPrimary"
-                            android:layout_centerInParent="true"/>
+                            android:layout_centerInParent="true"
+                            android:layout_alignParentLeft="true"
+                            android:layout_alignParentStart="true"
+                            android:layout_alignParentRight="true"
+                            android:layout_alignParentEnd="true" />
 
                     </RelativeLayout>
 
@@ -271,8 +383,16 @@
                         <ir.eynakgroup.diet.utils.view.CustomTextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:text="@string/diet"
+                            android:textSize="20dp"
+                            android:textStyle="bold"
+                            android:gravity="center"
                             android:textColor="@color/colorWhite"
-                            android:layout_centerInParent="true"/>
+                            android:layout_centerInParent="true"
+                            android:layout_alignParentLeft="true"
+                            android:layout_alignParentStart="true"
+                            android:layout_alignParentRight="true"
+                            android:layout_alignParentEnd="true" />
 
                     </RelativeLayout>
 
@@ -281,13 +401,21 @@
                 <RelativeLayout
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_weight="1">
+                    android:layout_weight="3">
 
                     <ir.eynakgroup.diet.utils.view.CustomTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:text="@string/price_3"
+                        android:textSize="16dp"
+                        android:textStyle="bold"
+                        android:gravity="center"
                         android:textColor="@color/colorDescription"
-                        android:layout_centerInParent="true"/>
+                        android:layout_centerInParent="true"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentStart="true"
+                        android:layout_alignParentRight="true"
+                        android:layout_alignParentEnd="true" />
 
                 </RelativeLayout>
 
@@ -306,6 +434,7 @@
         android:weightSum="2">
 
         <android.support.v7.widget.CardView
+            android:id="@+id/diet_card_6"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_margin="@dimen/appbar_padding_top"
@@ -316,12 +445,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="horizontal"
-                android:weightSum="2">
+                android:weightSum="5">
 
                 <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_weight="1"
+                    android:layout_weight="2"
                     android:orientation="vertical"
                     android:weightSum="2">
 
@@ -334,8 +463,16 @@
                         <ir.eynakgroup.diet.utils.view.CustomTextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:text="6"
+                            android:textSize="20dp"
+                            android:textStyle="bold"
+                            android:gravity="center"
                             android:textColor="@color/colorDescription"
-                            android:layout_centerInParent="true"/>
+                            android:layout_centerInParent="true"
+                            android:layout_alignParentLeft="true"
+                            android:layout_alignParentStart="true"
+                            android:layout_alignParentRight="true"
+                            android:layout_alignParentEnd="true" />
 
                     </RelativeLayout>
 
@@ -348,8 +485,16 @@
                         <ir.eynakgroup.diet.utils.view.CustomTextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:text="@string/diet"
+                            android:textSize="20dp"
+                            android:textStyle="bold"
+                            android:gravity="center"
                             android:textColor="@color/colorWhite"
-                            android:layout_centerInParent="true"/>
+                            android:layout_centerInParent="true"
+                            android:layout_alignParentLeft="true"
+                            android:layout_alignParentStart="true"
+                            android:layout_alignParentRight="true"
+                            android:layout_alignParentEnd="true" />
 
                     </RelativeLayout>
 
@@ -358,13 +503,21 @@
                 <RelativeLayout
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_weight="1">
+                    android:layout_weight="3">
 
                     <ir.eynakgroup.diet.utils.view.CustomTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:text="@string/price_6"
+                        android:textSize="16dp"
+                        android:textStyle="bold"
+                        android:gravity="center"
                         android:textColor="@color/colorDescription"
-                        android:layout_centerInParent="true"/>
+                        android:layout_centerInParent="true"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentStart="true"
+                        android:layout_alignParentRight="true"
+                        android:layout_alignParentEnd="true" />
 
                 </RelativeLayout>
 
@@ -374,6 +527,7 @@
         </android.support.v7.widget.CardView>
 
         <android.support.v7.widget.CardView
+            android:id="@+id/diet_card_5"
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_margin="@dimen/appbar_padding_top"
@@ -384,12 +538,12 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:orientation="horizontal"
-                android:weightSum="2">
+                android:weightSum="5">
 
                 <LinearLayout
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_weight="1"
+                    android:layout_weight="2"
                     android:orientation="vertical"
                     android:weightSum="2">
 
@@ -402,8 +556,16 @@
                         <ir.eynakgroup.diet.utils.view.CustomTextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:text="5"
+                            android:textSize="20dp"
+                            android:textStyle="bold"
+                            android:gravity="center"
                             android:textColor="@color/colorDescription"
-                            android:layout_centerInParent="true"/>
+                            android:layout_centerInParent="true"
+                            android:layout_alignParentLeft="true"
+                            android:layout_alignParentStart="true"
+                            android:layout_alignParentRight="true"
+                            android:layout_alignParentEnd="true" />
 
                     </RelativeLayout>
 
@@ -416,8 +578,16 @@
                         <ir.eynakgroup.diet.utils.view.CustomTextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:text="@string/diet"
+                            android:textSize="20dp"
+                            android:textStyle="bold"
+                            android:gravity="center"
                             android:textColor="@color/colorWhite"
-                            android:layout_centerInParent="true"/>
+                            android:layout_centerInParent="true"
+                            android:layout_alignParentLeft="true"
+                            android:layout_alignParentStart="true"
+                            android:layout_alignParentRight="true"
+                            android:layout_alignParentEnd="true" />
 
                     </RelativeLayout>
 
@@ -426,13 +596,21 @@
                 <RelativeLayout
                     android:layout_width="0dp"
                     android:layout_height="match_parent"
-                    android:layout_weight="1">
+                    android:layout_weight="3">
 
                     <ir.eynakgroup.diet.utils.view.CustomTextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:text="@string/price_5"
+                        android:textSize="16dp"
+                        android:textStyle="bold"
+                        android:gravity="center"
                         android:textColor="@color/colorDescription"
-                        android:layout_centerInParent="true"/>
+                        android:layout_centerInParent="true"
+                        android:layout_alignParentLeft="true"
+                        android:layout_alignParentStart="true"
+                        android:layout_alignParentRight="true"
+                        android:layout_alignParentEnd="true" />
 
                 </RelativeLayout>
 

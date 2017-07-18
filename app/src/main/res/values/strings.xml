@@ -202,6 +202,14 @@
     <string name="exit_cancel">ادامه میدم</string>
     <string name="ok">باشه</string>
     <string name="no_diet">شما کمبود وزن دارین و بهتر است رژیم افزایش وزن بگیرین. در حال حاضر پیشنهادی برای شما ندارم.</string>
+    <string name="price_1">۱۰ هزار تومان</string>
+    <string name="price_2">۱۸ هزار تومان</string>
+    <string name="price_3">۲۵ هزار تومان</string>
+    <string name="price_4">۳۴ هزار تومان</string>
+    <string name="price_5">۴۰ هزار تومان</string>
+    <string name="price_6">۴۵ هزار تومان</string>
+    <string name="diet">رژیم</string>
+    <string name="purchase_message">برای شروع رژیم، ابتدا باید حساب کاربری خود را شارژ کنید.</string>
 
 
 </resources>

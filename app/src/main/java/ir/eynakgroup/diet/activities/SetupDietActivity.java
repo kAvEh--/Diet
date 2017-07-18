@@ -1,10 +1,12 @@
 package ir.eynakgroup.diet.activities;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.DefaultItemAnimator;
@@ -15,6 +17,7 @@ import android.view.LayoutInflater;
 import android.view.TouchDelegate;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
@@ -385,14 +388,61 @@ public class SetupDietActivity extends BaseActivity implements View.OnClickListe
                 flexBox.requestLayout();
                 hardDiet = tv.getText().toString().trim().contains("سخت")? true: false;
                 if(tv.getText().toString().trim().contains("دریافت رژیم")){
-
+                    showPurchaseDialog();
                    return;
                 }
                 prepareChatData();
             }
         });
-
         flexBox.addView(textView);
+    }
+
+    private class PurchaseDialog extends Dialog implements
+            android.view.View.OnClickListener {
+
+        public PurchaseDialog(@NonNull Context context) {
+            super(context);
+        }
+
+        @Override
+        protected void onCreate(Bundle savedInstanceState) {
+            super.onCreate(savedInstanceState);
+            requestWindowFeature(Window.FEATURE_NO_TITLE);
+            setContentView(R.layout.dialog_purchase);
+            findViewById(R.id.diet_card_1).setOnClickListener(this);
+            findViewById(R.id.diet_card_2).setOnClickListener(this);
+            findViewById(R.id.diet_card_3).setOnClickListener(this);
+            findViewById(R.id.diet_card_4).setOnClickListener(this);
+            findViewById(R.id.diet_card_5).setOnClickListener(this);
+            findViewById(R.id.diet_card_6).setOnClickListener(this);
+
+        }
+
+        @Override
+        public void onClick(View v) {
+            switch (v.getId()) {
+                case R.id.diet_card_1:
+                    break;
+                case R.id.diet_card_2:
+                    break;
+                case R.id.diet_card_3:
+                    break;
+                case R.id.diet_card_4:
+                    break;
+                case R.id.diet_card_5:
+                    break;
+                case R.id.diet_card_6:
+                    break;
+                default:
+                    break;
+            }
+            dismiss();
+        }
+    }
+
+    private void showPurchaseDialog() {
+        PurchaseDialog purchaseDialog = new PurchaseDialog(this);
+        purchaseDialog.show();
     }
 
     public class VerticalSpaceItemDecoration extends RecyclerView.ItemDecoration {
