@@ -10,12 +10,11 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v7.widget.AppCompatImageView;
 import android.view.View;
-import android.view.Window;
 
 import ir.eynakgroup.diet.R;
 import ir.eynakgroup.diet.activities.fragments.DietFragment;
+import ir.eynakgroup.diet.activities.fragments.PreDietFragment;
 import ir.eynakgroup.diet.activities.fragments.ProfileFragment;
-import ir.eynakgroup.diet.schedule.jobs.NotificationJob;
 import ir.eynakgroup.diet.utils.view.CustomViewPager;
 
 /**
