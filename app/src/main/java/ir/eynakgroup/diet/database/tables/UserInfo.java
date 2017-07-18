@@ -36,6 +36,8 @@ public class UserInfo {
     private String sessionId;
     @DatabaseField(columnName = "Weight", dataType = DataType.STRING)
     private String weight;
+    @DatabaseField(columnName = "Credit", dataType = DataType.INTEGER)
+    private String credit;
 
 
     public int getActivityLevel() {
@@ -141,5 +143,13 @@ public class UserInfo {
 
     public void setWeight(String weight) {
         this.weight = weight;
+    }
+
+    public String getCredit() {
+        return credit;
+    }
+
+    public void setCredit(String credit) {
+        this.credit = credit;
     }
 }
