@@ -8,5 +8,11 @@
     <dimen name="fab_margin">16dp</dimen>
     <dimen name="text_margin">16dp</dimen>
     <dimen name="text_chat_font">18dp</dimen>
+    <dimen name="spinner_item_height">20dp</dimen>
+    <dimen name="spinner_item_text_size">18dp</dimen>
+    <dimen name="spinner_view_text_size">20dp</dimen>
+    <dimen name="normal_text_size">16dp</dimen>
+    <dimen name="big_text_size">20dp</dimen>
+    <dimen name="wide_option_text_padding">35dp</dimen>
 
 </resources>
