@@ -1,5 +1,6 @@
 package ir.eynakgroup.diet.activities.fragments;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Paint;
@@ -14,6 +15,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 
 import ir.eynakgroup.diet.R;
+import ir.eynakgroup.diet.activities.MainActivity;
 import ir.eynakgroup.diet.activities.SetupDietActivity;
 import ir.eynakgroup.diet.utils.view.JustifiedTextView;
 
@@ -30,10 +32,18 @@ public class PreDietFragment extends Fragment {
         mContext = context;
     }
 
-    public static PreDietFragment getInstance(Context context) {
+    //    public static PreDietFragment getInstance(Context context) {
+//        if (mPreDietFragmentInstance == null)
+//            mPreDietFragmentInstance = new PreDietFragment(context);
+//
+//        return mPreDietFragmentInstance;
+//  }
+    public static PreDietFragment newInstance(Context context) {
+        Bundle args = new Bundle();
         if (mPreDietFragmentInstance == null)
             mPreDietFragmentInstance = new PreDietFragment(context);
 
+        mPreDietFragmentInstance.setArguments(args);
         return mPreDietFragmentInstance;
     }
 
@@ -55,7 +65,8 @@ public class PreDietFragment extends Fragment {
         mButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(mContext, SetupDietActivity.class));
+//                startActivity(new Intent(mContext, SetupDietActivity.class));
+                ((Activity)mContext).startActivityForResult(new Intent(mContext, SetupDietActivity.class), MainActivity.SETUP_REQUEST_CODE);
             }
         });
 

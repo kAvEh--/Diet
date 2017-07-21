@@ -1,6 +1,8 @@
 package ir.eynakgroup.diet.activities;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -35,7 +37,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
     private CustomViewPager viewPager;
     private PagerAdapter mPagerAdapter;
 
-
+    public static final int SETUP_REQUEST_CODE = 698;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -62,6 +64,12 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
 //        else if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
 //            window.setStatusBarColor(getResources().getColor(R.color.colorStatusBar));
 
+        if(getAppPreferences().getHasDiet()){
+            clearLightStatusBar();
+        }else{
+            setLightStatusBar();
+        }
+
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
@@ -70,10 +78,10 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
 
             @Override
             public void onPageSelected(int position) {
-                if(position == 0)
-                    setLightStatusBar();
+                if(position == 0) {
+//                    setLightStatusBar();
 
-                else{
+                }else{
                     clearLightStatusBar();
                     Fragment profile = mPagerAdapter.getItem(position);
                     if(profile != null){
@@ -87,11 +95,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
 
 
                 }
-
-
-
-
-
             }
 
             @Override
@@ -99,7 +102,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
 
             }
         });
-
 
     }
     private void setLightStatusBar(){
@@ -177,7 +179,11 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
             // Return a PlaceholderFragment (defined as a static inner class below).
             switch (position) {
                 case 0:
-                    return DietFragment.newInstance(mContext);
+                    if(getAppPreferences().getHasDiet())
+                        return DietFragment.newInstance(mContext);
+                    else
+                        return PreDietFragment.newInstance(mContext);
+
                 case 1:
                     return ProfileFragment.newInstance(mContext);
                 default:
@@ -201,6 +207,20 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
 
                 default:
                     return null;
+            }
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if(resultCode == RESULT_OK){
+            if(requestCode == SETUP_REQUEST_CODE){
+                
+            }
+        }else if(resultCode == RESULT_CANCELED){
+            if(requestCode == SETUP_REQUEST_CODE){
+
             }
         }
     }

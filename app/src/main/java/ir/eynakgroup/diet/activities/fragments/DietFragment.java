@@ -7,6 +7,7 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
@@ -36,6 +37,9 @@ public class DietFragment extends Fragment {
     private static DietFragment mDietFragmentInstance = null;
     public static final String TAG = "FRAGMENT_DIET";
     private Context mContext;
+
+    private ViewPager viewPager;
+    private TabLayout tabLayout;
 
     public DietFragment(Context context) {
         mContext = context;
@@ -98,20 +102,58 @@ public class DietFragment extends Fragment {
         /**
          * meal tabs part
          */
-        ViewPager viewPager = (ViewPager) view.findViewById(R.id.meals_tab_viewpager);
+        viewPager = (ViewPager) view.findViewById(R.id.meals_tab_viewpager);
         setupViewPager(viewPager);
 
-        TabLayout tabLayout = (TabLayout) view.findViewById(R.id.meals_tabs);
+        tabLayout = (TabLayout) view.findViewById(R.id.meals_tabs);
         tabLayout.setupWithViewPager(viewPager);
 
+        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
+            @Override
+            public void onTabSelected(TabLayout.Tab tab) {
+                switch (tab.getPosition()){
+                    case 0:
+                        tabLayout.setSelectedTabIndicatorColor(ContextCompat.getColor(getContext(), R.color.colorDinner));
+                        break;
+                    case 1:
+                        tabLayout.setSelectedTabIndicatorColor(ContextCompat.getColor(getContext(), R.color.colorSnack));
+                        break;
+                    case 2:
+                        tabLayout.setSelectedTabIndicatorColor(ContextCompat.getColor(getContext(), R.color.colorLunch));
+                        break;
+                    case 3:
+                        tabLayout.setSelectedTabIndicatorColor(ContextCompat.getColor(getContext(), R.color.colorBreakfast));
+                        break;
+                    default:
+                }
+            }
+
+            @Override
+            public void onTabUnselected(TabLayout.Tab tab) {
+
+            }
+
+            @Override
+            public void onTabReselected(TabLayout.Tab tab) {
+
+            }
+        });
+
+        selectPage(3);
+
+    }
+
+    void selectPage(int pageIndex){
+        tabLayout.setScrollPosition(pageIndex,0f,true);
+        viewPager.setCurrentItem(pageIndex);
     }
 
     private void setupViewPager(ViewPager viewPager) {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getFragmentManager());
-        adapter.addFragment(DietDishesFragment.newInstance(DINNER+""), getString(R.string.dinner));
-        adapter.addFragment(DietDishesFragment.newInstance(SNACK+""), getString(R.string.snack));
-        adapter.addFragment(DietDishesFragment.newInstance(LUNCH+""), getString(R.string.lunch));
-        adapter.addFragment(DietDishesFragment.newInstance(BREAKFAST+""), getString(R.string.breakfast));
+        adapter.addFragment(DietDishesFragment.newInstance(DINNER, R.layout.fragment_dishes_dinner), getString(R.string.dinner));
+        adapter.addFragment(DietDishesFragment.newInstance(SNACK, R.layout.fragment_dishes_snack), getString(R.string.snack));
+        adapter.addFragment(DietDishesFragment.newInstance(LUNCH, R.layout.fragment_dishes_lunch), getString(R.string.lunch));
+        adapter.addFragment(DietDishesFragment.newInstance(BREAKFAST, R.layout.fragment_dishes_breakfast), getString(R.string.breakfast));
         viewPager.setAdapter(adapter);
     }
 

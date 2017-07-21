@@ -61,7 +61,7 @@ public class RegisterActivity extends BaseActivity {
     private boolean boundService = false;
 
     private static final int INTRO_REQUEST_CODE = 123;
-    private static final int SIGN_UP_REQUEST_CODE = 124;
+//    private static final int SIGN_UP_REQUEST_CODE = 124;
 
     private static final String FRAGMENT_REGISTER = "register";
     private static final String FRAGMENT_LOGIN = "login";
@@ -99,11 +99,11 @@ public class RegisterActivity extends BaseActivity {
             }
         });
 
-        int waiting;
-        if (getAppPreferences().getFirstTime())
-            waiting = 3000;
-        else
-            waiting = 2150;
+        int waiting = 3000;
+//        if (getAppPreferences().getFirstTime())
+//            waiting = 3000;
+//        else
+//            waiting = 2150;
 
         new CountDownTimer(waiting, waiting) {
             @Override
@@ -113,12 +113,46 @@ public class RegisterActivity extends BaseActivity {
 
             @Override
             public void onFinish() {
-                viewPager.setAdapter(pagerAdapter);
-                new BindServiceTask().execute();
                 cancel();
+//                viewPager.setAdapter(pagerAdapter);
+//                new BindServiceTask().execute();
+                try {
+                    checkUserExisting();
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                }
             }
         }.start();
 
+    }
+
+    private void checkUserExisting() throws SQLException {
+        if (getDBHelper().getUserDao().queryForAll().size() > 0) {
+            if (getAppPreferences().getFirstTime()){
+                startActivityForResult(new Intent(RegisterActivity.this, IntroActivity.class), INTRO_REQUEST_CODE);
+            }
+            else {
+                startActivity(new Intent(RegisterActivity.this, MainActivity.class));
+                finish();
+            }
+
+
+        } else {
+            if (getAppPreferences().getFirstTime()) {
+                startActivityForResult(new Intent(RegisterActivity.this, IntroActivity.class), INTRO_REQUEST_CODE);
+            }
+            else {
+                viewPager.setAdapter(pagerAdapter);
+//                                if (mSignInBtn.getVisibility() == View.GONE) {
+//                                    mSignInBtn.setVisibility(View.VISIBLE);
+//                                    mSignUpBtn.setVisibility(View.VISIBLE);
+//                                }
+                viewPager.setCurrentItem(0, false);
+
+            }
+
+
+        }
     }
 
     private void onBackFragment() {
@@ -215,14 +249,15 @@ public class RegisterActivity extends BaseActivity {
 //                        mSignInBtn.setVisibility(View.VISIBLE);
 //                        mSignUpBtn.setVisibility(View.VISIBLE);
 //                    }
+                    viewPager.setAdapter(pagerAdapter);
                     viewPager.setCurrentItem(0, false);
 
                     break;
-                case SIGN_UP_REQUEST_CODE:
-                    System.out.println("Account created!");
-                    startActivity(new Intent(RegisterActivity.this, MainActivity.class));
-                    finish();
-                    break;
+//                case SIGN_UP_REQUEST_CODE:
+//                    System.out.println("Account created!");
+//                    startActivity(new Intent(RegisterActivity.this, MainActivity.class));
+//                    finish();
+//                    break;
 
                 default:
 
@@ -232,9 +267,9 @@ public class RegisterActivity extends BaseActivity {
                 case INTRO_REQUEST_CODE:
                     finish();
                     break;
-                case SIGN_UP_REQUEST_CODE:
-
-                    break;
+//                case SIGN_UP_REQUEST_CODE:
+//                    System.out.println("inja-----------");
+//                    break;
 
                 default:
             }
@@ -373,7 +408,8 @@ public class RegisterActivity extends BaseActivity {
         public void onClick(View v) {
             switch (v.getId()) {
                 case R.id.btn_sign_up:
-                    startActivityForResult(new Intent(mContext, SignUpActivity.class), SIGN_UP_REQUEST_CODE);
+//                    startActivityForResult(new Intent(mContext, SignUpActivity.class), SIGN_UP_REQUEST_CODE);
+                    mContext.startActivity(new Intent(mContext, SignUpActivity.class));
                     break;
                 case R.id.btn_sign_in_karafs:
 
@@ -499,6 +535,10 @@ public class RegisterActivity extends BaseActivity {
         public void onClick(View v) {
             switch (v.getId()) {
                 case R.id.btn_enter:
+
+                    mEnterBtn.setClickable(false);
+                    mTxtForgot.setClickable(false);
+                    mEnterBtn.setText(R.string.wait);
                     final String phone = mPhoneEdit.getText().toString().trim();
                     final String pass = mPassEdit.getText().toString().trim();
                     if (TextUtils.isEmpty(phone)) {
@@ -544,10 +584,10 @@ public class RegisterActivity extends BaseActivity {
                                 userInfo.setWeight(responseUser.getWeight()+"");
                                 userInfo.setUserId(responseUser.getUserId());
                                 userInfo.setName(responseUser.getName());
-                                userInfo.setCredit(0);
+                                userInfo.setCredit(1);
                                 mDatabaseHelper.getUserDao().create(userInfo);
 
-                                System.out.println("--------------------------- column created !!!!");
+                                System.out.println("--------------------------- user created !!!!");
                                 getActivity().startActivity(new Intent(mContext, MainActivity.class));
                                 getActivity().finish();
                             } catch (SQLException e) {
@@ -570,6 +610,10 @@ public class RegisterActivity extends BaseActivity {
                         @Override
                         public void onFailure(Call<LoginResponse> call, Throwable t) {
                             System.out.println("failed -----------");
+                            mEnterBtn.setClickable(true);
+                            mTxtForgot.setClickable(true);
+                            mEnterBtn.setText(R.string.enter);
+
                         }
                     });
 

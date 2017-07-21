@@ -108,6 +108,7 @@ public class SetupDietActivity extends BaseActivity implements View.OnClickListe
                 .setMessage(R.string.exit_alert)
                 .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
+                        setResult(RESULT_CANCELED);
                         finish();
                     }
                 })
@@ -481,6 +482,7 @@ public class SetupDietActivity extends BaseActivity implements View.OnClickListe
                             } catch (SQLException e) {
                                 e.printStackTrace();
                             }
+                            setResult(RESULT_OK);
                             finish();
                         }
                     });

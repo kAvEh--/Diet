@@ -31,13 +31,13 @@
             <RelativeLayout
                 android:layout_width="wrap_content"
                 android:layout_gravity="right|center_vertical"
+                android:layout_marginRight="@dimen/appbar_padding_top"
                 android:layout_height="wrap_content">
 
                 <android.support.v7.widget.AppCompatSpinner
                     android:id="@+id/date_spinner"
                     android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:paddingRight="@dimen/appbar_padding_top">
+                    android:layout_height="wrap_content">
 
                 </android.support.v7.widget.AppCompatSpinner>
             </RelativeLayout>
@@ -49,9 +49,10 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="@color/colorStatusBar"
-            app:tabTextColor="@color/colorWhite"
+            app:tabTextColor="@color/colorDescription"
+            app:tabIndicatorHeight="4dp"
             app:tabSelectedTextColor="@color/colorWhite"
-            app:tabIndicatorColor="#3999d4"
+            app:tabIndicatorColor="@color/colorWhite"
             app:tabMode="fixed"
             app:tabGravity="fill">
 
@@ -71,26 +72,40 @@
                 android:layout_height="wrap_content"
                 android:layout_width="wrap_content"/>
         </android.support.design.widget.TabLayout>
-        <ir.eynakgroup.diet.utils.view.CustomTextView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:gravity="center"
-            android:padding="4dp"
-            android:layout_marginTop="8dp"
-            android:text="@string/choose_one_option"
-            android:textColor="@color/colorStatusBar"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior"
-            android:textSize="@dimen/normal_text_size" />
+
 
     </android.support.design.widget.AppBarLayout>
 
 
-
-    <android.support.v4.view.ViewPager
-        android:id="@+id/meals_tab_viewpager"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"  />
+        android:orientation="vertical"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <ir.eynakgroup.diet.utils.view.CustomTextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:layout_gravity="center"
+            android:padding="4dp"
+            android:layout_marginTop="8dp"
+            android:text="@string/choose_one_option"
+            android:textColor="@color/colorStatusBar"
+            android:textSize="@dimen/normal_text_size" />
+
+        <android.support.v4.view.ViewPager
+            android:layout_marginRight="@dimen/appbar_padding_top"
+            android:layout_marginLeft="@dimen/appbar_padding_top"
+            android:layout_marginBottom="@dimen/appbar_padding_top"
+            android:id="@+id/meals_tab_viewpager"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+
+    </LinearLayout>
+
+
 
 
 </android.support.design.widget.CoordinatorLayout>

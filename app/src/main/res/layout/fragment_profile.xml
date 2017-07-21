@@ -11,8 +11,8 @@
         android:id="@+id/main.appbar"
         android:layout_width="match_parent"
         android:layout_height="450dp"
-        android:background="@color/colorWhite"
         android:orientation="vertical"
+        android:background="#efeeee"
         android:fitsSystemWindows="true"
         android:weightSum="4.75"
         app:elevation="0dp">
@@ -120,6 +120,137 @@
             android:background="@color/colorStatusBar"
             android:layout_weight=".75">
 
+            <RelativeLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_centerInParent="true"
+                    android:orientation="vertical"
+                    android:layout_margin="4dp">
+
+                    <ir.eynakgroup.diet.utils.view.CustomTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:layout_gravity="center"
+                        android:text="@string/bmi"
+                        android:textColor="@color/colorWhite"
+                        android:textSize="14dp"
+                        />
+
+                    <ir.eynakgroup.diet.utils.view.CustomTextView
+                        android:id="@+id/txt_bmi"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:paddingTop="8dp"
+                        android:layout_gravity="center"
+                        android:textColor="@color/colorWhite"
+                        android:textSize="18dp"
+                        />
+
+
+
+                </LinearLayout>
+
+            </RelativeLayout>
+
+            <View
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:layout_margin="@dimen/activity_orientation_margin"
+                android:background="#efeeee" />
+
+            <RelativeLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_centerInParent="true"
+                    android:orientation="vertical"
+                    android:layout_margin="4dp">
+
+                    <ir.eynakgroup.diet.utils.view.CustomTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:layout_gravity="center"
+                        android:text="@string/goal_weight"
+                        android:textColor="@color/colorWhite"
+                        android:textSize="14dp"
+                        />
+
+                    <ir.eynakgroup.diet.utils.view.CustomTextView
+                        android:id="@+id/txt_goal_weight"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:text="نامشخص"
+                        android:paddingTop="8dp"
+                        android:layout_gravity="center"
+                        android:textColor="@color/colorWhite"
+                        android:textSize="18dp"
+                        />
+
+
+
+                </LinearLayout>
+
+            </RelativeLayout>
+
+            <View
+                android:layout_width="1dp"
+                android:layout_height="match_parent"
+                android:layout_margin="@dimen/activity_orientation_margin"
+                android:background="#efeeee" />
+
+            <RelativeLayout
+                android:layout_width="0dp"
+                android:layout_height="match_parent"
+                android:layout_weight="1">
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_centerInParent="true"
+                    android:orientation="vertical"
+                    android:layout_margin="4dp">
+
+                    <ir.eynakgroup.diet.utils.view.CustomTextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:layout_gravity="center"
+                        android:text="@string/current_weight"
+                        android:textColor="@color/colorWhite"
+                        android:textSize="14dp"
+                        />
+
+                    <ir.eynakgroup.diet.utils.view.CustomTextView
+                        android:id="@+id/txt_current_weight"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:paddingTop="8dp"
+                        android:layout_gravity="center"
+                        android:textColor="@color/colorWhite"
+                        android:textSize="18dp"
+                        />
+
+
+
+                </LinearLayout>
+
+            </RelativeLayout>
+
+
 
 
         </LinearLayout>
@@ -156,7 +287,7 @@
                 android:layout_weight="2"
                 android:layout_marginTop="8dp"
                 app:np_min="1"
-                app:np_max="20"
+                app:np_max="1"
                 app:np_formatter="%02d"
                 app:np_orientation="horizontal"
                 app:np_dividerColor="@android:color/transparent"
