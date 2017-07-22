@@ -28,6 +28,8 @@ public class PreDietFragment extends Fragment {
     private Context mContext;
     private static PreDietFragment mPreDietFragmentInstance = null;
 
+    public static final String TAG = PreDietFragment.class.getName();
+
     private PreDietFragment(Context context) {
         mContext = context;
     }

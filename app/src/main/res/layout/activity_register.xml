@@ -44,17 +44,12 @@
     <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="0dp"
+        android:layout_gravity="center"
         android:layout_weight="1"
         android:paddingRight="@dimen/activity_orientation_margin"
         android:paddingLeft="@dimen/activity_orientation_margin"
         >
 
-        <!--<ImageView-->
-            <!--android:padding="50dp"-->
-            <!--android:layout_width="wrap_content"-->
-            <!--android:layout_height="wrap_content"-->
-            <!--android:layout_centerInParent="true"-->
-            <!--android:src="@drawable/logo" />-->
         <pl.droidsonroids.gif.GifImageView
             android:padding="40dp"
             android:layout_width="wrap_content"

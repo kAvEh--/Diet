@@ -218,7 +218,7 @@ public class SetupDietActivity extends BaseActivity implements View.OnClickListe
                                 lineNumber++;
                                 addResponseView("ساده" + " " + difficulty.get(Integer.valueOf(1)).getAmount() + " کیلویی");
                                 addResponseView("متوسط" + " " + difficulty.get(Integer.valueOf(2)).getAmount() + " کیلویی");
-                                addResponseView("سخت" + " " + difficulty.get(Integer.valueOf(3)).getAmount() + " کیلویی");
+                                addResponseView("سخت" + " " + difficulty.get(Integer.valueOf(3)).getAmount() + " کیلویی با ورزش");
                                 return;
                             } else if (difficulty.containsKey(Integer.valueOf(2))) {
                                 reader.readLine();

@@ -64,12 +64,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
 //        else if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
 //            window.setStatusBarColor(getResources().getColor(R.color.colorStatusBar));
 
-        if(getAppPreferences().getHasDiet()){
-            clearLightStatusBar();
-        }else{
-            setLightStatusBar();
-        }
-
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
@@ -78,13 +72,18 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
 
             @Override
             public void onPageSelected(int position) {
-                if(position == 0) {
+                if(position == 0 || position == 1) {
 //                    setLightStatusBar();
+                    decorateStatusBar();
 
-                }else{
+                }else if(position == 2){
                     clearLightStatusBar();
                     Fragment profile = mPagerAdapter.getItem(position);
                     if(profile != null){
+                        float goalWeight = 0.0f;
+                        if(goalWeight != getAppPreferences().getGoalWeight())
+                            ((CustomTextView)profile.getView().findViewById(R.id.txt_goal_weight)).setText(round(goalWeight, 1)+"");
+
                         try {
                             UserInfo user = getDBHelper().getUserDao().queryForAll().get(0);
                             ((CustomTextView)profile.getView().findViewById(R.id.txt_credit)).setText(user.getCredit()+"");
@@ -103,7 +102,29 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
             }
         });
 
+        decorateStatusBar();
+
     }
+
+    public float round(float value, int places) {
+        if (places < 0) throw new IllegalArgumentException();
+
+        long factor = (long) Math.pow(10, places);
+        value = value * factor;
+        long tmp = Math.round(value);
+        return (float) tmp / factor;
+    }
+
+    private void decorateStatusBar(){
+        if(getAppPreferences().getHasDiet()){
+            clearLightStatusBar();
+            viewPager.setCurrentItem(1,false);
+        }else{
+            setLightStatusBar();
+            viewPager.setCurrentItem(0,false);
+        }
+    }
+
     private void setLightStatusBar(){
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             View view = getWindow().getDecorView();
@@ -129,8 +150,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
     public void onClick(View v) {
         switch (v.getId()){
             case R.id.tab_diet:
-
-                if(viewPager.getCurrentItem() != 0){
+                if(viewPager.getCurrentItem() != 0 || viewPager.getCurrentItem() != 1){
                     imageProfile.setImageResource(R.drawable.icn_tab_profile);
                     imageDiet.setImageResource(R.drawable.icn_tab_diet_selected);
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -140,13 +160,16 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
                         barDiet.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
                         barProfile.setBackgroundColor(getResources().getColor(R.color.colorGrey));
                     }
-                    viewPager.setCurrentItem(0);
+                    if(!getAppPreferences().getHasDiet())
+                        viewPager.setCurrentItem(0);
+                    else
+                        viewPager.setCurrentItem(1);
                 }
                 break;
 
             case R.id.tab_profile:
 
-                if(viewPager.getCurrentItem() != 1){
+                if(viewPager.getCurrentItem() != 2){
                     imageProfile.setImageResource(R.drawable.icn_tab_profile_selected);
                     imageDiet.setImageResource(R.drawable.icn_tab_diet);
                     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -156,7 +179,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
                         barProfile.setBackgroundColor(getResources().getColor(R.color.colorPrimary));
                         barDiet.setBackgroundColor(getResources().getColor(R.color.colorGrey));
                     }
-                    viewPager.setCurrentItem(1);
+                    viewPager.setCurrentItem(2);
                 }
 
                 break;
@@ -179,13 +202,14 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
             // Return a PlaceholderFragment (defined as a static inner class below).
             switch (position) {
                 case 0:
-                    if(getAppPreferences().getHasDiet())
-                        return DietFragment.newInstance(mContext);
-                    else
-                        return PreDietFragment.newInstance(mContext);
+                    return PreDietFragment.newInstance(mContext);
+
+                case 2:
+                    return ProfileFragment.newInstance(mContext);
 
                 case 1:
-                    return ProfileFragment.newInstance(mContext);
+                    return DietFragment.newInstance(mContext);
+
                 default:
                     return null;
             }
@@ -194,17 +218,20 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
         @Override
         public int getCount() {
             // Show 3 total pages.
-            return 2;
+            return 3;
         }
 
         @Override
         public CharSequence getPageTitle(int position) {
             switch (position) {
-                case 0:
-                    return DietFragment.TAG;
                 case 1:
+                    return DietFragment.TAG;
+
+                case 2:
                     return ProfileFragment.TAG;
 
+                case 0:
+                    return PreDietFragment.TAG;
                 default:
                     return null;
             }
@@ -216,7 +243,12 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
         super.onActivityResult(requestCode, resultCode, data);
         if(resultCode == RESULT_OK){
             if(requestCode == SETUP_REQUEST_CODE){
-                
+                System.out.println("------------------- result");
+                getAppPreferences().setHasDiet(true);
+                decorateStatusBar();
+                viewPager.setCurrentItem(1, false);
+
+
             }
         }else if(resultCode == RESULT_CANCELED){
             if(requestCode == SETUP_REQUEST_CODE){
@@ -224,4 +256,5 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
             }
         }
     }
+
 }
