@@ -23,12 +23,14 @@ import ir.eynakgroup.diet.R;
 import ir.eynakgroup.diet.database.DatabaseHelper;
 import ir.eynakgroup.diet.database.tables.UserInfo;
 import ir.eynakgroup.diet.network.response_models.User;
+import ir.eynakgroup.diet.utils.AppPreferences;
 import ir.eynakgroup.diet.utils.view.CircularImageView;
 import ir.eynakgroup.diet.utils.view.CustomTextView;
 
 public class ProfileFragment extends Fragment {
 
     private Context mContext;
+    private AppPreferences appPreferences;
     private static ProfileFragment mProfileFragmentInstance = null;
     public final static String TAG = "FRAGMENT_PROFILE";
 
@@ -55,17 +57,30 @@ public class ProfileFragment extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
+        if(appPreferences == null)
+            appPreferences = new AppPreferences(getContext());
+
         final CircularImageView imageProfile = (CircularImageView) view.findViewById(R.id.img_profile);
         final TextView textName = (CustomTextView) view.findViewById(R.id.txt_name);
         final TextView textList = (CustomTextView) view.findViewById(R.id.txt_list);
         final TextView textCredit = (CustomTextView) view.findViewById(R.id.txt_credit);
+        final TextView textBMI = (CustomTextView) view.findViewById(R.id.txt_bmi);
+        final TextView textGoalWeight = (CustomTextView) view.findViewById(R.id.txt_goal_weight);
+        final TextView textCurWeight = (CustomTextView) view.findViewById(R.id.txt_current_weight);
+
+
         final NumberPicker picker = (NumberPicker) view.findViewById(R.id.diet_picker);
         picker.setTypeface(Typeface.createFromAsset(getContext().getAssets(), "fonts/iran_sans_light.ttf"));
+        float goalWeight = 0.0f;
+        if(goalWeight != appPreferences.getGoalWeight())
+            textGoalWeight.setText(round(goalWeight, 1)+"");
 
         DatabaseHelper databaseHelper = new DatabaseHelper(mContext);
         try {
             UserInfo user = databaseHelper.getUserDao().queryForAll().get(0);
             textName.setText(user.getName());
+            textCurWeight.setText(round(user.getWeight(), 1)+"");
+            textBMI.setText(round(calculateBMI(user), 1)+"");
             textCredit.setText(user.getCredit()+"");
         } catch (SQLException e) {
             e.printStackTrace();
@@ -97,5 +112,20 @@ public class ProfileFragment extends Fragment {
         textList.getCompoundDrawables()[0].setColorFilter(filter);
 
 
+    }
+
+    private float calculateBMI(UserInfo user) throws SQLException {
+//        UserInfo user = getDBHelper().getUserDao().queryForAll().get(0);
+        float height = user.getHeight() / 100;
+        return user.getWeight() / (height * height);
+    }
+
+    public float round(float value, int places) {
+        if (places < 0) throw new IllegalArgumentException();
+
+        long factor = (long) Math.pow(10, places);
+        value = value * factor;
+        long tmp = Math.round(value);
+        return (float) tmp / factor;
     }
 }

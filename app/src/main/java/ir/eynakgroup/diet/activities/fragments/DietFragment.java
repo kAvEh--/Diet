@@ -38,8 +38,8 @@ public class DietFragment extends Fragment {
     public static final String TAG = "FRAGMENT_DIET";
     private Context mContext;
 
-    private TabLayout tabLayout;
     private ViewPager viewPager;
+    private TabLayout tabLayout;
 
     public DietFragment(Context context) {
         mContext = context;
@@ -106,6 +106,8 @@ public class DietFragment extends Fragment {
         setupViewPager(viewPager);
 
         tabLayout = (TabLayout) view.findViewById(R.id.meals_tabs);
+        tabLayout.setupWithViewPager(viewPager);
+
         tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
             public void onTabSelected(TabLayout.Tab tab) {
@@ -123,9 +125,7 @@ public class DietFragment extends Fragment {
                         tabLayout.setSelectedTabIndicatorColor(ContextCompat.getColor(getContext(), R.color.colorBreakfast));
                         break;
                     default:
-                        tabLayout.setSelectedTabIndicatorColor(ContextCompat.getColor(getContext(), R.color.colorWhite));
                 }
-
             }
 
             @Override
@@ -138,12 +138,12 @@ public class DietFragment extends Fragment {
 
             }
         });
-        tabLayout.setupWithViewPager(viewPager);
+
         selectPage(3);
 
     }
 
-    private void selectPage(int pageIndex){
+    void selectPage(int pageIndex){
         tabLayout.setScrollPosition(pageIndex,0f,true);
         viewPager.setCurrentItem(pageIndex);
     }
@@ -159,34 +159,8 @@ public class DietFragment extends Fragment {
 
     class ViewPagerAdapter extends FragmentPagerAdapter{
 
-
-       class FragmentModel {
-           private Fragment fragment;
-           private String title;
-
-           FragmentModel(Fragment fragment, String title){
-               setFragment(fragment);
-               setTitle(title);
-           }
-
-           public Fragment getFragment() {
-               return fragment;
-           }
-
-           public void setFragment(Fragment fragment) {
-               this.fragment = fragment;
-           }
-
-           public String getTitle() {
-               return title;
-           }
-
-           public void setTitle(String title) {
-               this.title = title;
-           }
-       }
-
-        private final List<FragmentModel> mFragmentList = new ArrayList<>();
+        private final List<Fragment> mFragmentList = new ArrayList<>();
+        private final List<String> mFragmentTitleList = new ArrayList<>();
 
         public ViewPagerAdapter(FragmentManager manager) {
             super(manager);
@@ -194,7 +168,7 @@ public class DietFragment extends Fragment {
 
         @Override
         public Fragment getItem(int position) {
-            return mFragmentList.get(position).getFragment();
+            return mFragmentList.get(position);
         }
 
         @Override
@@ -203,12 +177,13 @@ public class DietFragment extends Fragment {
         }
 
         public void addFragment(Fragment fragment, String title) {
-            mFragmentList.add(new FragmentModel(fragment, title));
+            mFragmentList.add(fragment);
+            mFragmentTitleList.add(title);
         }
 
         @Override
         public CharSequence getPageTitle(int position) {
-            return mFragmentList.get(position).getTitle();
+            return mFragmentTitleList.get(position);
         }
     }
 }

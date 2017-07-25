@@ -553,7 +553,7 @@
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
                 android:layout_marginRight="10dp"
-                android:gravity="right"
+                android:gravity="center"
                 android:padding="6dp"
                 android:text="@string/didnt_adhere"
                 android:textColor="@color/colorWhite"

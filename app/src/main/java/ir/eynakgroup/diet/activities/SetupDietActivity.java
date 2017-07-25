@@ -108,6 +108,7 @@ public class SetupDietActivity extends BaseActivity implements View.OnClickListe
                 .setMessage(R.string.exit_alert)
                 .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
+                        setResult(RESULT_CANCELED);
                         finish();
                     }
                 })
@@ -217,7 +218,7 @@ public class SetupDietActivity extends BaseActivity implements View.OnClickListe
                                 lineNumber++;
                                 addResponseView("ساده" + " " + difficulty.get(Integer.valueOf(1)).getAmount() + " کیلویی");
                                 addResponseView("متوسط" + " " + difficulty.get(Integer.valueOf(2)).getAmount() + " کیلویی");
-                                addResponseView("سخت" + " " + difficulty.get(Integer.valueOf(3)).getAmount() + " کیلویی");
+                                addResponseView("سخت" + " " + difficulty.get(Integer.valueOf(3)).getAmount() + " کیلویی با ورزش");
                                 return;
                             } else if (difficulty.containsKey(Integer.valueOf(2))) {
                                 reader.readLine();
@@ -481,6 +482,7 @@ public class SetupDietActivity extends BaseActivity implements View.OnClickListe
                             } catch (SQLException e) {
                                 e.printStackTrace();
                             }
+                            setResult(RESULT_OK);
                             finish();
                         }
                     });

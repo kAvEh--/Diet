@@ -1,6 +1,7 @@
 package ir.eynakgroup.diet.activities;
 
 import android.accounts.Account;
+import android.content.Intent;
 import android.graphics.Paint;
 import android.graphics.Rect;
 import android.support.annotation.Nullable;
@@ -28,6 +29,7 @@ import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.TextView;
 
+import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -39,6 +41,8 @@ import io.blackbox_vision.wheelview.view.WheelView;
 import ir.eynakgroup.diet.R;
 import ir.eynakgroup.diet.account.KarafsAccountConfig;
 import ir.eynakgroup.diet.account.tasks.CreateAccountTask;
+import ir.eynakgroup.diet.database.DatabaseHelper;
+import ir.eynakgroup.diet.database.tables.UserInfo;
 import ir.eynakgroup.diet.network.RequestMethod;
 import ir.eynakgroup.diet.network.response_models.User;
 import ir.eynakgroup.diet.utils.JDateFormat;
@@ -194,14 +198,38 @@ public class SignUpActivity extends BaseActivity implements View.OnClickListener
                         break;
                     }
 
-                    new CreateAccountTask(this, KarafsAccountConfig.ACCOUNT_TYPE) {
-                        @Override
-                        protected void onPostExecute(Account result) {
-                            super.onPostExecute(result);
-                            setResult(RESULT_OK);
-                            finish();
-                        }
-                    }.execute(new CreateAccountTask.AccountInfo(mPhoneNumber, mPassword, mUser));
+                    try {
+                        UserInfo userInfo = new UserInfo();
+                        userInfo.setActivityLevel(mUser.getActivityLevel());
+                        userInfo.setAge(1396 - mYear);
+                        userInfo.setEmail(mPhoneNumber);
+                        userInfo.setApiKey(mPassword);
+                        userInfo.setDisease(mUser.getDiseases().toString());
+                        userInfo.setGender(mUser.getGender().ordinal());
+                        userInfo.setHeight(mUser.getHeight()+"");
+                        userInfo.setWeight(mUser.getWeight()+"");
+                        userInfo.setName(mUser.getName());
+                        userInfo.setCredit(1);
+                        getDBHelper().getUserDao().create(userInfo);
+
+                        System.out.println("--------------------------- user created !!!!");
+//                        setResult(RESULT_OK);
+                        startActivity(new Intent(SignUpActivity.this, MainActivity.class));
+                        finishAffinity();
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+//                        setResult(RESULT_CANCELED);
+                        finish();
+                    }
+
+//                    new CreateAccountTask(this, KarafsAccountConfig.ACCOUNT_TYPE) {
+//                        @Override
+//                        protected void onPostExecute(Account result) {
+//                            super.onPostExecute(result);
+//                            setResult(RESULT_OK);
+//                            finish();
+//                        }
+//                    }.execute(new CreateAccountTask.AccountInfo(mPhoneNumber, mPassword, mUser));
 
                 } else {
                     boolean goToNext = true;
@@ -252,12 +280,12 @@ public class SignUpActivity extends BaseActivity implements View.OnClickListener
                             }
                             break;
                         case 5:
-                            System.out.println("activity -------------- " + mUser.getActivityLevel() + "");
-//                            if(mUser.getActivityLevel() == -1){
-//                                goToNext = false;
-//                                getToast(getString(R.string.reg6_error)).show();
-//                                break;
-//                            }
+                            System.out.println("activity level -------------- " + mUser.getActivityLevel() + "");
+                            if(mUser.getActivityLevel() == -1){
+                                goToNext = false;
+                                getToast(getString(R.string.reg6_error)).show();
+                                break;
+                            }
 
                             break;
                         case 6:
@@ -611,7 +639,7 @@ public class SignUpActivity extends BaseActivity implements View.OnClickListener
                     radioGroup.setOnClickListener(new View.OnClickListener() {
                         @Override
                         public void onClick(View v) {
-                            switch (((ToggleButtonGroupTableLayout) v).getActiveId()) {
+                            switch (((ToggleButtonGroupTableLayout)v).getActiveId()) {
                                 case R.id.radio_very_low:
                                     mUser.setActivityLevel(1);
                                     break;

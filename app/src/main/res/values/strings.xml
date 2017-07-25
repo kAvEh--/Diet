@@ -191,9 +191,9 @@
     <!--"when a user tries to pick up one of cards.\n\n"-->
     <!--</string>-->
     //diet
-    <string name="trial_submit">استفاده از هدیه</string>
-    <string name="trial_tile">هفت روز هدیه رایگان</string>
-    <string name="trial_description">پیش از پرداخت اشتراک رژیم کرفس، می‌توانید در یک بازه زمانی هفت روزه، از تمامی امکانات این برنامه به صورت رایگان و بدون محدودیت بهره‌مند شوید.</string>
+    <string name="trial_usage">استفاده از هدیه</string>
+    <string name="trial_tile">ده روز هدیه رایگان ویژه الکامپ</string>
+    <string name="trial_description">پیش از پرداخت اشتراک رژیم کرفس، می‌توانید در بازه زمانی ده روزه از شروع نمایشگاه الکامپ، از تمامی امکانات این برنامه به صورت رایگان و بدون محدودیت بهره‌مند شوید.</string>
 
     //setup
     <string name="diet_avatar">رژیم کرفس</string>
@@ -227,5 +227,13 @@
 
     <string name="choose">انتخاب</string>
     <string name="didnt_adhere">این وعده را رعایت نکردم.</string>
+    
+    <string name="bmi">شاخص توده بدنی</string>
+    <string name="goal_weight">وزن هدف</string>
+    <string name="current_weight">وزن فعلی</string>
+    <string name="wait">صبر کنید...</string>
+
+    <string name="trial_elecomp">رژیم آزمایشی ویژه نمایشگاه الکامپ</string>
+
 
 </resources>

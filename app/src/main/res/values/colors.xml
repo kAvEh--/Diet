@@ -20,5 +20,11 @@
     <color name="colorDinner">#3999d4</color>
 
 
+    <color name="colorBreakfast">#6eac43</color>
+    <color name="colorLunch">#ee22bb</color>
+    <!--<color name="colorSnack">#febe1e</color>-->
+    <color name="colorSnack">#bf4250</color>
+    <color name="colorDinner">#3999d4</color>
+
 
 </resources>
