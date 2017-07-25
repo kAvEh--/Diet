@@ -241,18 +241,20 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(resultCode == RESULT_OK){
-            if(requestCode == SETUP_REQUEST_CODE){
-                System.out.println("------------------- result");
-                getAppPreferences().setHasDiet(true);
-                decorateStatusBar();
-                viewPager.setCurrentItem(1, false);
+        if(requestCode == SETUP_REQUEST_CODE){
+            if(resultCode == RESULT_OK){
+                if(requestCode == SETUP_REQUEST_CODE){
+                    System.out.println("------------------- result");
+                    getAppPreferences().setHasDiet(true);
+                    decorateStatusBar();
+                    viewPager.setCurrentItem(1, false);
 
 
-            }
-        }else if(resultCode == RESULT_CANCELED){
-            if(requestCode == SETUP_REQUEST_CODE){
+                }
+            }else if(resultCode == RESULT_CANCELED){
+                if(requestCode == SETUP_REQUEST_CODE){
 
+                }
             }
         }
     }

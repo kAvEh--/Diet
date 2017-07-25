@@ -52,7 +52,7 @@ import ir.eynakgroup.diet.utils.view.CustomViewPager;
 import ir.eynakgroup.diet.utils.view.JustifiedTextView;
 import ir.eynakgroup.diet.utils.view.ToggleButtonGroupTableLayout;
 
-public class SignUpActivity extends BaseActivity implements View.OnClickListener {
+public class  SignUpActivity extends BaseActivity implements View.OnClickListener {
 
     /**
      * The {@link android.support.v4.view.PagerAdapter} that will provide

@@ -477,7 +477,7 @@ public class SetupDietActivity extends BaseActivity implements View.OnClickListe
                                 // set the criteria like you would a QueryBuilder
                                 updateBuilder.where().eq("User_ID", user.getUserId());
                                 // update the value of your field(s)
-                                updateBuilder.updateColumnValue("Credit" /* column */, credit - 1 /* value */);
+                                updateBuilder.updateColumnValue("Credit", credit - 1);
                                 updateBuilder.update();
                             } catch (SQLException e) {
                                 e.printStackTrace();
@@ -772,44 +772,40 @@ public class SetupDietActivity extends BaseActivity implements View.OnClickListe
 
     }
 
-    private void generateDiet(float dailyCalorie) {
-
-    }
-
     private float calculateDailyRequiredCalorie(UserInfo user) throws SQLException {
 //        UserInfo user = getDBHelper().getUserDao().queryForAll().get(0);
         float tmp;
         if (user.getGender() == User.Gender.Female.ordinal())
-            tmp = (float) (655 + (9.479866 * user.getWeight()) + (1.8503947 * (user.getHeight() / 100)) - (4.7 * user.getAge()));
+            tmp = (float) (655 + (9.479866 * user.getWeight()) + (1.8503947 * user.getHeight()) - (4.7 * user.getAge()));
         else
-            tmp = (float) (66 + (13.889106 * user.getWeight()) + (5.0787429 * (user.getHeight() / 100)) - (6.8 * user.getAge()));
+            tmp = (float) (66 + (13.889106 * user.getWeight()) + (5.0787429 * user.getHeight()) - (6.8 * user.getAge()));
 
         return Math.round(tmp * getActivityProportion(user));
     }
 
     private float getActivityProportion(UserInfo user) {
-        float temp;
+        float factor;
         switch (user.getActivityLevel()) {
             case 1:
-                temp = 1.2f;
+                factor = 1.2f;
                 break;
             case 2:
-                temp = 1.3f;
+                factor = 1.3f;
                 break;
             case 3:
-                temp = 1.4f;
+                factor = 1.4f;
                 break;
             case 4:
-                temp = 1.6f;
+                factor = 1.6f;
                 break;
             case 5:
-                temp = 1.8f;
+                factor = 1.8f;
                 break;
             default:
-                temp = 1.2f;
+                factor = 1.2f;
                 break;
         }
-        return temp;
+        return factor;
     }
 
     private float calculateBMI(UserInfo user) throws SQLException {
@@ -861,29 +857,71 @@ public class SetupDietActivity extends BaseActivity implements View.OnClickListe
                 pivotCal = 7700;
         }
         float reqCal = calculateDailyRequiredCalorie(user);
-        float appropriateCal;
+        float dietCal;
         Map<Integer, Difficulty> difficulty = new HashMap();
-        if ((appropriateCal = reqCal - ((pivotCal * 1.2f) / 7)) > 1000)
-            difficulty.put(3, new Difficulty(appropriateCal, 4.8f));
-        if ((appropriateCal = reqCal - pivotCal / 7) > 1000)
-            difficulty.put(2, new Difficulty(appropriateCal, 4f));
-        if ((appropriateCal = reqCal - pivotCal / 14) > 1000)
-            difficulty.put(1, new Difficulty(appropriateCal, 2f));
+        if ((dietCal = reqCal - ((pivotCal * 1.2f) / 7)) >= 1000)
+            difficulty.put(3, new Difficulty(dietCal, 4.8f));
+        if ((dietCal = reqCal - (pivotCal / 7)) >= 1000)
+            difficulty.put(2, new Difficulty(dietCal, 4f));
+        if ((dietCal = reqCal - (pivotCal / 14)) >= 1000)
+            difficulty.put(1, new Difficulty(dietCal, 2f));
 
-        if (user.getGender() == User.Gender.Female.ordinal()) {
-            if (bmi >= 21 && bmi <= 23)
-                difficulty.put(0, new Difficulty(reqCal, user.getWeight() - calculateIdealWeight(user)));
-            if (bmi < 21)
-                difficulty.put(-1, new Difficulty(0.0f, 0.0f));
-        } else {
-            if (bmi >= 22 && bmi <= 24)
-                difficulty.put(0, new Difficulty(reqCal, user.getWeight() - calculateIdealWeight(user)));
-            if (bmi < 22)
-                difficulty.put(-1, new Difficulty(0.0f, 0.0f));
+        if(difficulty.size() == 0){
+            if (user.getGender() == User.Gender.Female.ordinal()) {
+                if (bmi >= 21 && bmi <= 23)
+                    difficulty.put(0, new Difficulty(reqCal, user.getWeight() - calculateIdealWeight(user)));
+                if (bmi < 21)
+                    difficulty.put(-1, new Difficulty(0.0f, 0.0f));
+            } else {
+                if (bmi >= 22 && bmi <= 24)
+                    difficulty.put(0, new Difficulty(reqCal, user.getWeight() - calculateIdealWeight(user)));
+                if (bmi < 22)
+                    difficulty.put(-1, new Difficulty(0.0f, 0.0f));
+            }
         }
 
         return difficulty;
     }
+
+    private void generateDiet(float dietCalorie) {
+        if(dietCalorie < 1000 || distance(dietCalorie, 1000)){
+            generateDietDB1000();
+            return;
+        }
+        if(distance(dietCalorie, 1250)){
+            generateDietDB1250();
+            return;
+        }
+
+        if(distance(dietCalorie, 1500)){
+            generateDietDB1500();
+            return;
+        }
+
+        if(distance(dietCalorie, 1750)){
+            generateDietDB1750();
+            return;
+        }
+
+        if(distance(dietCalorie, 2000)){
+            generateDietDB2000();
+            return;
+        }
+
+        if(distance(dietCalorie, 2250) || dietCalorie > 2250){
+            generateDietDB2250();
+            return;
+        }
+
+    }
+
+    private boolean distance(float dietCalorie, float dailyCalorie){
+        if(dietCalorie > dailyCalorie - 125 && dietCalorie <= dailyCalorie + 125)
+            return true;
+
+        return false;
+    }
+
 
     private void generateDietDB1000() {
 

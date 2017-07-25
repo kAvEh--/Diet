@@ -33,4 +33,12 @@ public class AppPreferences {
     }
 
 
+    public void setGoalWeight(float weight){
+        mPref.edit().putFloat("goal", weight).commit();
+    }
+    public float getGoalWeight(){
+        return mPref.getFloat("goal", 0.0f);
+    }
+
+
 }
