@@ -8,6 +8,9 @@ import android.content.SharedPreferences;
 public class AppPreferences {
 
     private SharedPreferences mPref;
+    private static final String FIRST_TIME = "first";
+    private static final String HAS_DIET = "already";
+
     public AppPreferences(Context context){
         mPref = context.getSharedPreferences(context.getPackageName(), Context.MODE_PRIVATE);
     }
@@ -15,10 +18,19 @@ public class AppPreferences {
 //        return new AppPreferences(context);
 //    }
     public void setFirstTime(boolean status){
-        mPref.edit().putBoolean("first", status).commit();
+        mPref.edit().putBoolean(FIRST_TIME, status).commit();
     }
     public boolean getFirstTime(){
-        return mPref.getBoolean("first", true);
+        return mPref.getBoolean(FIRST_TIME, true);
     }
+
+
+    public void setHasDiet(boolean status){
+        mPref.edit().putBoolean(HAS_DIET, status).commit();
+    }
+    public boolean getHasDiet(){
+        return mPref.getBoolean(HAS_DIET, false);
+    }
+
 
 }

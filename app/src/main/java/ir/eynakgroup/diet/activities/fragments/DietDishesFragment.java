@@ -1,6 +1,8 @@
 package ir.eynakgroup.diet.activities.fragments;
 
 import android.os.Bundle;
+import android.support.annotation.LayoutRes;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,10 +15,11 @@ public class DietDishesFragment extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String MEAL_ID = "meal_id";
+    private static final String RESOURCE_ID = "res_id";
 
     // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    private int mMealId;
+    private int mLayoutRes;
 
 
     public DietDishesFragment() {
@@ -27,14 +30,15 @@ public class DietDishesFragment extends Fragment {
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
      *
-     * @param param1 Parameter 1.
+     * @param mealId Parameter 1.
      * @return A new instance of fragment DietDishesFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static DietDishesFragment newInstance(String param1) {
+    public static DietDishesFragment newInstance(int mealId, @NonNull @LayoutRes int layout) {
         DietDishesFragment fragment = new DietDishesFragment();
         Bundle args = new Bundle();
-        args.putString(MEAL_ID, param1);
+        args.putInt(MEAL_ID, mealId);
+        args.putInt(RESOURCE_ID, layout);
         fragment.setArguments(args);
         return fragment;
     }
@@ -43,7 +47,8 @@ public class DietDishesFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mParam1 = getArguments().getString(MEAL_ID);
+            mMealId = getArguments().getInt(MEAL_ID);
+            mLayoutRes = getArguments().getInt(RESOURCE_ID);
         }
     }
 
@@ -51,7 +56,7 @@ public class DietDishesFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_diet_dishes, container, false);
+        return inflater.inflate(mLayoutRes, container, false);
     }
 
 }

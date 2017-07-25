@@ -61,6 +61,12 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
 //
 //        else if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
 //            window.setStatusBarColor(getResources().getColor(R.color.colorStatusBar));
+        getAppPreferences().setHasDiet(true);
+
+        if(getAppPreferences().getHasDiet())
+            clearLightStatusBar();
+        else
+            setLightStatusBar();
 
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
@@ -70,9 +76,9 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
 
             @Override
             public void onPageSelected(int position) {
-                if(position == 0)
-                    setLightStatusBar();
+                if(position == 0){
 
+                }
                 else{
                     clearLightStatusBar();
                     Fragment profile = mPagerAdapter.getItem(position);
