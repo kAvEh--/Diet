@@ -55,6 +55,11 @@ public class SetupDietActivity extends BaseActivity implements View.OnClickListe
     private ImageView imageBack;
     private TextView textTyping;
 
+    private static final int BREAKFAST_ID = 1;
+    private static final int LUNCH_ID = 2;
+    private static final int SNACK_ID = 3;
+    private static final int DINNER_ID = 4;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -885,31 +890,31 @@ public class SetupDietActivity extends BaseActivity implements View.OnClickListe
 
     private void generateDiet(float dietCalorie) {
         if(dietCalorie < 1000 || distance(dietCalorie, 1000)){
-            generateDietDB1000();
+            generateMonthlyDietDB(1000);
             return;
         }
         if(distance(dietCalorie, 1250)){
-            generateDietDB1250();
+            generateMonthlyDietDB(1250);
             return;
         }
 
         if(distance(dietCalorie, 1500)){
-            generateDietDB1500();
+            generateMonthlyDietDB(1500);
             return;
         }
 
         if(distance(dietCalorie, 1750)){
-            generateDietDB1750();
+            generateMonthlyDietDB(1750);
             return;
         }
 
         if(distance(dietCalorie, 2000)){
-            generateDietDB2000();
+            generateMonthlyDietDB(2000);
             return;
         }
 
         if(distance(dietCalorie, 2250) || dietCalorie > 2250){
-            generateDietDB2250();
+            generateMonthlyDietDB(2250);
             return;
         }
 
@@ -923,27 +928,7 @@ public class SetupDietActivity extends BaseActivity implements View.OnClickListe
     }
 
 
-    private void generateDietDB1000() {
-
-    }
-
-    private void generateDietDB1250() {
-
-    }
-
-    private void generateDietDB1500() {
-
-    }
-
-    private void generateDietDB1750() {
-
-    }
-
-    private void generateDietDB2000() {
-
-    }
-
-    private void generateDietDB2250() {
+    private void generateMonthlyDietDB(int amount) {
 
     }
 

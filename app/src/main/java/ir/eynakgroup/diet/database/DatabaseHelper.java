@@ -1,14 +1,19 @@
 package ir.eynakgroup.diet.database;
 
 import android.content.Context;
+import android.content.res.AssetManager;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
-import com.j256.ormlite.android.apptools.OpenHelperManager;
 import com.j256.ormlite.android.apptools.OrmLiteSqliteOpenHelper;
 import com.j256.ormlite.dao.Dao;
+import com.j256.ormlite.stmt.QueryBuilder;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -16,6 +21,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.sql.SQLException;
+import java.util.List;
 
 import ir.eynakgroup.diet.BuildConfig;
 import ir.eynakgroup.diet.database.tables.Diet;
@@ -24,7 +30,8 @@ import ir.eynakgroup.diet.database.tables.Exercise;
 import ir.eynakgroup.diet.database.tables.Food;
 import ir.eynakgroup.diet.database.tables.FoodUnit;
 import ir.eynakgroup.diet.database.tables.HatedFood;
-import ir.eynakgroup.diet.database.tables.History;
+import ir.eynakgroup.diet.database.tables.FoodPackage;
+import ir.eynakgroup.diet.database.tables.PackageFood;
 import ir.eynakgroup.diet.database.tables.UserInfo;
 import ir.eynakgroup.diet.utils.AppPreferences;
 
@@ -35,7 +42,10 @@ import ir.eynakgroup.diet.utils.AppPreferences;
 public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 
     private static final String DATABASE_NAME = "diet.db";
+    private static final String PACKAGE_NAME = "packages.json";
     private static final String DATABASE_PATH = "/data/data/" + BuildConfig.APPLICATION_ID + "/databases/";
+    private AppPreferences mAppPreferences;
+    private Context mContext;
 
     public DatabaseHelper(Context context) {
         this(context, DATABASE_NAME, null, BuildConfig.DATABASE_VERSION);
@@ -43,21 +53,21 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 
     private DatabaseHelper(Context context, String databaseName, SQLiteDatabase.CursorFactory factory, int databaseVersion) {
         super(context, databaseName, factory, databaseVersion);
-        if(new AppPreferences(context).getFirstTime() || !existDB())
-            copyDB(context);
+        if(mContext == null)
+            mContext = context;
+
+        if(mAppPreferences == null)
+            mAppPreferences = new AppPreferences(context);
+
+        if(mAppPreferences.getFirstTime() || !existDB()){
+            copyDB();
+            insertPackages();
+        }
     }
 
     @Override
     public void onCreate(SQLiteDatabase database, ConnectionSource connectionSource) {
-//        try {
-//            // Create tables. This onCreate() method will be invoked only once of the application life time i.e. the first time when the application starts.
-//            TableUtils.createTableIfNotExists(connectionSource, UserInfo.class);
-//            TableUtils.createTableIfNotExists(connectionSource, Exercise.class);
-//            TableUtils.createTableIfNotExists(connectionSource, History.class);
-//
-//        } catch (SQLException e) {
-//            Log.e(DatabaseHelper.class.getName(), "Unable to create datbases", e);
-//        }
+
     }
 
     @Override
@@ -65,14 +75,90 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 
     }
 
-    private void copyDB(Context context) {
+    private void insertPackages(){
+        try {
+            TableUtils.createTableIfNotExists(getConnectionSource(), FoodPackage.class);
+            TableUtils.createTableIfNotExists(getConnectionSource(), PackageFood.class);
+
+            InputStream inputStream = mContext.getAssets().open(PACKAGE_NAME, AssetManager.ACCESS_BUFFER);
+            StringBuilder stringBuilder = new StringBuilder();
+            byte[] buffer = new byte[1024];
+            int length;
+            while ((length = inputStream.read(buffer)) > 0) {
+                stringBuilder.append(new String(buffer, "UTF-8").toCharArray(), 0, length);
+            }
+
+            JSONArray packageArray = new JSONArray(stringBuilder.toString());
+            for(int i = 0; i < packageArray.length(); i++){
+                JSONObject jsonObject = packageArray.getJSONObject(i);
+                JSONArray foods = jsonObject.getJSONArray("foods");
+                for(int j = 0; j < foods.length(); j++){
+                    JSONObject food = foods.getJSONObject(j);
+                    PackageFood packageFood = new PackageFood();
+                    packageFood.setFoodId(food.getInt("foodId"));
+                    packageFood.setAmount1000(food.getJSONObject("amount").getString("1000"));
+                    packageFood.setAmount1250(food.getJSONObject("amount").getString("1250"));
+                    packageFood.setAmount1500(food.getJSONObject("amount").getString("1500"));
+                    packageFood.setAmount1750(food.getJSONObject("amount").getString("1750"));
+                    packageFood.setAmount2000(food.getJSONObject("amount").getString("2000"));
+                    packageFood.setAmount2250(food.getJSONObject("amount").getString("2250"));
+                    packageFood.setIsStandard(food.getInt("isStandard"));
+                    packageFood.setServerId(jsonObject.getString("_id"));
+                    getPackageFoodDao().create(packageFood);
+                }
+
+                FoodPackage foodPackage = new FoodPackage();
+                foodPackage.setId(jsonObject.getString("_id"));
+                foodPackage.setMealID(jsonObject.getInt("mealId"));
+                foodPackage.setPackageId(jsonObject.getInt("packageId"));
+                foodPackage.setDeleted(jsonObject.getInt("deleted"));
+                foodPackage.setUpdatedAt(jsonObject.getString("updatedAt"));
+                foodPackage.setCategoryId(jsonObject.getInt("categoryId"));
+                JSONArray hatedList = jsonObject.getJSONArray("hatedList");
+                String hatedFoods = "";
+                for(int k = 0; k < hatedList.length(); k++)
+                    if(k == hatedList.length() - 1)
+                        hatedFoods += hatedList.getInt(k);
+                    else
+                        hatedFoods += hatedList.getInt(k) + ",";
+
+                foodPackage.setHatedList(hatedFoods);
+                QueryBuilder<PackageFood, Integer> queryBuilder = getPackageFoodDao().queryBuilder();
+                queryBuilder.where().eq("serverId", foodPackage.getId());
+                List<PackageFood> packageFoods = queryBuilder.query();
+                String foodIds = "";
+                for(int m = 0; m < packageFoods.size(); m++)
+                    if(m == packageFoods.size() - 1)
+                        foodIds += packageFoods.get(m).getId();
+                    else
+                        foodIds += packageFoods.get(m).getId()+",";
+
+                foodPackage.setFoods(foodIds);
+                getFoodPackageDao().create(foodPackage);
+            }
+
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        System.out.println("packages added!!! -------------------");
+
+    }
+
+
+    private void copyDB() {
         System.out.println("coping pre-made database...");
         try {
             File dir = new File(DATABASE_PATH);
             if(dir.exists())
                 dir.delete();
             dir.mkdirs();
-            InputStream inputStream = context.getAssets().open(DATABASE_NAME);
+            InputStream inputStream = mContext.getAssets().open(DATABASE_NAME, AssetManager.ACCESS_BUFFER);
             String dbFileName = DATABASE_PATH + DATABASE_NAME;
             Log.i(DatabaseHelper.class.getName(), "DB Path : " + dbFileName);
 
@@ -142,12 +228,12 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
         return hatedDao;
     }
 
-    private Dao<History, Integer> historyDao;
-    public Dao<History, Integer> getHistoryDao() throws SQLException {
-        if (historyDao == null) {
-            historyDao = getDao(History.class);
+    private Dao<FoodPackage, Integer> foodPackageDao;
+    public Dao<FoodPackage, Integer> getFoodPackageDao() throws SQLException {
+        if (foodPackageDao == null) {
+            foodPackageDao = getDao(FoodPackage.class);
         }
-        return historyDao;
+        return foodPackageDao;
     }
 
     private Dao<UserInfo, Integer> userDao;
@@ -156,5 +242,13 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
             userDao = getDao(UserInfo.class);
         }
         return userDao;
+    }
+
+    private Dao<PackageFood, Integer> packageFoodDao;
+    public Dao<PackageFood, Integer> getPackageFoodDao() throws SQLException {
+        if (packageFoodDao == null) {
+            packageFoodDao = getDao(PackageFood.class);
+        }
+        return packageFoodDao;
     }
 }

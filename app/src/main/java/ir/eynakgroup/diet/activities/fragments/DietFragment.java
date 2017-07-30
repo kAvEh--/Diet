@@ -25,14 +25,14 @@ import ir.eynakgroup.diet.R;
 
 public class DietFragment extends Fragment {
 
-    final int BREAKFAST = 3;
-    final int LUNCH = 2;
-    final int SNACK = 1;
-    final int DINNER = 0;
+    private static final int BREAKFAST = 3;
+    private static final int LUNCH = 2;
+    private static final int SNACK = 1;
+    private static final int DINNER = 0;
 
-    final int TODAY = 0;
-    final int TOMORROW = 1;
-    final int DAY_AFTER_TOMORROW = 2;
+    private static final int TODAY = 0;
+    private static final int TOMORROW = 1;
+    private static final int DAY_AFTER_TOMORROW = 2;
 
     private static DietFragment mDietFragmentInstance = null;
     public static final String TAG = "FRAGMENT_DIET";
@@ -157,7 +157,7 @@ public class DietFragment extends Fragment {
         viewPager.setAdapter(adapter);
     }
 
-    class ViewPagerAdapter extends FragmentPagerAdapter{
+    class ViewPagerAdapter extends FragmentPagerAdapter {
 
         private final List<Fragment> mFragmentList = new ArrayList<>();
         private final List<String> mFragmentTitleList = new ArrayList<>();
