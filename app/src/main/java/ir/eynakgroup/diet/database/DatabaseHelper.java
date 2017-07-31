@@ -7,6 +7,7 @@ import android.util.Log;
 
 import com.j256.ormlite.android.apptools.OrmLiteSqliteOpenHelper;
 import com.j256.ormlite.dao.Dao;
+import com.j256.ormlite.stmt.QueryBuilder;
 import com.j256.ormlite.support.ConnectionSource;
 import com.j256.ormlite.table.TableUtils;
 
@@ -20,6 +21,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.sql.SQLException;
+import java.util.List;
 
 import ir.eynakgroup.diet.BuildConfig;
 import ir.eynakgroup.diet.database.tables.Diet;
@@ -52,13 +54,13 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 
     private DatabaseHelper(Context context, String databaseName, SQLiteDatabase.CursorFactory factory, int databaseVersion) {
         super(context, databaseName, factory, databaseVersion);
-        if(mContext == null)
+        if (mContext == null)
             mContext = context;
 
-        if(mAppPreferences == null)
+        if (mAppPreferences == null)
             mAppPreferences = new AppPreferences(context);
 
-        if(mAppPreferences.getFirstTime() || !existDB()){
+        if (mAppPreferences.getFirstTime() || !existDB()) {
             copyDB();
             insertPackages();
         }
@@ -74,7 +76,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 
     }
 
-    private void insertPackages(){
+    private void insertPackages() {
         try {
             TableUtils.createTableIfNotExists(getConnectionSource(), FoodPackage.class);
             TableUtils.createTableIfNotExists(getConnectionSource(), PackageFood.class);
@@ -83,6 +85,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
             insertFoodPackages();
             insertFoods();
 
+            
         } catch (SQLException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -104,7 +107,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
         }
 
         JSONArray foodArray = new JSONArray(stringBuilder.toString());
-        for(int i = 0; i < foodArray.length(); i++){
+        for (int i = 0; i < foodArray.length(); i++) {
             JSONObject jsonObject = foodArray.getJSONObject(i);
             Food food = new Food();
             food.setId(jsonObject.getString("_id"));
@@ -128,10 +131,10 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
             stringBuilder.append(chars, 0, chars.length);
         }
         JSONArray packageArray = new JSONArray(stringBuilder.toString());
-        for(int i = 0; i < packageArray.length(); i++){
+        for (int i = 0; i < packageArray.length(); i++) {
             JSONObject jsonObject = packageArray.getJSONObject(i);
             JSONArray foods = jsonObject.getJSONArray("foods");
-            for(int j = 0; j < foods.length(); j++){
+            for (int j = 0; j < foods.length(); j++) {
                 JSONObject food = foods.getJSONObject(j);
                 PackageFood packageFood = new PackageFood();
                 packageFood.setFoodId(food.getInt("foodId"));
@@ -155,24 +158,24 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
             foodPackage.setCategoryId(jsonObject.getInt("categoryId"));
             JSONArray hatedList = jsonObject.getJSONArray("hatedList");
             String hatedFoods = "";
-            for(int k = 0; k < hatedList.length(); k++)
-                if(k == hatedList.length() - 1)
+            for (int k = 0; k < hatedList.length(); k++)
+                if (k == hatedList.length() - 1)
                     hatedFoods += hatedList.getInt(k);
                 else
                     hatedFoods += hatedList.getInt(k) + ",";
 
             foodPackage.setHatedList(hatedFoods);
-//                QueryBuilder<PackageFood, Integer> queryBuilder = getPackageFoodDao().queryBuilder();
-//                queryBuilder.where().eq("serverId", foodPackage.getId());
-//                List<PackageFood> packageFoods = queryBuilder.query();
-//                String foodIds = "";
-//                for(int m = 0; m < packageFoods.size(); m++)
-//                    if(m == packageFoods.size() - 1)
-//                        foodIds += packageFoods.get(m).getId();
-//                    else
-//                        foodIds += packageFoods.get(m).getId()+",";
-//
-//                foodPackage.setFoods(foodIds);
+            QueryBuilder<PackageFood, Integer> queryBuilder = getPackageFoodDao().queryBuilder();
+            queryBuilder.where().eq("_id", foodPackage.getId());
+            List<PackageFood> packageFoods = queryBuilder.query();
+            String foodIds = "";
+            for (int m = 0; m < packageFoods.size(); m++)
+                if (m == packageFoods.size() - 1)
+                    foodIds += packageFoods.get(m).getFoodId();
+                else
+                    foodIds += packageFoods.get(m).getFoodId() + ",";
+
+            foodPackage.setFoods(foodIds);
             getFoodPackageDao().create(foodPackage);
         }
 
@@ -184,10 +187,10 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
         System.out.println("coping pre-made database...");
         try {
             File dir = new File(DATABASE_PATH);
-            if(dir.exists())
+            if (dir.exists())
                 dir.delete();
             dir.mkdirs();
-            InputStream inputStream = mContext.getAssets().open("database/"+DATABASE_NAME, AssetManager.ACCESS_BUFFER);
+            InputStream inputStream = mContext.getAssets().open("database/" + DATABASE_NAME, AssetManager.ACCESS_BUFFER);
             String dbFileName = DATABASE_PATH + DATABASE_NAME;
             Log.i(DatabaseHelper.class.getName(), "DB Path : " + dbFileName);
 
@@ -205,11 +208,12 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
         }
     }
 
-    private boolean existDB(){
+    private boolean existDB() {
         return new File(DATABASE_PATH + DATABASE_NAME).exists();
     }
 
     private Dao<Dish, Integer> dishDao;
+
     public Dao<Dish, Integer> getDishDao() throws SQLException {
         if (dishDao == null) {
             dishDao = getDao(Dish.class);
@@ -218,6 +222,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
     }
 
     private Dao<Food, Integer> foodDao;
+
     public Dao<Food, Integer> getFoodDao() throws SQLException {
         if (foodDao == null) {
             foodDao = getDao(Food.class);
@@ -226,6 +231,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
     }
 
     private Dao<Diet, Integer> dietDao;
+
     public Dao<Diet, Integer> getDietDao() throws SQLException {
         if (dietDao == null) {
             dietDao = getDao(Diet.class);
@@ -234,6 +240,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
     }
 
     private Dao<Exercise, Integer> exerciseDao;
+
     public Dao<Exercise, Integer> getExerciseDao() throws SQLException {
         if (exerciseDao == null) {
             exerciseDao = getDao(Exercise.class);
@@ -242,6 +249,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
     }
 
     private Dao<FoodUnit, Integer> unitDao;
+
     public Dao<FoodUnit, Integer> getFoodUnitDao() throws SQLException {
         if (unitDao == null) {
             unitDao = getDao(FoodUnit.class);
@@ -250,6 +258,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
     }
 
     private Dao<HatedFood, Integer> hatedDao;
+
     public Dao<HatedFood, Integer> getHatedFoodDao() throws SQLException {
         if (hatedDao == null) {
             hatedDao = getDao(HatedFood.class);
@@ -258,6 +267,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
     }
 
     private Dao<FoodPackage, Integer> foodPackageDao;
+
     public Dao<FoodPackage, Integer> getFoodPackageDao() throws SQLException {
         if (foodPackageDao == null) {
             foodPackageDao = getDao(FoodPackage.class);
@@ -266,6 +276,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
     }
 
     private Dao<UserInfo, Integer> userDao;
+
     public Dao<UserInfo, Integer> getUserDao() throws SQLException {
         if (userDao == null) {
             userDao = getDao(UserInfo.class);
@@ -274,6 +285,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
     }
 
     private Dao<PackageFood, Integer> packageFoodDao;
+
     public Dao<PackageFood, Integer> getPackageFoodDao() throws SQLException {
         if (packageFoodDao == null) {
             packageFoodDao = getDao(PackageFood.class);

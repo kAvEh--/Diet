@@ -8,7 +8,7 @@ import com.j256.ormlite.table.DatabaseTable;
  * Created by Shayan on 7/29/2017.
  */
 
-@DatabaseTable(tableName = "FoodPackages")
+@DatabaseTable(tableName = "Food_Packages")
 public class FoodPackage {
     @DatabaseField(columnName = "_id", dataType = DataType.STRING)
     private String id;
@@ -16,6 +16,8 @@ public class FoodPackage {
     private int mealID;
     @DatabaseField(columnName = "packageId", dataType = DataType.INTEGER)
     private int packageId;
+    @DatabaseField(columnName = "foods", dataType = DataType.STRING)
+    private String foods;
     @DatabaseField(columnName = "hatedList", dataType = DataType.STRING)
     private String hatedList;
     @DatabaseField(columnName = "updatedAt", dataType = DataType.STRING)
@@ -79,5 +81,13 @@ public class FoodPackage {
 
     public void setCategoryId(int categoryId) {
         this.categoryId = categoryId;
+    }
+
+    public String getFoods() {
+        return foods;
+    }
+
+    public void setFoods(String foods) {
+        this.foods = foods;
     }
 }

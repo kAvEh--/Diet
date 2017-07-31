@@ -7,7 +7,7 @@ import com.j256.ormlite.table.DatabaseTable;
 /**
  * Created by Shayan on 7/29/2017.
  */
-@DatabaseTable(tableName = "PackageFoods")
+@DatabaseTable(tableName = "Package_Foods")
 public class PackageFood {
     @DatabaseField(columnName = "_id", dataType = DataType.STRING)
     private String id;

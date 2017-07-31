@@ -8,6 +8,9 @@ import android.widget.RadioButton;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 
+import ir.eynakgroup.diet.R;
+import ir.eynakgroup.diet.network.response_models.User;
+
 /**
  * Created by Shayan on 2/16/2017.
  */
@@ -16,6 +19,7 @@ public class ToggleButtonGroupTableLayout extends TableLayout implements OnClick
 
     private static final String TAG = "ToggleButtonGroupTableLayout";
     private RadioButton activeRadioButton;
+    private User mUser;
 
     /**
      * @param context
@@ -41,15 +45,36 @@ public class ToggleButtonGroupTableLayout extends TableLayout implements OnClick
             activeRadioButton.setChecked(false);
         }
         rb.setChecked(true);
+        switch (rb.getId()) {
+            case R.id.radio_very_low:
+                mUser.setActivityLevel(1);
+                break;
+            case R.id.radio_low:
+                mUser.setActivityLevel(2);
+                break;
+            case R.id.radio_normal:
+                mUser.setActivityLevel(3);
+                break;
+            case R.id.radio_high:
+                mUser.setActivityLevel(4);
+                break;
+            case R.id.radio_very_high:
+                mUser.setActivityLevel(5);
+                break;
+        }
         activeRadioButton = rb;
     }
 
-    public int getActiveId(){
-        if(activeRadioButton != null)
-            return activeRadioButton.getId();
-
-        return -1;
+    public void setUser(User user){
+        mUser = user;
     }
+
+//    public int getActiveId(){
+//        if(activeRadioButton != null)
+//            return activeRadioButton.getId();
+//
+//        return -1;
+//    }
 
     /* (non-Javadoc)
      * @see android.widget.TableLayout#addView(android.view.View, int, android.view.ViewGroup.LayoutParams)

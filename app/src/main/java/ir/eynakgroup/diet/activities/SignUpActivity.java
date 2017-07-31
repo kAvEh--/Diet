@@ -213,12 +213,13 @@ public class  SignUpActivity extends BaseActivity implements View.OnClickListene
                         getDBHelper().getUserDao().create(userInfo);
 
                         System.out.println("--------------------------- user created !!!!");
-//                        setResult(RESULT_OK);
-                        startActivity(new Intent(SignUpActivity.this, MainActivity.class));
-                        finishAffinity();
+                        setResult(RESULT_OK);
+                        finish();
+//                        startActivity(new Intent(SignUpActivity.this, MainActivity.class));
+//                        finishAffinity();
                     } catch (SQLException e) {
                         e.printStackTrace();
-//                        setResult(RESULT_CANCELED);
+                        setResult(RESULT_CANCELED);
                         finish();
                     }
 
@@ -614,6 +615,7 @@ public class  SignUpActivity extends BaseActivity implements View.OnClickListene
                     break;
                 case 6:
                     final ToggleButtonGroupTableLayout radioGroup = (ToggleButtonGroupTableLayout) view.findViewById(R.id.radio_group);
+                    radioGroup.setUser(mUser);
                     final RadioButton radioLow = (RadioButton) view.findViewById(R.id.radio_low);
                     final RadioButton radioVeryLow = (RadioButton) view.findViewById(R.id.radio_very_low);
                     final RadioButton radioNormal = (RadioButton) view.findViewById(R.id.radio_normal);
@@ -634,30 +636,6 @@ public class  SignUpActivity extends BaseActivity implements View.OnClickListene
 
                     radioVeryHigh.setWidth((int) (mDisplayMetrics.widthPixels / 2.5));
                     radioVeryHigh.setHeight(mDisplayMetrics.heightPixels / 15);
-
-
-                    radioGroup.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            switch (((ToggleButtonGroupTableLayout)v).getActiveId()) {
-                                case R.id.radio_very_low:
-                                    mUser.setActivityLevel(1);
-                                    break;
-                                case R.id.radio_low:
-                                    mUser.setActivityLevel(2);
-                                    break;
-                                case R.id.radio_normal:
-                                    mUser.setActivityLevel(3);
-                                    break;
-                                case R.id.radio_high:
-                                    mUser.setActivityLevel(4);
-                                    break;
-                                case R.id.radio_very_high:
-                                    mUser.setActivityLevel(5);
-                                    break;
-                            }
-                        }
-                    });
 
                     break;
 

@@ -61,7 +61,7 @@ public class RegisterActivity extends BaseActivity {
     private boolean boundService = false;
 
     private static final int INTRO_REQUEST_CODE = 123;
-//    private static final int SIGN_UP_REQUEST_CODE = 124;
+    private static final int SIGN_UP_REQUEST_CODE = 124;
 
     private static final String FRAGMENT_REGISTER = "register";
     private static final String FRAGMENT_LOGIN = "login";
@@ -240,7 +240,7 @@ public class RegisterActivity extends BaseActivity {
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-//        super.onActivityResult(requestCode, resultCode, data);
+        super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK) {
             switch (requestCode) {
                 case INTRO_REQUEST_CODE:
@@ -253,11 +253,11 @@ public class RegisterActivity extends BaseActivity {
                     viewPager.setCurrentItem(0, false);
 
                     break;
-//                case SIGN_UP_REQUEST_CODE:
-//                    System.out.println("Account created!");
-//                    startActivity(new Intent(RegisterActivity.this, MainActivity.class));
-//                    finish();
-//                    break;
+                case SIGN_UP_REQUEST_CODE:
+                    System.out.println("Account created!");
+                    startActivity(new Intent(RegisterActivity.this, MainActivity.class));
+                    finish();
+                    break;
 
                 default:
 
@@ -267,9 +267,9 @@ public class RegisterActivity extends BaseActivity {
                 case INTRO_REQUEST_CODE:
                     finish();
                     break;
-//                case SIGN_UP_REQUEST_CODE:
-//                    System.out.println("inja-----------");
-//                    break;
+                case SIGN_UP_REQUEST_CODE:
+                    System.out.println("inja-----------");
+                    break;
 
                 default:
             }
@@ -408,8 +408,8 @@ public class RegisterActivity extends BaseActivity {
         public void onClick(View v) {
             switch (v.getId()) {
                 case R.id.btn_sign_up:
-//                    startActivityForResult(new Intent(mContext, SignUpActivity.class), SIGN_UP_REQUEST_CODE);
-                    mContext.startActivity(new Intent(mContext, SignUpActivity.class));
+                    startActivityForResult(new Intent(mContext, SignUpActivity.class), SIGN_UP_REQUEST_CODE);
+//                    mContext.startActivity(new Intent(mContext, SignUpActivity.class));
                     break;
                 case R.id.btn_sign_in_karafs:
 
