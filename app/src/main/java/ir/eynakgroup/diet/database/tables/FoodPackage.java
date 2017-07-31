@@ -16,8 +16,6 @@ public class FoodPackage {
     private int mealID;
     @DatabaseField(columnName = "packageId", dataType = DataType.INTEGER)
     private int packageId;
-    @DatabaseField(columnName = "foods", dataType = DataType.STRING)
-    private String foods;
     @DatabaseField(columnName = "hatedList", dataType = DataType.STRING)
     private String hatedList;
     @DatabaseField(columnName = "updatedAt", dataType = DataType.STRING)
@@ -49,14 +47,6 @@ public class FoodPackage {
 
     public void setPackageId(int packageId) {
         this.packageId = packageId;
-    }
-
-    public String getFoods() {
-        return foods;
-    }
-
-    public void setFoods(String foods) {
-        this.foods = foods;
     }
 
     public String getHatedList() {

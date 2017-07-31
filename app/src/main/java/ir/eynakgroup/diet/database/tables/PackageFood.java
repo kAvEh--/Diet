@@ -9,11 +9,8 @@ import com.j256.ormlite.table.DatabaseTable;
  */
 @DatabaseTable(tableName = "PackageFoods")
 public class PackageFood {
-    @DatabaseField(columnName = "serverId", dataType = DataType.STRING)
-    private String serverId;
-
-    @DatabaseField(columnName = "_id", dataType = DataType.INTEGER, generatedId = true)
-    private int id;
+    @DatabaseField(columnName = "_id", dataType = DataType.STRING)
+    private String id;
 
     @DatabaseField(columnName = "foodId", dataType = DataType.INTEGER)
     private int foodId;
@@ -40,21 +37,13 @@ public class PackageFood {
     private int isStandard;
 
 
-    public String getServerId() {
-        return serverId;
-    }
-
-    public void setServerId(String serverId) {
-        this.serverId = serverId;
-    }
-
-    public int getId() {
+    public String getId() {
         return id;
     }
 
-//    public void setId(int id) {
-//        this.id = id;
-//    }
+    public void setId(String id) {
+        this.id = id;
+    }
 
     public int getFoodId() {
         return foodId;

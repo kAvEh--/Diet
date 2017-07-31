@@ -9,20 +9,18 @@ import com.j256.ormlite.table.DatabaseTable;
  */
 @DatabaseTable(tableName = "Foods")
 public class Food {
-    @DatabaseField(columnName = "Food_ID", dataType = DataType.INTEGER)
+    @DatabaseField(columnName = "_id", dataType = DataType.STRING)
+    private String id;
+    @DatabaseField(columnName = "foodId", dataType = DataType.INTEGER)
     private int foodId;
-    @DatabaseField(columnName = "Food_Name", dataType = DataType.STRING)
+    @DatabaseField(columnName = "foodName", dataType = DataType.STRING)
     private String foodName;
-    @DatabaseField(columnName = "Std_Energy", dataType = DataType.BIG_DECIMAL_NUMERIC)
-    private float stdEnergy;
-    @DatabaseField(columnName = "Std_Protein", dataType = DataType.BIG_DECIMAL_NUMERIC)
-    private float stdProtein;
-    @DatabaseField(columnName = "Sec_Unit_ID", dataType = DataType.INTEGER)
+    @DatabaseField(columnName = "secondUnitId", dataType = DataType.INTEGER)
     private int unitId;
-    @DatabaseField(columnName = "Unit_Energy", dataType = DataType.BIG_DECIMAL_NUMERIC)
-    private float unitEnergy;
-    @DatabaseField(columnName = "Unit_Protein", dataType = DataType.BIG_DECIMAL_NUMERIC)
-    private float unitProtein;
+    @DatabaseField(columnName = "isPacked", dataType = DataType.INTEGER)
+    private int isPacked;
+    @DatabaseField(columnName = "deleted", dataType = DataType.INTEGER)
+    private int deleted;
 
 
     public int getFoodId() {
@@ -41,22 +39,6 @@ public class Food {
         this.foodName = foodName;
     }
 
-    public float getStdEnergy() {
-        return stdEnergy;
-    }
-
-    public void setStdEnergy(float stdEnergy) {
-        this.stdEnergy = stdEnergy;
-    }
-
-    public float getStdProtein() {
-        return stdProtein;
-    }
-
-    public void setStdProtein(float stdProtein) {
-        this.stdProtein = stdProtein;
-    }
-
     public int getUnitId() {
         return unitId;
     }
@@ -65,19 +47,27 @@ public class Food {
         this.unitId = unitId;
     }
 
-    public float getUnitEnergy() {
-        return unitEnergy;
+    public String getId() {
+        return id;
     }
 
-    public void setUnitEnergy(float unitEnergy) {
-        this.unitEnergy = unitEnergy;
+    public void setId(String id) {
+        this.id = id;
     }
 
-    public float getUnitProtein() {
-        return unitProtein;
+    public int getIsPacked() {
+        return isPacked;
     }
 
-    public void setUnitProtein(float unitProtein) {
-        this.unitProtein = unitProtein;
+    public void setIsPacked(int isPacked) {
+        this.isPacked = isPacked;
+    }
+
+    public int getDeleted() {
+        return deleted;
+    }
+
+    public void setDeleted(int deleted) {
+        this.deleted = deleted;
     }
 }
