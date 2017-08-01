@@ -65,21 +65,20 @@ public class ProfileFragment extends Fragment {
         final TextView textList = (CustomTextView) view.findViewById(R.id.txt_list);
         final TextView textCredit = (CustomTextView) view.findViewById(R.id.txt_credit);
         final TextView textBMI = (CustomTextView) view.findViewById(R.id.txt_bmi);
-        final TextView textGoalWeight = (CustomTextView) view.findViewById(R.id.txt_goal_weight);
-        final TextView textCurWeight = (CustomTextView) view.findViewById(R.id.txt_current_weight);
+        final TextView textTotalPoint = (CustomTextView) view.findViewById(R.id.txt_total_point);
 
 
         final NumberPicker picker = (NumberPicker) view.findViewById(R.id.diet_picker);
         picker.setTypeface(Typeface.createFromAsset(getContext().getAssets(), "fonts/iran_sans_light.ttf"));
-        float goalWeight = 0.0f;
-        if(goalWeight != appPreferences.getGoalWeight())
-            textGoalWeight.setText(round(goalWeight, 1)+"");
+//        float goalWeight = 0.0f;
+//        if(goalWeight != appPreferences.getGoalWeight())
+//            textGoalWeight.setText(round(goalWeight, 1)+"");
 
         DatabaseHelper databaseHelper = new DatabaseHelper(mContext);
         try {
             UserInfo user = databaseHelper.getUserDao().queryForAll().get(0);
             textName.setText(user.getName());
-            textCurWeight.setText(round(user.getWeight(), 1)+"");
+//            textCurWeight.setText(round(user.getWeight(), 1)+"");
             textBMI.setText(round(calculateBMI(user), 1)+"");
             textCredit.setText(user.getCredit()+"");
         } catch (SQLException e) {

@@ -229,8 +229,8 @@
     <string name="didnt_adhere">این وعده را رعایت نکردم.</string>
     
     <string name="bmi">شاخص توده بدنی</string>
-    <string name="goal_weight">وزن هدف</string>
-    <string name="current_weight">وزن فعلی</string>
+    <string name="diet_number">رژیم باقی‌مانده</string>
+    <string name="total_point">جمع امتیاز</string>
     <string name="wait">صبر کنید ...</string>
 
     <string name="trial_elecomp">رژیم آزمایشی ویژه نمایشگاه الکامپ</string>

@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.graphics.Rect;
 import android.graphics.Typeface;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
@@ -25,7 +26,13 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.google.android.flexbox.FlexboxLayout;
+import com.j256.ormlite.stmt.QueryBuilder;
 import com.j256.ormlite.stmt.UpdateBuilder;
+import com.j256.ormlite.table.TableUtils;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -33,11 +40,19 @@ import java.io.InputStreamReader;
 import java.lang.ref.WeakReference;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 import ir.eynakgroup.diet.R;
+import ir.eynakgroup.diet.database.tables.Diet;
+import ir.eynakgroup.diet.database.tables.FoodPackage;
+import ir.eynakgroup.diet.database.tables.PackageFood;
 import ir.eynakgroup.diet.database.tables.UserInfo;
 import ir.eynakgroup.diet.network.response_models.User;
 import ir.eynakgroup.diet.utils.view.CustomTextView;
@@ -64,6 +79,10 @@ public class SetupDietActivity extends BaseActivity implements View.OnClickListe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_setup);
+
+
+        generateDiet(1750, 2.0f);
+        System.out.println("---------------------------------------------"+createDietJson());
 
         textTyping = (TextView) findViewById(R.id.txt_typing);
         imageBack = (ImageView) findViewById(R.id.img_back);
@@ -864,23 +883,26 @@ public class SetupDietActivity extends BaseActivity implements View.OnClickListe
         float reqCal = calculateDailyRequiredCalorie(user);
         float dietCal;
         Map<Integer, Difficulty> difficulty = new HashMap();
-        if ((dietCal = reqCal - ((pivotCal * 1.2f) / 7)) >= 1000)
+        if (reqCal - ((pivotCal * 1.2f) / 7) >= 1000) {
+            dietCal = reqCal - (pivotCal / 7);
             difficulty.put(3, new Difficulty(dietCal, 4.8f));
+        }
         if ((dietCal = reqCal - (pivotCal / 7)) >= 1000)
             difficulty.put(2, new Difficulty(dietCal, 4f));
+
         if ((dietCal = reqCal - (pivotCal / 14)) >= 1000)
             difficulty.put(1, new Difficulty(dietCal, 2f));
 
         if(difficulty.size() == 0){
             if (user.getGender() == User.Gender.Female.ordinal()) {
-                if (bmi >= 21 && bmi <= 23)
+                if (bmi > 21 && bmi <= 23)
                     difficulty.put(0, new Difficulty(reqCal, user.getWeight() - calculateIdealWeight(user)));
-                if (bmi < 21)
+                if (bmi <= 21)
                     difficulty.put(-1, new Difficulty(0.0f, 0.0f));
             } else {
-                if (bmi >= 22 && bmi <= 24)
+                if (bmi > 22 && bmi <= 24)
                     difficulty.put(0, new Difficulty(reqCal, user.getWeight() - calculateIdealWeight(user)));
-                if (bmi < 22)
+                if (bmi <= 22)
                     difficulty.put(-1, new Difficulty(0.0f, 0.0f));
             }
         }
@@ -888,33 +910,33 @@ public class SetupDietActivity extends BaseActivity implements View.OnClickListe
         return difficulty;
     }
 
-    private void generateDiet(float dietCalorie) {
+    private void generateDiet(float dietCalorie, float amount) {
         if(dietCalorie < 1000 || distance(dietCalorie, 1000)){
-            generateMonthlyDietDB(1000);
+            generateMonthlyDietDB(1000, amount);
             return;
         }
         if(distance(dietCalorie, 1250)){
-            generateMonthlyDietDB(1250);
+            generateMonthlyDietDB(1250, amount);
             return;
         }
 
         if(distance(dietCalorie, 1500)){
-            generateMonthlyDietDB(1500);
+            generateMonthlyDietDB(1500, amount);
             return;
         }
 
         if(distance(dietCalorie, 1750)){
-            generateMonthlyDietDB(1750);
+            generateMonthlyDietDB(1750, amount);
             return;
         }
 
         if(distance(dietCalorie, 2000)){
-            generateMonthlyDietDB(2000);
+            generateMonthlyDietDB(2000, amount);
             return;
         }
 
         if(distance(dietCalorie, 2250) || dietCalorie > 2250){
-            generateMonthlyDietDB(2250);
+            generateMonthlyDietDB(2250, amount);
             return;
         }
 
@@ -928,9 +950,208 @@ public class SetupDietActivity extends BaseActivity implements View.OnClickListe
     }
 
 
-    private void generateMonthlyDietDB(int amount) {
+    private void generateMonthlyDietDB(int dietCalorie, float weightLossAmount) {
+        try {
+            TableUtils.createTableIfNotExists(getDBHelper().getConnectionSource(), Diet.class);
+            QueryBuilder<FoodPackage, Integer> foodPackageQueryBuilder = getDBHelper().getFoodPackageDao().queryBuilder();
 
+            foodPackageQueryBuilder.where().eq("mealId", 1);
+            List<FoodPackage> breakfastPackageList = foodPackageQueryBuilder.query();
+            ArrayList<String> tempBreakfast = new ArrayList<>();
+            Collections.shuffle(breakfastPackageList);
+            for(int i = 0 ; i < 9 ; i++)
+                tempBreakfast.add(breakfastPackageList.get(i).getId());
+
+            foodPackageQueryBuilder.reset();
+            foodPackageQueryBuilder.where().eq("mealId", 2);
+            List<FoodPackage> lunchPackageList = foodPackageQueryBuilder.query();
+            ArrayList<String> tempLunch = new ArrayList<>();
+            Collections.shuffle(lunchPackageList);
+            for(int i = 0 ; i < 9 ; i++)
+                tempLunch.add(lunchPackageList.get(i).getId());
+
+
+            foodPackageQueryBuilder.reset();
+            foodPackageQueryBuilder.where().eq("mealId", 3);
+            List<FoodPackage> snackPackageList = foodPackageQueryBuilder.query();
+            ArrayList<String> tempSnack = new ArrayList<>();
+            Collections.shuffle(snackPackageList);
+            for(int i = 0 ; i < 9 ; i++)
+                tempSnack.add(snackPackageList.get(i).getId());
+
+            foodPackageQueryBuilder.reset();
+            foodPackageQueryBuilder.where().eq("mealId", 4);
+            List<FoodPackage> dinnerPackageList = foodPackageQueryBuilder.query();
+            ArrayList<String> tempDinner = new ArrayList<>();
+            Collections.shuffle(dinnerPackageList);
+            for(int i = 0 ; i < 9 ; i++)
+                tempDinner.add(dinnerPackageList.get(i).getId());
+
+            float currentWeight = getDBHelper().getUserDao().queryForAll().get(0).getWeight();
+            long startDate = Calendar.getInstance().getTimeInMillis();
+            int day = 1;
+            int lastDietNumber = getAppPreferences().getDietNumber();
+            while(day <= 31){
+                Diet diet = new Diet();
+                diet.setDay(day);
+                diet.setDietType(dietCalorie+"");
+                diet.setStartDate(startDate+"");
+                diet.setStartWeight(round(currentWeight, 1)+"");
+                diet.setGoalWeight(round(currentWeight - weightLossAmount, 1)+"");
+                diet.setId(lastDietNumber+1);
+
+                diet.setBreakfastPack1(tempBreakfast.get(0));
+                diet.setBreakfastPack2(tempBreakfast.get(1));
+                diet.setBreakfastPack3(tempBreakfast.get(2));
+                Collections.shuffle(breakfastPackageList);
+                while (tempBreakfast.size() <= 12){
+                    for (FoodPackage pack:breakfastPackageList){
+                        if(!tempBreakfast.contains(pack.getId()))
+                            tempBreakfast.add(pack.getId());
+                    }
+                }
+                tempBreakfast.remove(0);tempBreakfast.remove(0);tempBreakfast.remove(0);
+
+
+                diet.setLunchPack1(tempLunch.get(0));
+                diet.setLunchPack2(tempLunch.get(1));
+                diet.setLunchPack3(tempLunch.get(2));
+                Collections.shuffle(lunchPackageList);
+                while (tempLunch.size() <= 12){
+                    for (FoodPackage pack:lunchPackageList){
+                        if(!tempLunch.contains(pack.getId()))
+                            tempLunch.add(pack.getId());
+                    }
+                }
+                tempLunch.remove(0);tempLunch.remove(0);tempLunch.remove(0);
+
+
+                diet.setSnackPack1(tempSnack.get(0));
+                diet.setSnackPack2(tempSnack.get(1));
+                diet.setSnackPack3(tempSnack.get(2));
+                Collections.shuffle(snackPackageList);
+                while (tempSnack.size() <= 12){
+                    for (FoodPackage pack:snackPackageList){
+                        if(!tempSnack.contains(pack.getId()))
+                            tempSnack.add(pack.getId());
+                    }
+                }
+                tempSnack.remove(0);tempSnack.remove(0);tempSnack.remove(0);
+
+
+                diet.setDinnerPack1(tempDinner.get(0));
+                diet.setDinnerPack2(tempDinner.get(1));
+                diet.setDinnerPack3(tempDinner.get(2));
+                Collections.shuffle(dinnerPackageList);
+                while (tempDinner.size() <= 12){
+                    for (FoodPackage pack:dinnerPackageList){
+                        if(!tempDinner.contains(pack.getId()))
+                            tempDinner.add(pack.getId());
+                    }
+                }
+                tempDinner.remove(0);tempDinner.remove(0);tempDinner.remove(0);
+
+                getDBHelper().getDietDao().create(diet);
+                day++;
+            }
+
+            getAppPreferences().setDietNumber(lastDietNumber+1);
+
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
+    private String createDietJson(){
+        try {
+            QueryBuilder<Diet, Integer> dietQueryBuilder = getDBHelper().getDietDao().queryBuilder();
+            dietQueryBuilder.where().eq("_id", getAppPreferences().getDietNumber());
+            List<Diet> dietList = dietQueryBuilder.query();
+//            if (dietList.size() > 0) {
+//                Collections.sort(dietList, new Comparator<Diet>() {
+//
+//                    @Override
+//                    public int compare(Diet diet1, Diet diet2) {
+//                        return ((Integer)diet1.getDay()).compareTo(diet2.getDay());
+//                    }
+//                });
+//            }
+            JSONObject dietJson = new JSONObject();
+            for(Diet diet: dietList){
+                JSONArray breakfastChoices = new JSONArray();
+                breakfastChoices.put(diet.getBreakfastPack1());
+                breakfastChoices.put(diet.getBreakfastPack2());
+                breakfastChoices.put(diet.getBreakfastPack3());
+
+                JSONArray lunchChoices = new JSONArray();
+                lunchChoices.put(diet.getLunchPack1());
+                lunchChoices.put(diet.getLunchPack2());
+                lunchChoices.put(diet.getLunchPack3());
+
+                JSONArray snackChoices = new JSONArray();
+                snackChoices.put(diet.getSnackPack1());
+                snackChoices.put(diet.getSnackPack2());
+                snackChoices.put(diet.getSnackPack3());
+
+                JSONArray dinnerChoices = new JSONArray();
+                dinnerChoices.put(diet.getDinnerPack1());
+                dinnerChoices.put(diet.getDinnerPack2());
+                dinnerChoices.put(diet.getDinnerPack3());
+
+                JSONObject[] meals = new JSONObject[4];
+                for(int i = 0; i < meals.length; i++)
+                    meals[i] = new JSONObject();
+
+                meals[0].put("1", accumulate(new JSONObject[]{new JSONObject().put("status", 0), new JSONObject().put("choices", breakfastChoices), new JSONObject().put("selected", "")}));
+                meals[1].put("2", accumulate(new JSONObject[]{new JSONObject().put("status", 0), new JSONObject().put("choices", lunchChoices), new JSONObject().put("selected", "")}));
+                meals[2].put("3", accumulate(new JSONObject[]{new JSONObject().put("status", 0), new JSONObject().put("choices", snackChoices), new JSONObject().put("selected", "")}));
+                meals[3].put("4", accumulate(new JSONObject[]{new JSONObject().put("status", 0), new JSONObject().put("choices", dinnerChoices), new JSONObject().put("selected", "")}));
+
+                dietJson.put(diet.getDay()+"", accumulate(meals));
+            }
+
+
+            return dietJson.toString();
+
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        return null;
+    }
+
+    private String accumulate(JSONObject[] objects){
+        StringBuilder stringBuilder = new StringBuilder();
+        for(int i = 0; i < objects.length; i++)
+            if(i != objects.length - 1)
+                stringBuilder.append(objects[i].toString()+",");
+            else
+                stringBuilder.append(objects[i].toString());
+
+        return stringBuilder.toString();
+    }
+
+//    var dietHistory = function(userId, startDate, diet, type){
+//        this.userId = userId;
+//        this.startDate = startDate;
+//        this.diet = diet;
+//        this.type = type; //1000,1250,1500,1750,2000,2250
+//  /*
+//  diet = {
+//    0:{ //first day of diet
+//      mealId : {
+//        status : 0 \\0 do nothing, 1 done, 2 break
+//        choices : [packageIds],
+//        selected : packageId
+//      }
+//    }
+//  }
+//  */
+//        this.createdAt = new Date();
+//    }
 
 }

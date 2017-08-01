@@ -28,6 +28,8 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.j256.ormlite.table.TableUtils;
+
 import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
@@ -538,6 +540,8 @@ public class RegisterActivity extends BaseActivity {
 
                     mEnterBtn.setClickable(false);
                     mTxtForgot.setClickable(false);
+                    mPhoneEdit.setClickable(false);
+                    mPassEdit.setClickable(false);
                     mEnterBtn.setText(R.string.wait);
                     final String phone = mPhoneEdit.getText().toString().trim();
                     final String pass = mPassEdit.getText().toString().trim();
@@ -585,6 +589,8 @@ public class RegisterActivity extends BaseActivity {
                                 userInfo.setUserId(responseUser.getUserId());
                                 userInfo.setName(responseUser.getName());
                                 userInfo.setCredit(1);
+                                TableUtils.dropTable(mDatabaseHelper.getConnectionSource(), UserInfo.class, true);
+                                TableUtils.createTableIfNotExists(mDatabaseHelper.getConnectionSource(), UserInfo.class);
                                 mDatabaseHelper.getUserDao().create(userInfo);
 
                                 System.out.println("--------------------------- user created !!!!");
@@ -612,6 +618,8 @@ public class RegisterActivity extends BaseActivity {
                             System.out.println("failed -----------");
                             mEnterBtn.setClickable(true);
                             mTxtForgot.setClickable(true);
+                            mPhoneEdit.setClickable(true);
+                            mPassEdit.setClickable(true);
                             mEnterBtn.setText(R.string.enter);
 
                         }

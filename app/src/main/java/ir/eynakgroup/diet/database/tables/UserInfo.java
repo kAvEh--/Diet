@@ -38,6 +38,8 @@ public class UserInfo {
     private String weight;
     @DatabaseField(columnName = "Credit", dataType = DataType.INTEGER)
     private int credit;
+    @DatabaseField(columnName = "hatedList", dataType = DataType.STRING)
+    private String hatedList;
 
 
     public int getActivityLevel() {
@@ -151,5 +153,13 @@ public class UserInfo {
 
     public void setCredit(int credit) {
         this.credit = credit;
+    }
+
+    public String getHatedList() {
+        return hatedList;
+    }
+
+    public void setHatedList(String hatedList) {
+        this.hatedList = hatedList;
     }
 }

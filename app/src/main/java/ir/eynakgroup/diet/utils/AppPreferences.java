@@ -10,6 +10,7 @@ public class AppPreferences {
     private SharedPreferences mPref;
     private static final String FIRST_TIME = "first";
     private static final String HAS_DIET = "already";
+    private static final String DIET_NUMBER = "diet";
 
     public AppPreferences(Context context){
         mPref = context.getSharedPreferences(context.getPackageName(), Context.MODE_PRIVATE);
@@ -32,13 +33,14 @@ public class AppPreferences {
         return mPref.getBoolean(HAS_DIET, false);
     }
 
+    public void setDietNumber(int number){
+        mPref.edit().putInt(DIET_NUMBER, number).commit();
+    }
 
-    public void setGoalWeight(float weight){
-        mPref.edit().putFloat("goal", weight).commit();
+    public int getDietNumber(){
+        return mPref.getInt(DIET_NUMBER, 0);
     }
-    public float getGoalWeight(){
-        return mPref.getFloat("goal", 0.0f);
-    }
+
 
 
 }

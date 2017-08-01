@@ -80,9 +80,9 @@ public class MainActivity extends BaseActivity implements View.OnClickListener{
                     clearLightStatusBar();
                     Fragment profile = mPagerAdapter.getItem(position);
                     if(profile != null){
-                        float goalWeight = 0.0f;
-                        if(goalWeight != getAppPreferences().getGoalWeight())
-                            ((CustomTextView)profile.getView().findViewById(R.id.txt_goal_weight)).setText(round(goalWeight, 1)+"");
+//                        float goalWeight = 0.0f;
+//                        if(goalWeight != getAppPreferences().getGoalWeight())
+//                            ((CustomTextView)profile.getView().findViewById(R.id.txt_goal_weight)).setText(round(goalWeight, 1)+"");
 
                         try {
                             UserInfo user = getDBHelper().getUserDao().queryForAll().get(0);
