@@ -529,6 +529,9 @@ public class SetupDietActivity extends BaseActivity implements View.OnClickListe
                                         }
                                     else
                                         System.out.println(response.body().getError());
+
+                                    setResult(RESULT_OK);
+                                    finish();
                                 }
 
                                 @Override
@@ -538,7 +541,6 @@ public class SetupDietActivity extends BaseActivity implements View.OnClickListe
                             });
 
                             try {
-
                                 UpdateBuilder<UserInfo, Integer> updateBuilder = getDBHelper().getUserDao().updateBuilder();
                                 // set the criteria like you would a QueryBuilder
                                 updateBuilder.where().eq("_id", user.getId());
@@ -548,8 +550,6 @@ public class SetupDietActivity extends BaseActivity implements View.OnClickListe
                             } catch (SQLException e) {
                                 e.printStackTrace();
                             }
-                            setResult(RESULT_OK);
-                            finish();
                         }
                     });
             AlertDialog alertDialog = builder.create();
@@ -1060,6 +1060,7 @@ public class SetupDietActivity extends BaseActivity implements View.OnClickListe
                 diet.setGoalWeight(round(currentWeight - weightLossAmount, 1) + "");
                 diet.setId(lastDietNumber + 1);
 
+                diet.setSelectedBreakfast("0");
                 diet.setBreakfastPack1(tempBreakfast.get(0));
                 diet.setBreakfastPack2(tempBreakfast.get(1));
                 diet.setBreakfastPack3(tempBreakfast.get(2));
@@ -1074,7 +1075,7 @@ public class SetupDietActivity extends BaseActivity implements View.OnClickListe
                 tempBreakfast.remove(0);
                 tempBreakfast.remove(0);
 
-
+                diet.setSelectedLunch("0");
                 diet.setLunchPack1(tempLunch.get(0));
                 diet.setLunchPack2(tempLunch.get(1));
                 diet.setLunchPack3(tempLunch.get(2));
@@ -1089,7 +1090,7 @@ public class SetupDietActivity extends BaseActivity implements View.OnClickListe
                 tempLunch.remove(0);
                 tempLunch.remove(0);
 
-
+                diet.setSelectedSnack("0");
                 diet.setSnackPack1(tempSnack.get(0));
                 diet.setSnackPack2(tempSnack.get(1));
                 diet.setSnackPack3(tempSnack.get(2));
@@ -1104,7 +1105,7 @@ public class SetupDietActivity extends BaseActivity implements View.OnClickListe
                 tempSnack.remove(0);
                 tempSnack.remove(0);
 
-
+                diet.setSelectedDinner("0");
                 diet.setDinnerPack1(tempDinner.get(0));
                 diet.setDinnerPack2(tempDinner.get(1));
                 diet.setDinnerPack3(tempDinner.get(2));
@@ -1122,11 +1123,10 @@ public class SetupDietActivity extends BaseActivity implements View.OnClickListe
                 getDBHelper().getDietDao().create(diet);
                 day++;
             }
-            getAppPreferences().setDietNumber(lastDietNumber++);
+            getAppPreferences().setDietNumber(++lastDietNumber);
             property.setId(lastDietNumber);
             property.setStartDate(startDate + "");
             property.setType(dietCalorie + "");
-//            return property;
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -1158,10 +1158,10 @@ public class SetupDietActivity extends BaseActivity implements View.OnClickListe
                 String snackChoices = "[" + "\"" + diet.getSnackPack1() + "\"" + "," + "\"" + diet.getSnackPack2() + "\"" + "," + "\"" + diet.getSnackPack3() + "\"" + "]";
                 String dinnerChoices = "[" + "\"" + diet.getDinnerPack1() + "\"" + "," + "\"" + diet.getDinnerPack2() + "\"" + "," + "\"" + diet.getDinnerPack3() + "\"" + "]";
 
-                dietJson.append("\"" + diet.getDay() + "\"" + ":{" + "\"" + BREAKFAST_ID + "\"" + ":{" + "\"" + "status" + "\"" + ":0," + "\"" + "choices" + "\"" + ":" + breakfastChoices + "," + "\"" + "selected" + "\"" + ":0}");
-                dietJson.append("," + "\"" + LUNCH_ID + "\"" + ":{" + "\"" + "status" + "\"" + ":0," + "\"" + "choices" + "\"" + ":" + lunchChoices + "," + "\"" + "selected" + "\"" + ":0}");
-                dietJson.append("," + "\"" + SNACK_ID + "\"" + ":{" + "\"" + "status" + "\"" + ":0," + "\"" + "choices" + "\"" + ":" + snackChoices + "," + "\"" + "selected" + "\"" + ":0}");
-                dietJson.append("," + "\"" + DINNER_ID + "\"" + ":{" + "\"" + "status" + "\"" + ":0," + "\"" + "choices" + "\"" + ":" + dinnerChoices + "," + "\"" + "selected" + "\"" + ":0}}");
+                dietJson.append("\"" + diet.getDay() + "\"" + ":{" + "\"" + BREAKFAST_ID + "\"" + ":{" + "\"" + "status" + "\"" + ":0," + "\"" + "choices" + "\"" + ":" + breakfastChoices + "," + "\"" + "selected" + "\"" + ":"+diet.getSelectedBreakfast()+"}");
+                dietJson.append("," + "\"" + LUNCH_ID + "\"" + ":{" + "\"" + "status" + "\"" + ":0," + "\"" + "choices" + "\"" + ":" + lunchChoices + "," + "\"" + "selected" + "\"" + ":"+diet.getSelectedLunch()+"}");
+                dietJson.append("," + "\"" + SNACK_ID + "\"" + ":{" + "\"" + "status" + "\"" + ":0," + "\"" + "choices" + "\"" + ":" + snackChoices + "," + "\"" + "selected" + "\"" + ":"+diet.getSelectedSnack()+"}");
+                dietJson.append("," + "\"" + DINNER_ID + "\"" + ":{" + "\"" + "status" + "\"" + ":0," + "\"" + "choices" + "\"" + ":" + dinnerChoices + "," + "\"" + "selected" + "\"" + ":"+diet.getSelectedDinner()+"}}");
 
                 if (i != dietList.size() - 1)
                     dietJson.append(",");

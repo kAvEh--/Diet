@@ -26,10 +26,10 @@ public class AppPreferences {
     }
 
 
-    public void setHasDiet(boolean status){
+    public void setAlreadyDiet(boolean status){
         mPref.edit().putBoolean(HAS_DIET, status).commit();
     }
-    public boolean getHasDiet(){
+    public boolean hasDiet(){
         return mPref.getBoolean(HAS_DIET, false);
     }
 
