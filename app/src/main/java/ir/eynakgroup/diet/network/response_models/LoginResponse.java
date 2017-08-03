@@ -11,8 +11,9 @@ public class LoginResponse extends CommonResponse {
     @SerializedName("user")
     private User user;
 
-//    @SerializedName("updatedAt")
-//    private Date date;
+    @SerializedName("updatedAt")
+    private String updatedDate;
+
     @SerializedName("message")
     private String message;
 
@@ -33,11 +34,12 @@ public class LoginResponse extends CommonResponse {
         this.message = message;
     }
 
-//    public Date getDate() {
-//        return date;
-//    }
-//
-//    public void setDate(Date date) {
-//        this.date = date;
-//    }
+    public String getUpdatedDate() {
+        return updatedDate;
+    }
+
+    public void setUpdatedDate(String updatedDate) {
+        this.updatedDate = updatedDate;
+    }
+
 }

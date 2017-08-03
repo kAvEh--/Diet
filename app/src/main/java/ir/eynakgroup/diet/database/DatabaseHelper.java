@@ -81,6 +81,8 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
             TableUtils.createTableIfNotExists(getConnectionSource(), FoodPackage.class);
             TableUtils.createTableIfNotExists(getConnectionSource(), PackageFood.class);
             TableUtils.createTableIfNotExists(getConnectionSource(), Food.class);
+            TableUtils.createTableIfNotExists(getConnectionSource(), UserInfo.class);
+            TableUtils.createTableIfNotExists(getConnectionSource(), Diet.class);
 
             insertFoodPackages();
             insertFoods();
@@ -151,7 +153,7 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
 
             FoodPackage foodPackage = new FoodPackage();
             foodPackage.setId(jsonObject.getString("_id"));
-            foodPackage.setMealID(jsonObject.getInt("mealId"));
+            foodPackage.setMealID(jsonObject.getInt("mealId") - 1);
             foodPackage.setPackageId(jsonObject.getInt("packageId"));
             foodPackage.setDeleted(jsonObject.getInt("deleted"));
             foodPackage.setUpdatedAt(jsonObject.getString("updatedAt"));

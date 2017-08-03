@@ -577,7 +577,10 @@ public class RegisterActivity extends BaseActivity {
                             try {
                                 UserInfo userInfo = new UserInfo();
                                 User responseUser = response.body().getUser();
+                                userInfo.setCredit(responseUser.getCredit());
+                                userInfo.setLastLoginDate(responseUser.getLastLoginDate());
                                 userInfo.setActivityLevel(responseUser.getActivityLevel());
+                                userInfo.setRegisterDate(responseUser.getRegisterDate());
                                 userInfo.setAge(responseUser.getAge());
                                 userInfo.setApiKey(responseUser.getApiKey());
                                 userInfo.setBirthday(responseUser.getBirthday());
@@ -588,11 +591,13 @@ public class RegisterActivity extends BaseActivity {
                                 userInfo.setWeight(responseUser.getWeight()+"");
                                 userInfo.setUserId(responseUser.getUserId());
                                 userInfo.setName(responseUser.getName());
-                                userInfo.setCredit(1);
-                                TableUtils.dropTable(mDatabaseHelper.getConnectionSource(), UserInfo.class, true);
-                                TableUtils.createTableIfNotExists(mDatabaseHelper.getConnectionSource(), UserInfo.class);
+                                userInfo.setId(responseUser.getId());
+                                userInfo.setHatedList(responseUser.getHatedFoods().toString());
+                                userInfo.setSessionId(response.headers().get("Set-Cookie"));
+
                                 mDatabaseHelper.getUserDao().create(userInfo);
 
+                                System.out.println(response.body().getUpdatedDate()+"----------------------------------");
                                 System.out.println("--------------------------- user created !!!!");
                                 getActivity().startActivity(new Intent(mContext, MainActivity.class));
                                 getActivity().finish();

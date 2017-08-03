@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Rect;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
@@ -14,6 +15,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.TouchDelegate;
@@ -37,6 +39,7 @@ import org.json.JSONObject;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.lang.ref.WeakReference;
 import java.sql.SQLException;
 import java.util.ArrayList;
@@ -50,12 +53,18 @@ import java.util.Map;
 import java.util.Random;
 
 import ir.eynakgroup.diet.R;
+import ir.eynakgroup.diet.database.DatabaseHelper;
 import ir.eynakgroup.diet.database.tables.Diet;
 import ir.eynakgroup.diet.database.tables.FoodPackage;
 import ir.eynakgroup.diet.database.tables.PackageFood;
 import ir.eynakgroup.diet.database.tables.UserInfo;
+import ir.eynakgroup.diet.network.response_models.CreateDietResponse;
+import ir.eynakgroup.diet.network.response_models.LoginResponse;
 import ir.eynakgroup.diet.network.response_models.User;
 import ir.eynakgroup.diet.utils.view.CustomTextView;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * Created by Shayan on 5/6/2017.
@@ -70,10 +79,12 @@ public class SetupDietActivity extends BaseActivity implements View.OnClickListe
     private ImageView imageBack;
     private TextView textTyping;
 
-    private static final int BREAKFAST_ID = 1;
-    private static final int LUNCH_ID = 2;
-    private static final int SNACK_ID = 3;
-    private static final int DINNER_ID = 4;
+    private static final int BREAKFAST_ID = 0;
+    private static final int LUNCH_ID = 1;
+    private static final int SNACK_ID = 2;
+    private static final int DINNER_ID = 3;
+
+    private static DatabaseHelper mDatabaseHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,9 +92,8 @@ public class SetupDietActivity extends BaseActivity implements View.OnClickListe
         setContentView(R.layout.activity_setup);
 
 
-        generateDiet(1750, 2.0f);
-        System.out.println("---------------------------------------------"+createDietJson());
-
+//        writeToFile(createDietJson(generateDiet(1750, 2.0f)), this);
+        mDatabaseHelper = getDBHelper();
         textTyping = (TextView) findViewById(R.id.txt_typing);
         imageBack = (ImageView) findViewById(R.id.img_back);
         final View backParent = (View) imageBack.getParent();  // button: the view you want to enlarge hit area
@@ -496,10 +506,42 @@ public class SetupDietActivity extends BaseActivity implements View.OnClickListe
                     .setCancelable(false)
                     .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int which) {
+
+
+                            final DietProperty property = generateMonthlyDietDB(1250, 2.0f);
+
+                            //TODO
+                            Call<CreateDietResponse> call = getRequestMethod().createDiet(user.getSessionId(), user.getUserId(), user.getApiKey(), property.getType(), property.getStartDate(), createDietJson(property.getId()));
+
+                            call.enqueue(new Callback<CreateDietResponse>() {
+                                @Override
+                                public void onResponse(Call<CreateDietResponse> call, Response<CreateDietResponse> response) {
+                                    System.out.println("----------------Diet gene1rated to server!!");
+
+                                    if (response.body().getError() == null)
+                                        try {
+                                            UpdateBuilder<Diet, Integer> updateBuilder = mDatabaseHelper.getDietDao().updateBuilder();
+                                            updateBuilder.where().eq("_id", property.getId());
+                                            updateBuilder.updateColumnValue("serverId", response.body().getId());
+                                            updateBuilder.update();
+                                        } catch (SQLException e) {
+                                            e.printStackTrace();
+                                        }
+                                    else
+                                        System.out.println(response.body().getError());
+                                }
+
+                                @Override
+                                public void onFailure(Call<CreateDietResponse> call, Throwable t) {
+
+                                }
+                            });
+
                             try {
+
                                 UpdateBuilder<UserInfo, Integer> updateBuilder = getDBHelper().getUserDao().updateBuilder();
                                 // set the criteria like you would a QueryBuilder
-                                updateBuilder.where().eq("User_ID", user.getUserId());
+                                updateBuilder.where().eq("_id", user.getId());
                                 // update the value of your field(s)
                                 updateBuilder.updateColumnValue("Credit", credit - 1);
                                 updateBuilder.update();
@@ -510,13 +552,6 @@ public class SetupDietActivity extends BaseActivity implements View.OnClickListe
                             finish();
                         }
                     });
-//                    .setNegativeButton(R.string.exit_cancel, new DialogInterface.OnClickListener() {
-//                        @Override
-//                        public void onClick(DialogInterface dialog, int which) {
-//                            dialog.cancel();
-//                        }
-//                    });
-
             AlertDialog alertDialog = builder.create();
             alertDialog.show();
             Typeface typeface = Typeface.createFromAsset(getAssets(), "fonts/iran_sans.ttf");
@@ -893,7 +928,7 @@ public class SetupDietActivity extends BaseActivity implements View.OnClickListe
         if ((dietCal = reqCal - (pivotCal / 14)) >= 1000)
             difficulty.put(1, new Difficulty(dietCal, 2f));
 
-        if(difficulty.size() == 0){
+        if (difficulty.size() == 0) {
             if (user.getGender() == User.Gender.Female.ordinal()) {
                 if (bmi > 21 && bmi <= 23)
                     difficulty.put(0, new Difficulty(reqCal, user.getWeight() - calculateIdealWeight(user)));
@@ -910,163 +945,200 @@ public class SetupDietActivity extends BaseActivity implements View.OnClickListe
         return difficulty;
     }
 
-    private void generateDiet(float dietCalorie, float amount) {
-        if(dietCalorie < 1000 || distance(dietCalorie, 1000)){
-            generateMonthlyDietDB(1000, amount);
-            return;
+    private DietProperty generateDiet(float dietCalorie, float amount) {
+        if (dietCalorie < 1000 || distance(dietCalorie, 1000)) {
+            return generateMonthlyDietDB(1000, amount);
         }
-        if(distance(dietCalorie, 1250)){
-            generateMonthlyDietDB(1250, amount);
-            return;
+        if (distance(dietCalorie, 1250)) {
+            return generateMonthlyDietDB(1250, amount);
         }
 
-        if(distance(dietCalorie, 1500)){
-            generateMonthlyDietDB(1500, amount);
-            return;
+        if (distance(dietCalorie, 1500)) {
+            return generateMonthlyDietDB(1500, amount);
         }
 
-        if(distance(dietCalorie, 1750)){
-            generateMonthlyDietDB(1750, amount);
-            return;
+        if (distance(dietCalorie, 1750)) {
+            return generateMonthlyDietDB(1750, amount);
         }
 
-        if(distance(dietCalorie, 2000)){
-            generateMonthlyDietDB(2000, amount);
-            return;
+        if (distance(dietCalorie, 2000)) {
+            return generateMonthlyDietDB(2000, amount);
         }
 
-        if(distance(dietCalorie, 2250) || dietCalorie > 2250){
-            generateMonthlyDietDB(2250, amount);
-            return;
+        if (distance(dietCalorie, 2250) || dietCalorie > 2250) {
+            return generateMonthlyDietDB(2250, amount);
         }
+
+        return new DietProperty();
 
     }
 
-    private boolean distance(float dietCalorie, float dailyCalorie){
-        if(dietCalorie > dailyCalorie - 125 && dietCalorie <= dailyCalorie + 125)
+    private boolean distance(float dietCalorie, float dailyCalorie) {
+        if (dietCalorie > dailyCalorie - 125 && dietCalorie <= dailyCalorie + 125)
             return true;
 
         return false;
     }
 
+    private class DietProperty {
+        private int id = 0;
+        private String type = "0";
+        private String startDate = "0";
 
-    private void generateMonthlyDietDB(int dietCalorie, float weightLossAmount) {
+        public int getId() {
+            return id;
+        }
+
+        public String getType() {
+            return type;
+        }
+
+        public String getStartDate() {
+            return startDate;
+        }
+
+        public void setId(int id) {
+            this.id = id;
+        }
+
+        public void setType(String type) {
+            this.type = type;
+        }
+
+        public void setStartDate(String startDate) {
+            this.startDate = startDate;
+        }
+    }
+
+    private DietProperty generateMonthlyDietDB(int dietCalorie, float weightLossAmount) {
+        DietProperty property = new DietProperty();
         try {
-            TableUtils.createTableIfNotExists(getDBHelper().getConnectionSource(), Diet.class);
             QueryBuilder<FoodPackage, Integer> foodPackageQueryBuilder = getDBHelper().getFoodPackageDao().queryBuilder();
 
-            foodPackageQueryBuilder.where().eq("mealId", 1);
+            foodPackageQueryBuilder.where().eq("mealId", BREAKFAST_ID);
             List<FoodPackage> breakfastPackageList = foodPackageQueryBuilder.query();
             ArrayList<String> tempBreakfast = new ArrayList<>();
             Collections.shuffle(breakfastPackageList);
-            for(int i = 0 ; i < 9 ; i++)
+            for (int i = 0; i < 9; i++)
                 tempBreakfast.add(breakfastPackageList.get(i).getId());
 
             foodPackageQueryBuilder.reset();
-            foodPackageQueryBuilder.where().eq("mealId", 2);
+            foodPackageQueryBuilder.where().eq("mealId", LUNCH_ID);
             List<FoodPackage> lunchPackageList = foodPackageQueryBuilder.query();
             ArrayList<String> tempLunch = new ArrayList<>();
             Collections.shuffle(lunchPackageList);
-            for(int i = 0 ; i < 9 ; i++)
+            for (int i = 0; i < 9; i++)
                 tempLunch.add(lunchPackageList.get(i).getId());
 
 
             foodPackageQueryBuilder.reset();
-            foodPackageQueryBuilder.where().eq("mealId", 3);
+            foodPackageQueryBuilder.where().eq("mealId", SNACK_ID);
             List<FoodPackage> snackPackageList = foodPackageQueryBuilder.query();
             ArrayList<String> tempSnack = new ArrayList<>();
             Collections.shuffle(snackPackageList);
-            for(int i = 0 ; i < 9 ; i++)
+            for (int i = 0; i < 9; i++)
                 tempSnack.add(snackPackageList.get(i).getId());
 
             foodPackageQueryBuilder.reset();
-            foodPackageQueryBuilder.where().eq("mealId", 4);
+            foodPackageQueryBuilder.where().eq("mealId", DINNER_ID);
             List<FoodPackage> dinnerPackageList = foodPackageQueryBuilder.query();
             ArrayList<String> tempDinner = new ArrayList<>();
             Collections.shuffle(dinnerPackageList);
-            for(int i = 0 ; i < 9 ; i++)
+            for (int i = 0; i < 9; i++)
                 tempDinner.add(dinnerPackageList.get(i).getId());
 
             float currentWeight = getDBHelper().getUserDao().queryForAll().get(0).getWeight();
             long startDate = Calendar.getInstance().getTimeInMillis();
             int day = 1;
             int lastDietNumber = getAppPreferences().getDietNumber();
-            while(day <= 31){
+            while (day <= 31) {
                 Diet diet = new Diet();
                 diet.setDay(day);
-                diet.setDietType(dietCalorie+"");
-                diet.setStartDate(startDate+"");
-                diet.setStartWeight(round(currentWeight, 1)+"");
-                diet.setGoalWeight(round(currentWeight - weightLossAmount, 1)+"");
-                diet.setId(lastDietNumber+1);
+                diet.setDietType(dietCalorie + "");
+                diet.setStartDate(startDate + "");
+                diet.setStartWeight(round(currentWeight, 1) + "");
+                diet.setGoalWeight(round(currentWeight - weightLossAmount, 1) + "");
+                diet.setId(lastDietNumber + 1);
 
                 diet.setBreakfastPack1(tempBreakfast.get(0));
                 diet.setBreakfastPack2(tempBreakfast.get(1));
                 diet.setBreakfastPack3(tempBreakfast.get(2));
                 Collections.shuffle(breakfastPackageList);
-                while (tempBreakfast.size() <= 12){
-                    for (FoodPackage pack:breakfastPackageList){
-                        if(!tempBreakfast.contains(pack.getId()))
+                while (tempBreakfast.size() <= 12) {
+                    for (FoodPackage pack : breakfastPackageList) {
+                        if (!tempBreakfast.contains(pack.getId()))
                             tempBreakfast.add(pack.getId());
                     }
                 }
-                tempBreakfast.remove(0);tempBreakfast.remove(0);tempBreakfast.remove(0);
+                tempBreakfast.remove(0);
+                tempBreakfast.remove(0);
+                tempBreakfast.remove(0);
 
 
                 diet.setLunchPack1(tempLunch.get(0));
                 diet.setLunchPack2(tempLunch.get(1));
                 diet.setLunchPack3(tempLunch.get(2));
                 Collections.shuffle(lunchPackageList);
-                while (tempLunch.size() <= 12){
-                    for (FoodPackage pack:lunchPackageList){
-                        if(!tempLunch.contains(pack.getId()))
+                while (tempLunch.size() <= 12) {
+                    for (FoodPackage pack : lunchPackageList) {
+                        if (!tempLunch.contains(pack.getId()))
                             tempLunch.add(pack.getId());
                     }
                 }
-                tempLunch.remove(0);tempLunch.remove(0);tempLunch.remove(0);
+                tempLunch.remove(0);
+                tempLunch.remove(0);
+                tempLunch.remove(0);
 
 
                 diet.setSnackPack1(tempSnack.get(0));
                 diet.setSnackPack2(tempSnack.get(1));
                 diet.setSnackPack3(tempSnack.get(2));
                 Collections.shuffle(snackPackageList);
-                while (tempSnack.size() <= 12){
-                    for (FoodPackage pack:snackPackageList){
-                        if(!tempSnack.contains(pack.getId()))
+                while (tempSnack.size() <= 12) {
+                    for (FoodPackage pack : snackPackageList) {
+                        if (!tempSnack.contains(pack.getId()))
                             tempSnack.add(pack.getId());
                     }
                 }
-                tempSnack.remove(0);tempSnack.remove(0);tempSnack.remove(0);
+                tempSnack.remove(0);
+                tempSnack.remove(0);
+                tempSnack.remove(0);
 
 
                 diet.setDinnerPack1(tempDinner.get(0));
                 diet.setDinnerPack2(tempDinner.get(1));
                 diet.setDinnerPack3(tempDinner.get(2));
                 Collections.shuffle(dinnerPackageList);
-                while (tempDinner.size() <= 12){
-                    for (FoodPackage pack:dinnerPackageList){
-                        if(!tempDinner.contains(pack.getId()))
+                while (tempDinner.size() <= 12) {
+                    for (FoodPackage pack : dinnerPackageList) {
+                        if (!tempDinner.contains(pack.getId()))
                             tempDinner.add(pack.getId());
                     }
                 }
-                tempDinner.remove(0);tempDinner.remove(0);tempDinner.remove(0);
+                tempDinner.remove(0);
+                tempDinner.remove(0);
+                tempDinner.remove(0);
 
                 getDBHelper().getDietDao().create(diet);
                 day++;
             }
-
-            getAppPreferences().setDietNumber(lastDietNumber+1);
-
+            getAppPreferences().setDietNumber(lastDietNumber++);
+            property.setId(lastDietNumber);
+            property.setStartDate(startDate + "");
+            property.setType(dietCalorie + "");
+//            return property;
 
         } catch (SQLException e) {
             e.printStackTrace();
         }
+
+        return property;
     }
 
-    private String createDietJson(){
+    private String createDietJson(int id) {
         try {
             QueryBuilder<Diet, Integer> dietQueryBuilder = getDBHelper().getDietDao().queryBuilder();
-            dietQueryBuilder.where().eq("_id", getAppPreferences().getDietNumber());
+            dietQueryBuilder.where().eq("_id", id + "");
             List<Diet> dietList = dietQueryBuilder.query();
 //            if (dietList.size() > 0) {
 //                Collections.sort(dietList, new Comparator<Diet>() {
@@ -1077,62 +1149,44 @@ public class SetupDietActivity extends BaseActivity implements View.OnClickListe
 //                    }
 //                });
 //            }
-            JSONObject dietJson = new JSONObject();
-            for(Diet diet: dietList){
-                JSONArray breakfastChoices = new JSONArray();
-                breakfastChoices.put(diet.getBreakfastPack1());
-                breakfastChoices.put(diet.getBreakfastPack2());
-                breakfastChoices.put(diet.getBreakfastPack3());
+            StringBuilder dietJson = new StringBuilder();
+            dietJson.append("{");
+            for (int i = 0; i < dietList.size(); i++) {
+                Diet diet = dietList.get(i);
+                String breakfastChoices = "[" + "\"" + diet.getBreakfastPack1() + "\"" + "," + "\"" + diet.getBreakfastPack2() + "\"" + "," + "\"" + diet.getBreakfastPack3() + "\"" + "]";
+                String lunchChoices = "[" + "\"" + diet.getLunchPack1() + "\"" + "," + "\"" + diet.getLunchPack2() + "\"" + "," + "\"" + diet.getLunchPack3() + "\"" + "]";
+                String snackChoices = "[" + "\"" + diet.getSnackPack1() + "\"" + "," + "\"" + diet.getSnackPack2() + "\"" + "," + "\"" + diet.getSnackPack3() + "\"" + "]";
+                String dinnerChoices = "[" + "\"" + diet.getDinnerPack1() + "\"" + "," + "\"" + diet.getDinnerPack2() + "\"" + "," + "\"" + diet.getDinnerPack3() + "\"" + "]";
 
-                JSONArray lunchChoices = new JSONArray();
-                lunchChoices.put(diet.getLunchPack1());
-                lunchChoices.put(diet.getLunchPack2());
-                lunchChoices.put(diet.getLunchPack3());
+                dietJson.append("\"" + diet.getDay() + "\"" + ":{" + "\"" + BREAKFAST_ID + "\"" + ":{" + "\"" + "status" + "\"" + ":0," + "\"" + "choices" + "\"" + ":" + breakfastChoices + "," + "\"" + "selected" + "\"" + ":0}");
+                dietJson.append("," + "\"" + LUNCH_ID + "\"" + ":{" + "\"" + "status" + "\"" + ":0," + "\"" + "choices" + "\"" + ":" + lunchChoices + "," + "\"" + "selected" + "\"" + ":0}");
+                dietJson.append("," + "\"" + SNACK_ID + "\"" + ":{" + "\"" + "status" + "\"" + ":0," + "\"" + "choices" + "\"" + ":" + snackChoices + "," + "\"" + "selected" + "\"" + ":0}");
+                dietJson.append("," + "\"" + DINNER_ID + "\"" + ":{" + "\"" + "status" + "\"" + ":0," + "\"" + "choices" + "\"" + ":" + dinnerChoices + "," + "\"" + "selected" + "\"" + ":0}}");
 
-                JSONArray snackChoices = new JSONArray();
-                snackChoices.put(diet.getSnackPack1());
-                snackChoices.put(diet.getSnackPack2());
-                snackChoices.put(diet.getSnackPack3());
+                if (i != dietList.size() - 1)
+                    dietJson.append(",");
 
-                JSONArray dinnerChoices = new JSONArray();
-                dinnerChoices.put(diet.getDinnerPack1());
-                dinnerChoices.put(diet.getDinnerPack2());
-                dinnerChoices.put(diet.getDinnerPack3());
-
-                JSONObject[] meals = new JSONObject[4];
-                for(int i = 0; i < meals.length; i++)
-                    meals[i] = new JSONObject();
-
-                meals[0].put("1", accumulate(new JSONObject[]{new JSONObject().put("status", 0), new JSONObject().put("choices", breakfastChoices), new JSONObject().put("selected", "")}));
-                meals[1].put("2", accumulate(new JSONObject[]{new JSONObject().put("status", 0), new JSONObject().put("choices", lunchChoices), new JSONObject().put("selected", "")}));
-                meals[2].put("3", accumulate(new JSONObject[]{new JSONObject().put("status", 0), new JSONObject().put("choices", snackChoices), new JSONObject().put("selected", "")}));
-                meals[3].put("4", accumulate(new JSONObject[]{new JSONObject().put("status", 0), new JSONObject().put("choices", dinnerChoices), new JSONObject().put("selected", "")}));
-
-                dietJson.put(diet.getDay()+"", accumulate(meals));
             }
 
-
-            return dietJson.toString();
+            return dietJson.append("}").toString();
 
 
         } catch (SQLException e) {
-            e.printStackTrace();
-        } catch (JSONException e) {
             e.printStackTrace();
         }
 
         return null;
     }
 
-    private String accumulate(JSONObject[] objects){
-        StringBuilder stringBuilder = new StringBuilder();
-        for(int i = 0; i < objects.length; i++)
-            if(i != objects.length - 1)
-                stringBuilder.append(objects[i].toString()+",");
-            else
-                stringBuilder.append(objects[i].toString());
-
-        return stringBuilder.toString();
+    private void writeToFile(String data, Context context) {
+        try {
+            OutputStreamWriter outputStreamWriter = new OutputStreamWriter(context.openFileOutput("diet.txt", Context.MODE_PRIVATE));
+            outputStreamWriter.write(data);
+            outputStreamWriter.flush();
+            outputStreamWriter.close();
+        } catch (IOException e) {
+            Log.e("DIET_FILE", "File write failed: " + e.toString());
+        }
     }
 
 //    var dietHistory = function(userId, startDate, diet, type){

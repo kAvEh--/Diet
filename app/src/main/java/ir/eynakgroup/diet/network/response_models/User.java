@@ -13,7 +13,7 @@ import java.util.Date;
  */
 public class User {
 
-    @SerializedName("_Id")
+    @SerializedName("_id")
     private String id;
 
     @SerializedName("name")
@@ -46,6 +46,11 @@ public class User {
     @SerializedName("activityLevel")
     private int activityLevel = -1;
 
+    @SerializedName("registerDate")
+    private String registerDate;
+
+    @SerializedName("lastLoginDate")
+    private String lastLoginDate;
 
     @SerializedName("diseases")
     private JsonArray diseases = new JsonArray();
@@ -53,7 +58,11 @@ public class User {
 //    @SerializedName("diseases")
 //    private JSONArray diseases;
 
+    @SerializedName("hatedFoods")
+    private JsonArray hatedFoods = new JsonArray();
 
+    @SerializedName("dietCount")
+    private int credit;
 
     public String getId() {
         return id;
@@ -87,6 +96,38 @@ public class User {
             return Gender.Female;
 
         return null;
+    }
+
+    public JsonArray getHatedFoods() {
+        return hatedFoods;
+    }
+
+    public void setHatedFoods(JsonArray hatedFoods) {
+        this.hatedFoods = hatedFoods;
+    }
+
+    public int getCredit() {
+        return credit;
+    }
+
+    public void setCredit(int credit) {
+        this.credit = credit;
+    }
+
+    public String getLastLoginDate() {
+        return lastLoginDate;
+    }
+
+    public void setLastLoginDate(String lastLoginDate) {
+        this.lastLoginDate = lastLoginDate;
+    }
+
+    public String getRegisterDate() {
+        return registerDate;
+    }
+
+    public void setRegisterDate(String registerDate) {
+        this.registerDate = registerDate;
     }
 
     public enum Gender{
@@ -161,6 +202,7 @@ public class User {
     public void setDiseases(JsonArray diseases) {
         this.diseases = diseases;
     }
+
     @Override
     public String toString() {
         return getUserId()+" : " + getBirthday()+ " : " + getName();

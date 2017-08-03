@@ -26,6 +26,8 @@ public class UserInfo {
     private String height;
     @DatabaseField(columnName = "Last_Login_Date", dataType = DataType.STRING)
     private String lastLoginDate;
+    @DatabaseField(columnName = "Register_Date", dataType = DataType.STRING)
+    private String registerDate;
     @DatabaseField(columnName = "Name", dataType = DataType.STRING)
     private String name;
     @DatabaseField(columnName = "Gender", dataType = DataType.INTEGER)
@@ -40,6 +42,10 @@ public class UserInfo {
     private int credit;
     @DatabaseField(columnName = "hatedList", dataType = DataType.STRING)
     private String hatedList;
+    @DatabaseField(columnName = "_id", dataType = DataType.STRING)
+    private String id;
+
+
 
 
     public int getActivityLevel() {
@@ -161,5 +167,21 @@ public class UserInfo {
 
     public void setHatedList(String hatedList) {
         this.hatedList = hatedList;
+    }
+
+    public String getRegisterDate() {
+        return registerDate;
+    }
+
+    public void setRegisterDate(String registerDate) {
+        this.registerDate = registerDate;
+    }
+
+    public String getId() {
+        return id;
+    }
+
+    public void setId(String id) {
+        this.id = id;
     }
 }
