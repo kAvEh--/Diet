@@ -1158,10 +1158,10 @@ public class SetupDietActivity extends BaseActivity implements View.OnClickListe
                 String snackChoices = "[" + "\"" + diet.getSnackPack1() + "\"" + "," + "\"" + diet.getSnackPack2() + "\"" + "," + "\"" + diet.getSnackPack3() + "\"" + "]";
                 String dinnerChoices = "[" + "\"" + diet.getDinnerPack1() + "\"" + "," + "\"" + diet.getDinnerPack2() + "\"" + "," + "\"" + diet.getDinnerPack3() + "\"" + "]";
 
-                dietJson.append("\"" + diet.getDay() + "\"" + ":{" + "\"" + BREAKFAST_ID + "\"" + ":{" + "\"" + "status" + "\"" + ":0," + "\"" + "choices" + "\"" + ":" + breakfastChoices + "," + "\"" + "selected" + "\"" + ":"+diet.getSelectedBreakfast()+"}");
-                dietJson.append("," + "\"" + LUNCH_ID + "\"" + ":{" + "\"" + "status" + "\"" + ":0," + "\"" + "choices" + "\"" + ":" + lunchChoices + "," + "\"" + "selected" + "\"" + ":"+diet.getSelectedLunch()+"}");
-                dietJson.append("," + "\"" + SNACK_ID + "\"" + ":{" + "\"" + "status" + "\"" + ":0," + "\"" + "choices" + "\"" + ":" + snackChoices + "," + "\"" + "selected" + "\"" + ":"+diet.getSelectedSnack()+"}");
-                dietJson.append("," + "\"" + DINNER_ID + "\"" + ":{" + "\"" + "status" + "\"" + ":0," + "\"" + "choices" + "\"" + ":" + dinnerChoices + "," + "\"" + "selected" + "\"" + ":"+diet.getSelectedDinner()+"}}");
+                dietJson.append("\"" + diet.getDay() + "\"" + ":{" + "\"" + BREAKFAST_ID + "\"" + ":{" + "\"" + "status" + "\"" + ":0," + "\"" + "choices" + "\"" + ":" + breakfastChoices + "," + "\"" + "selected" + "\"" + ":\""+diet.getSelectedBreakfast()+"\"}");
+                dietJson.append("," + "\"" + LUNCH_ID + "\"" + ":{" + "\"" + "status" + "\"" + ":0," + "\"" + "choices" + "\"" + ":" + lunchChoices + "," + "\"" + "selected" + "\"" + ":\""+diet.getSelectedLunch()+"\"}");
+                dietJson.append("," + "\"" + SNACK_ID + "\"" + ":{" + "\"" + "status" + "\"" + ":0," + "\"" + "choices" + "\"" + ":" + snackChoices + "," + "\"" + "selected" + "\"" + ":\""+diet.getSelectedSnack()+"\"}");
+                dietJson.append("," + "\"" + DINNER_ID + "\"" + ":{" + "\"" + "status" + "\"" + ":0," + "\"" + "choices" + "\"" + ":" + dinnerChoices + "," + "\"" + "selected" + "\"" + ":\""+diet.getSelectedDinner()+"\"}}");
 
                 if (i != dietList.size() - 1)
                     dietJson.append(",");

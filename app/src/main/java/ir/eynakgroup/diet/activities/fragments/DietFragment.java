@@ -170,7 +170,6 @@ public class DietFragment extends Fragment {
         if(meal != null){
             try {
                 int dietId = new AppPreferences(getContext()).getDietNumber();
-                Log.d("DIET", dietId+"");
                 QueryBuilder<Diet, Integer> dietQueryBuilder = new DatabaseHelper(getContext()).getDietDao().queryBuilder();
                 dietQueryBuilder.where().eq("_id", dietId);
                 List<Diet> dietList = dietQueryBuilder.query();
@@ -181,10 +180,12 @@ public class DietFragment extends Fragment {
                     dietQueryBuilder.where().eq("day", ++day);
                     List<Diet> dietDay = dietQueryBuilder.query();
                     if(dietDay.size() > 0){
+                        Diet diet = dietDay.get(0);
+                        View mealView = meal.getView();
                         switch (viewPager.getCurrentItem()){
                             //dinner
                             case 0:
-
+                                
 
                                 break;
                             //snack
@@ -197,7 +198,7 @@ public class DietFragment extends Fragment {
 
 
                                 break;
-                            //dinner
+                            //breakfast
                             case 3:
 
 
