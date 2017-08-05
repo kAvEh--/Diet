@@ -7,6 +7,7 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import ir.eynakgroup.diet.R;
 
@@ -16,6 +17,7 @@ public class DietDishesFragment extends Fragment {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String MEAL_ID = "meal_id";
     private static final String RESOURCE_ID = "res_id";
+
 
     // TODO: Rename and change types of parameters
     private int mMealId;

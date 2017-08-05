@@ -293,7 +293,6 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:gravity="center"
-                            android:text="کره"
                             android:textSize="@dimen/normal_text_size" />
 
                         <ir.eynakgroup.diet.utils.view.CustomTextView
@@ -301,7 +300,6 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:gravity="center"
-                            android:text="مربا"
                             android:textSize="@dimen/normal_text_size" />
 
                         <ir.eynakgroup.diet.utils.view.CustomTextView
@@ -309,7 +307,6 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:gravity="center"
-                            android:text="شیر کم‌چرب"
                             android:textSize="@dimen/normal_text_size" />
 
                         <ir.eynakgroup.diet.utils.view.CustomTextView
@@ -317,7 +314,6 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:gravity="center"
-                            android:text="نان سنگک"
                             android:textSize="@dimen/normal_text_size" />
 
                         <ir.eynakgroup.diet.utils.view.CustomTextView
@@ -395,7 +391,6 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:gravity="center"
-                            android:text="مربا"
                             android:textSize="@dimen/normal_text_size" />
 
                         <ir.eynakgroup.diet.utils.view.CustomTextView
@@ -403,7 +398,6 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:gravity="center"
-                            android:text="شیر کم‌چرب"
                             android:textSize="@dimen/normal_text_size" />
 
                         <ir.eynakgroup.diet.utils.view.CustomTextView
@@ -411,7 +405,6 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:gravity="center"
-                            android:text="نان سنگک"
                             android:textSize="@dimen/normal_text_size" />
 
                         <ir.eynakgroup.diet.utils.view.CustomTextView
@@ -419,7 +412,6 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:gravity="center"
-                            android:text="نان سنگک"
                             android:textSize="@dimen/normal_text_size" />
 
                         <ir.eynakgroup.diet.utils.view.CustomTextView
@@ -506,7 +498,6 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:gravity="center"
-                            android:text="کره"
                             android:textSize="@dimen/normal_text_size" />
 
                         <ir.eynakgroup.diet.utils.view.CustomTextView
@@ -514,7 +505,6 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:gravity="center"
-                            android:text="مربا"
                             android:textSize="@dimen/normal_text_size" />
 
                         <ir.eynakgroup.diet.utils.view.CustomTextView
@@ -522,7 +512,6 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:gravity="center"
-                            android:text="شیر کم‌چرب"
                             android:textSize="@dimen/normal_text_size" />
 
                         <ir.eynakgroup.diet.utils.view.CustomTextView
@@ -530,7 +519,6 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:gravity="center"
-                            android:text="نان سنگک"
                             android:textSize="@dimen/normal_text_size" />
 
                         <ir.eynakgroup.diet.utils.view.CustomTextView
@@ -608,7 +596,6 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:gravity="center"
-                            android:text="مربا"
                             android:textSize="@dimen/normal_text_size" />
 
                         <ir.eynakgroup.diet.utils.view.CustomTextView
@@ -616,7 +603,6 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:gravity="center"
-                            android:text="شیر کم‌چرب"
                             android:textSize="@dimen/normal_text_size" />
 
                         <ir.eynakgroup.diet.utils.view.CustomTextView
@@ -624,7 +610,6 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:gravity="center"
-                            android:text="نان سنگک"
                             android:textSize="@dimen/normal_text_size" />
 
                         <ir.eynakgroup.diet.utils.view.CustomTextView
@@ -632,7 +617,6 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:gravity="center"
-                            android:text="نان سنگک"
                             android:textSize="@dimen/normal_text_size" />
 
                         <ir.eynakgroup.diet.utils.view.CustomTextView
