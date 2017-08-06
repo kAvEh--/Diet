@@ -55,20 +55,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         barProfile = findViewById(R.id.bar_tab_profile);
         barDiet = findViewById(R.id.bar_tab_diet);
         viewPager = (CustomViewPager) findViewById(R.id.container_fragment);
-        viewPager.setAdapter(new PagerAdapter(getSupportFragmentManager(), this));
-
-        findViewById(R.id.tab_profile).setOnClickListener(this);
-        findViewById(R.id.tab_diet).setOnClickListener(this);
-
-//        Window window = getWindow();
-//        window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
-//        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-//
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
-//            window.setStatusBarColor(getResources().getColor(R.color.colorStatusBar, this.getTheme()));
-//
-//        else if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
-//            window.setStatusBarColor(getResources().getColor(R.color.colorStatusBar));
 
         if(getAppPreferences().hasDiet()){
             try {
@@ -101,7 +87,20 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                 e.printStackTrace();
             }
         }
+        viewPager.setAdapter(new PagerAdapter(getSupportFragmentManager(), this));
 
+        findViewById(R.id.tab_profile).setOnClickListener(this);
+        findViewById(R.id.tab_diet).setOnClickListener(this);
+
+//        Window window = getWindow();
+//        window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+//        window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+//
+//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M)
+//            window.setStatusBarColor(getResources().getColor(R.color.colorStatusBar, this.getTheme()));
+//
+//        else if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP)
+//            window.setStatusBarColor(getResources().getColor(R.color.colorStatusBar));
 
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
