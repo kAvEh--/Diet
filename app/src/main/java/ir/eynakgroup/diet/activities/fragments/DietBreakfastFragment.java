@@ -17,6 +17,7 @@ import java.util.List;
 
 import ir.eynakgroup.diet.R;
 import ir.eynakgroup.diet.activities.fragments.dummy.DummyDish;
+import ir.eynakgroup.diet.activities.fragments.dummy.DummyFood;
 
 
 public class DietBreakfastFragment extends Fragment implements View.OnClickListener {
@@ -41,6 +42,8 @@ public class DietBreakfastFragment extends Fragment implements View.OnClickListe
     private TextView textAmount3;
     private TextView textAmount4;
     private TextView textAmount5;
+
+    private TextView[] dishItem = new TextView[20];
 
     public DietBreakfastFragment() {
         // Required empty public constructor
@@ -85,6 +88,108 @@ public class DietBreakfastFragment extends Fragment implements View.OnClickListe
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        for(int i = 0; i < dishItem.length; i++){
+            switch (i/5){
+                case 0:
+                    switch (i%5){
+                        case 0:
+                            dishItem[i] = (TextView) view.findViewById(R.id.pack1_item1);
+                            break;
+                        case 1:
+                            dishItem[i] = (TextView) view.findViewById(R.id.pack1_item2);
+                            break;
+                        case 2:
+                            dishItem[i] = (TextView) view.findViewById(R.id.pack1_item3);
+                            break;
+                        case 3:
+                            dishItem[i] = (TextView) view.findViewById(R.id.pack1_item4);
+                            break;
+                        case 4:
+                            dishItem[i] = (TextView) view.findViewById(R.id.pack1_item5);
+                            break;
+                    }
+                    break;
+                case 1:
+                    switch (i%5){
+                        case 0:
+                            dishItem[i] = (TextView) view.findViewById(R.id.pack2_item1);
+                            break;
+                        case 1:
+                            dishItem[i] = (TextView) view.findViewById(R.id.pack2_item2);
+                            break;
+                        case 2:
+                            dishItem[i] = (TextView) view.findViewById(R.id.pack2_item3);
+                            break;
+                        case 3:
+                            dishItem[i] = (TextView) view.findViewById(R.id.pack2_item4);
+                            break;
+                        case 4:
+                            dishItem[i] = (TextView) view.findViewById(R.id.pack2_item5);
+                            break;
+                    }
+                    break;
+                case 2:
+                    switch (i%5){
+                        case 0:
+                            dishItem[i] = (TextView) view.findViewById(R.id.pack3_item1);
+                            break;
+                        case 1:
+                            dishItem[i] = (TextView) view.findViewById(R.id.pack3_item2);
+                            break;
+                        case 2:
+                            dishItem[i] = (TextView) view.findViewById(R.id.pack3_item3);
+                            break;
+                        case 3:
+                            dishItem[i] = (TextView) view.findViewById(R.id.pack3_item4);
+                            break;
+                        case 4:
+                            dishItem[i] = (TextView) view.findViewById(R.id.pack3_item5);
+                            break;
+                    }
+                    break;
+                case 3:
+                    switch (i%5){
+                        case 0:
+                            dishItem[i] = (TextView) view.findViewById(R.id.pack4_item1);
+                            break;
+                        case 1:
+                            dishItem[i] = (TextView) view.findViewById(R.id.pack4_item2);
+                            break;
+                        case 2:
+                            dishItem[i] = (TextView) view.findViewById(R.id.pack4_item3);
+                            break;
+                        case 3:
+                            dishItem[i] = (TextView) view.findViewById(R.id.pack4_item4);
+                            break;
+                        case 4:
+                            dishItem[i] = (TextView) view.findViewById(R.id.pack4_item5);
+                            break;
+                    }
+                    break;
+            }
+            dishItem[i].setText("");
+        }
+        int yesterday = 0;
+        int today = 1;
+        int tomorrow = 2;
+        int after = 3;
+        if(breakfastDishes.size() > 3){
+            today = 0;
+            tomorrow = 1;
+            after = 2;
+        }
+
+        List<DummyDish> todayDishes = breakfastDishes.get(today);
+        for(DummyDish dish: todayDishes){
+            List<DummyFood> foodList = dish.getDishFoods();
+            int position = 1;
+            for(DummyFood food: foodList){
+                
+                position++;
+            }
+        }
+
         textMealTitle = (TextView) view.findViewById(R.id.meal_title);
         imgBackGrid = (ImageView) view.findViewById(R.id.back_group);
         imgBackGrid.setOnClickListener(this);

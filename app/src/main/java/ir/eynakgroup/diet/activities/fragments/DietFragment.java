@@ -94,9 +94,6 @@ public class DietFragment extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         loadDishes();
-        timeToShow = Calendar.getInstance().getTimeInMillis();
-        appPreference = new AppPreferences(getContext());
-        databaseHelper = new DatabaseHelper(getContext());
         textOptionSelect = (TextView) view.findViewById(R.id.txt_option_select);
         /**
          * meal tabs part
@@ -147,73 +144,6 @@ public class DietFragment extends Fragment {
         tabLayout.setScrollPosition(pageIndex, 0f, true);
         viewPager.setCurrentItem(pageIndex);
     }
-
-//    private int getDietDay(long diff) {
-//        if (diff >= 0 && diff < TimeUnit.DAYS.toMillis(1))
-//            return 1;
-//        else if (diff >= TimeUnit.DAYS.toMillis(1) && diff < TimeUnit.DAYS.toMillis(2))
-//            return 2;
-//        else if (diff >= TimeUnit.DAYS.toMillis(2) && diff < TimeUnit.DAYS.toMillis(3))
-//            return 3;
-//        else if (diff >= TimeUnit.DAYS.toMillis(3) && diff < TimeUnit.DAYS.toMillis(4))
-//            return 4;
-//        else if (diff >= TimeUnit.DAYS.toMillis(4) && diff < TimeUnit.DAYS.toMillis(5))
-//            return 5;
-//        else if (diff >= TimeUnit.DAYS.toMillis(5) && diff < TimeUnit.DAYS.toMillis(6))
-//            return 6;
-//        else if (diff >= TimeUnit.DAYS.toMillis(6) && diff < TimeUnit.DAYS.toMillis(7))
-//            return 7;
-//        else if (diff >= TimeUnit.DAYS.toMillis(7) && diff < TimeUnit.DAYS.toMillis(8))
-//            return 8;
-//        else if (diff >= TimeUnit.DAYS.toMillis(8) && diff < TimeUnit.DAYS.toMillis(9))
-//            return 9;
-//        else if (diff >= TimeUnit.DAYS.toMillis(9) && diff < TimeUnit.DAYS.toMillis(10))
-//            return 10;
-//        else if (diff >= TimeUnit.DAYS.toMillis(10) && diff < TimeUnit.DAYS.toMillis(11))
-//            return 11;
-//        else if (diff >= TimeUnit.DAYS.toMillis(11) && diff < TimeUnit.DAYS.toMillis(12))
-//            return 12;
-//        else if (diff >= TimeUnit.DAYS.toMillis(12) && diff < TimeUnit.DAYS.toMillis(13))
-//            return 13;
-//        else if (diff >= TimeUnit.DAYS.toMillis(13) && diff < TimeUnit.DAYS.toMillis(14))
-//            return 14;
-//        else if (diff >= TimeUnit.DAYS.toMillis(14) && diff < TimeUnit.DAYS.toMillis(15))
-//            return 15;
-//        else if (diff >= TimeUnit.DAYS.toMillis(15) && diff < TimeUnit.DAYS.toMillis(16))
-//            return 16;
-//        else if (diff >= TimeUnit.DAYS.toMillis(16) && diff < TimeUnit.DAYS.toMillis(17))
-//            return 17;
-//        else if (diff >= TimeUnit.DAYS.toMillis(17) && diff < TimeUnit.DAYS.toMillis(18))
-//            return 18;
-//        else if (diff >= TimeUnit.DAYS.toMillis(18) && diff < TimeUnit.DAYS.toMillis(19))
-//            return 19;
-//        else if (diff >= TimeUnit.DAYS.toMillis(19) && diff < TimeUnit.DAYS.toMillis(20))
-//            return 20;
-//        else if (diff >= TimeUnit.DAYS.toMillis(20) && diff < TimeUnit.DAYS.toMillis(21))
-//            return 21;
-//        else if (diff >= TimeUnit.DAYS.toMillis(21) && diff < TimeUnit.DAYS.toMillis(22))
-//            return 22;
-//        else if (diff >= TimeUnit.DAYS.toMillis(22) && diff < TimeUnit.DAYS.toMillis(23))
-//            return 23;
-//        else if (diff >= TimeUnit.DAYS.toMillis(23) && diff < TimeUnit.DAYS.toMillis(24))
-//            return 24;
-//        else if (diff >= TimeUnit.DAYS.toMillis(24) && diff < TimeUnit.DAYS.toMillis(25))
-//            return 25;
-//        else if (diff >= TimeUnit.DAYS.toMillis(25) && diff < TimeUnit.DAYS.toMillis(26))
-//            return 26;
-//        else if (diff >= TimeUnit.DAYS.toMillis(26) && diff < TimeUnit.DAYS.toMillis(27))
-//            return 27;
-//        else if (diff >= TimeUnit.DAYS.toMillis(27) && diff < TimeUnit.DAYS.toMillis(28))
-//            return 28;
-//        else if (diff >= TimeUnit.DAYS.toMillis(28) && diff < TimeUnit.DAYS.toMillis(29))
-//            return 29;
-//        else if (diff >= TimeUnit.DAYS.toMillis(29) && diff < TimeUnit.DAYS.toMillis(30))
-//            return 30;
-//        else if (diff >= TimeUnit.DAYS.toMillis(30) && diff < TimeUnit.DAYS.toMillis(31))
-//            return 31;
-//        else
-//            return 0;
-//    }
 
     private void setupViewPager() {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getFragmentManager());
@@ -341,6 +271,8 @@ public class DietFragment extends Fragment {
     private List<FoodUnit> foodUnits;
 
     private void loadDishes() {
+        timeToShow = Calendar.getInstance().getTimeInMillis();
+        appPreference = new AppPreferences(getContext());
         databaseHelper = new DatabaseHelper(getContext());
         int dietId = appPreference.getDietNumber();
         try {
