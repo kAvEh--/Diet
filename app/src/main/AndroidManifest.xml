@@ -9,6 +9,7 @@
     <uses-permission android:name="android.permission.MANAGE_ACCOUNTS" />
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
     <uses-permission android:name="android.permission.SET_ALARM" />
+    <uses-permission android:name="com.farsitel.bazaar.permission.PAY_THROUGH_BAZAAR"/>
 
     <permission
         android:name="ir.eynakgroup.karafs.account.AUTHENTICATION_PERMISSION"

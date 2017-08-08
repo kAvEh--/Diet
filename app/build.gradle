@@ -22,7 +22,9 @@ android {
         }
     }
 
-
+    lintOptions {
+        checkReleaseBuilds false
+    }
 }
 
 

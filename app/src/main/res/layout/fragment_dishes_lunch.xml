@@ -8,10 +8,12 @@
         android:orientation="vertical">
 
         <android.support.v7.widget.CardView
-            android:id="@+id/card_view_open"
+            android:id="@+id/pack_open"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_margin="10dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginLeft="10dp"
             android:visibility="gone">
 
             <LinearLayout
@@ -32,6 +34,7 @@
                         android:layout_height="wrap_content"
                         android:layout_alignParentRight="true"
                         android:layout_centerVertical="true"
+                        android:layout_marginRight="@dimen/activity_orientation_margin"
                         android:gravity="center"
                         android:padding="6dp"
                         android:text="ناهار یک"
@@ -44,7 +47,7 @@
                         android:layout_height="24dp"
                         android:layout_alignParentLeft="true"
                         android:layout_centerVertical="true"
-                        android:layout_marginLeft="6dp"
+                        android:layout_marginLeft="@dimen/activity_orientation_margin"
                         android:src="@mipmap/ic_grid" />
                 </RelativeLayout>
 
@@ -244,6 +247,7 @@
         </android.support.v7.widget.CardView>
 
         <LinearLayout
+            android:id="@+id/pack12"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
@@ -451,6 +455,7 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/pack34"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"

@@ -7,10 +7,7 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
-import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.util.TimeUtils;
-import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -30,10 +27,13 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import ir.eynakgroup.diet.R;
+import ir.eynakgroup.diet.activities.fragments.dummy.DummyDish;
+import ir.eynakgroup.diet.activities.fragments.dummy.DummyFood;
 import ir.eynakgroup.diet.database.DatabaseHelper;
 import ir.eynakgroup.diet.database.tables.Diet;
 import ir.eynakgroup.diet.database.tables.Food;
 import ir.eynakgroup.diet.database.tables.FoodPackage;
+import ir.eynakgroup.diet.database.tables.FoodUnit;
 import ir.eynakgroup.diet.database.tables.PackageFood;
 import ir.eynakgroup.diet.utils.AppPreferences;
 
@@ -61,6 +61,8 @@ public class DietFragment extends Fragment {
     private AppPreferences appPreference;
     private DatabaseHelper databaseHelper;
 
+    private TextView textOptionSelect;
+
     public DietFragment(Context context) {
         mContext = context;
     }
@@ -87,40 +89,23 @@ public class DietFragment extends Fragment {
         return inflater.inflate(R.layout.fragment_diet, container, false);
     }
 
+
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        loadDishes();
         timeToShow = Calendar.getInstance().getTimeInMillis();
         appPreference = new AppPreferences(getContext());
-
         databaseHelper = new DatabaseHelper(getContext());
+        textOptionSelect = (TextView) view.findViewById(R.id.txt_option_select);
         /**
          * meal tabs part
          */
         viewPager = (ViewPager) view.findViewById(R.id.meals_tab_viewpager);
-        setupViewPager(viewPager);
+        setupViewPager();
 
         tabLayout = (TabLayout) view.findViewById(R.id.meals_tabs);
         tabLayout.setupWithViewPager(viewPager);
-//        tabLayout.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
-//            @Override
-//            public void onTabSelected(TabLayout.Tab tab) {
-//
-//
-//
-//            }
-//
-//            @Override
-//            public void onTabUnselected(TabLayout.Tab tab) {
-//
-//            }
-//
-//            @Override
-//            public void onTabReselected(TabLayout.Tab tab) {
-//
-//            }
-//        });
-
         /**
          * date spinner part
          */
@@ -135,16 +120,17 @@ public class DietFragment extends Fragment {
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 switch (position) {
                     case TODAY:
-                        timeToShow = Calendar.getInstance().getTimeInMillis();
+//                        timeToShow = Calendar.getInstance().getTimeInMillis();
                         break;
                     case TOMORROW:
-                        timeToShow = Calendar.getInstance().getTimeInMillis() + TimeUnit.DAYS.toMillis(1);
+//                        timeToShow = Calendar.getInstance().getTimeInMillis() + TimeUnit.DAYS.toMillis(1);
+
                         break;
                     case DAY_AFTER_TOMORROW:
-                        timeToShow = Calendar.getInstance().getTimeInMillis() + TimeUnit.DAYS.toMillis(2);
+//                        timeToShow = Calendar.getInstance().getTimeInMillis() + TimeUnit.DAYS.toMillis(2);
+
                         break;
                 }
-                inflateDiet();
                 //TODO do somt hing, date is changed.
 
             }
@@ -160,396 +146,6 @@ public class DietFragment extends Fragment {
     private void selectPage(int pageIndex) {
         tabLayout.setScrollPosition(pageIndex, 0f, true);
         viewPager.setCurrentItem(pageIndex);
-    }
-
-    private QueryBuilder<FoodPackage, Integer> packageQueryBuilder;
-    private List<FoodPackage> packageList;
-    private ViewPagerAdapter pagerAdapter;
-    private View mealView;
-    private QueryBuilder<Diet, Integer> dietQueryBuilder;
-    private List<Diet> dietList;
-    private List<Diet> dietDayList;
-    private QueryBuilder<Food, Integer> foodQueryBuilder;
-    private List<Food> foods;
-    private String[] foodsId;
-    private int position;
-    private QueryBuilder<PackageFood, Integer> packageFoodQueryBuilder;
-    private List<PackageFood> packageFoods;
-    private String[] packagesId;
-    private String amount;
-
-    private void inflateDiet() {
-        pagerAdapter = (ViewPagerAdapter) viewPager.getAdapter();
-        mealView = pagerAdapter.getItem(viewPager.getCurrentItem()).getView();
-        if (mealView != null) {
-            try {
-                int dietId = appPreference.getDietNumber();
-                dietQueryBuilder = databaseHelper.getDietDao().queryBuilder();
-                dietQueryBuilder.where().eq("_id", dietId);
-                dietList = dietQueryBuilder.query();
-//                int day = getDietDay(timeToShow - Long.parseLong(dietList.get(0).getStartDate()));
-                if (dietList.size() > 0) {
-                    int day = (int) ((timeToShow - Long.parseLong(dietList.get(0).getStartDate())) / TimeUnit.DAYS.toMillis(1)) + 1;
-                    String dietType = dietList.get(0).getDietType().trim();
-                    Log.d("DAY", day + "");
-                    dietQueryBuilder.reset();
-                    dietQueryBuilder.where().eq("day", day);
-                    dietDayList = dietQueryBuilder.query();
-                    if (dietDayList.size() > 0) {
-//                        Diet diet = dietDayList.get(0);
-                        packagesId = new String[4];
-                        switch (viewPager.getCurrentItem()){
-                            case 0:
-                                packagesId[0] = dietDayList.get(0).getDinnerPack1();
-                                packagesId[1] = dietDayList.get(0).getDinnerPack2();
-                                packagesId[2] = dietDayList.get(0).getDinnerPack3();
-                                if(day > 1){
-                                    dietQueryBuilder.reset();
-                                    dietQueryBuilder.where().eq("day", day - 1);
-                                    dietDayList = dietQueryBuilder.query();
-                                    if (dietDayList.size() > 0) {
-                                        mealView.findViewById(R.id.yesterday_pack).setVisibility(View.VISIBLE);
-                                        packagesId[3] = dietDayList.get(0).getSelectedDinner();
-                                    }
-
-                                }else if(day == 1)
-                                    mealView.findViewById(R.id.yesterday_pack).setVisibility(View.INVISIBLE);
-
-                                break;
-                            case 1:
-                                packagesId[0] = dietDayList.get(0).getSnackPack1();
-                                packagesId[1] = dietDayList.get(0).getSnackPack2();
-                                packagesId[2] = dietDayList.get(0).getSnackPack3();
-                                if(day > 1){
-                                    dietQueryBuilder.reset();
-                                    dietQueryBuilder.where().eq("day", day - 1);
-                                    dietDayList = dietQueryBuilder.query();
-                                    if (dietDayList.size() > 0) {
-                                        mealView.findViewById(R.id.yesterday_pack).setVisibility(View.VISIBLE);
-                                        packagesId[3] = dietDayList.get(0).getSelectedSnack();
-                                    }
-
-                                }else if(day == 1)
-                                    mealView.findViewById(R.id.yesterday_pack).setVisibility(View.INVISIBLE);
-
-                                break;
-                            case 2:
-                                packagesId[0] = dietDayList.get(0).getLunchPack1();
-                                packagesId[1] = dietDayList.get(0).getLunchPack2();
-                                packagesId[2] = dietDayList.get(0).getLunchPack3();
-                                if(day > 1){
-                                    dietQueryBuilder.reset();
-                                    dietQueryBuilder.where().eq("day", day - 1);
-                                    dietDayList = dietQueryBuilder.query();
-                                    if (dietDayList.size() > 0) {
-                                        mealView.findViewById(R.id.yesterday_pack).setVisibility(View.VISIBLE);
-                                        packagesId[3] = dietDayList.get(0).getSelectedLunch();
-                                    }
-
-                                }else if(day == 1)
-                                    mealView.findViewById(R.id.yesterday_pack).setVisibility(View.INVISIBLE);
-
-                                break;
-                            case 3:
-                                packagesId[0] = dietDayList.get(0).getBreakfastPack1();
-                                packagesId[1] = dietDayList.get(0).getBreakfastPack2();
-                                packagesId[2] = dietDayList.get(0).getBreakfastPack3();
-                                if(day > 1){
-                                    dietQueryBuilder.reset();
-                                    dietQueryBuilder.where().eq("day", day - 1);
-                                    dietDayList = dietQueryBuilder.query();
-                                    if (dietDayList.size() > 0) {
-                                        mealView.findViewById(R.id.yesterday_pack).setVisibility(View.VISIBLE);
-                                        packagesId[3] = dietDayList.get(0).getSelectedBreakfast();
-                                    }
-
-                                }else if(day == 1)
-                                    mealView.findViewById(R.id.yesterday_pack).setVisibility(View.INVISIBLE);
-
-                                break;
-                        }
-                        packageQueryBuilder = databaseHelper.getFoodPackageDao().queryBuilder();
-                        packageQueryBuilder.where().eq("_id", packagesId[0]);
-                        packageList = packageQueryBuilder.query();
-                        if (packageList.size() > 0) {
-//                                    FoodPackage pack1 = packageList1.get(0);
-                            foodsId = packageList.get(0).getFoods().split(",");
-                            foodQueryBuilder = databaseHelper.getFoodDao().queryBuilder();
-                            packageFoodQueryBuilder = databaseHelper.getPackageFoodDao().queryBuilder();
-                            position = 1;
-                            for (String foodId : foodsId) {
-                                packageFoodQueryBuilder.where().eq("_id", packagesId[0]).and().eq("foodId", foodId.trim());
-                                packageFoods = packageFoodQueryBuilder.query();
-                                if(packageFoods.size() > 0){
-                                    amount = "0";
-                                    switch (dietType){
-                                        case "1000":
-                                            amount = packageFoods.get(0).getAmount1000();
-                                            break;
-                                        case "1250":
-                                            amount = packageFoods.get(0).getAmount1250();
-                                            break;
-                                        case "1500":
-                                            amount = packageFoods.get(0).getAmount1500();
-                                            break;
-                                        case "1750":
-                                            amount = packageFoods.get(0).getAmount1750();
-                                            break;
-                                        case "2000":
-                                            amount = packageFoods.get(0).getAmount2000();
-                                            break;
-                                        case "2250":
-                                            amount = packageFoods.get(0).getAmount2250();
-                                            break;
-                                    }
-
-                                    if(!amount.equalsIgnoreCase("0")){
-                                        foodQueryBuilder.where().eq("foodId", Integer.valueOf(foodId.trim()));
-                                        foods = foodQueryBuilder.query();
-                                        if (foods.size() > 0) {
-//                                            Food food = foods.get(0);
-                                            System.out.println("food ------------------------------ " + foods.get(0).getFoodName());
-                                            switch (position) {
-                                                case 1:
-                                                    ((TextView) mealView.findViewById(R.id.pack1_item1)).setText(foods.get(0).getFoodName().trim());
-                                                    break;
-                                                case 2:
-                                                    ((TextView) mealView.findViewById(R.id.pack1_item2)).setText(foods.get(0).getFoodName().trim());
-                                                    break;
-                                                case 3:
-                                                    ((TextView) mealView.findViewById(R.id.pack1_item3)).setText(foods.get(0).getFoodName().trim());
-                                                    break;
-                                                case 4:
-                                                    ((TextView) mealView.findViewById(R.id.pack1_item4)).setText(foods.get(0).getFoodName().trim());
-                                                    break;
-                                                case 5:
-                                                    ((TextView) mealView.findViewById(R.id.pack1_item5)).setText(foods.get(0).getFoodName().trim());
-                                                    break;
-                                            }
-                                            position++;
-                                        }
-                                        foodQueryBuilder.reset();
-                                    }
-
-                                }
-                                packageFoodQueryBuilder.reset();
-                            }
-                        }
-                        packageQueryBuilder.reset();
-                        packageList.clear();
-                        packageQueryBuilder.where().eq("_id", packagesId[1]);
-                        packageList = packageQueryBuilder.query();
-                        if (packageList.size() > 0) {
-//                                    FoodPackage pack1 = packageList1.get(0);
-                            foodsId = packageList.get(0).getFoods().split(",");
-                            position = 1;
-                            for (String foodId : foodsId) {
-                                packageFoodQueryBuilder.where().eq("_id", packagesId[1]).and().eq("foodId", foodId.trim());
-                                packageFoods.clear();
-                                packageFoods = packageFoodQueryBuilder.query();
-                                if(packageFoods.size() > 0){
-                                    amount = "0";
-                                    switch (dietType){
-                                        case "1000":
-                                            amount = packageFoods.get(0).getAmount1000();
-                                            break;
-                                        case "1250":
-                                            amount = packageFoods.get(0).getAmount1250();
-                                            break;
-                                        case "1500":
-                                            amount = packageFoods.get(0).getAmount1500();
-                                            break;
-                                        case "1750":
-                                            amount = packageFoods.get(0).getAmount1750();
-                                            break;
-                                        case "2000":
-                                            amount = packageFoods.get(0).getAmount2000();
-                                            break;
-                                        case "2250":
-                                            amount = packageFoods.get(0).getAmount2250();
-                                            break;
-                                    }
-
-                                    if(!amount.equalsIgnoreCase("0")){
-                                        foodQueryBuilder.where().eq("foodId", Integer.valueOf(foodId.trim()));
-                                        foods.clear();
-                                        foods = foodQueryBuilder.query();
-                                        if (foods.size() > 0) {
-//                                            Food food = foods.get(0);
-                                            System.out.println("food ------------------------------ " + foods.get(0).getFoodName());
-                                            switch (position) {
-                                                case 1:
-                                                    ((TextView) mealView.findViewById(R.id.pack2_item1)).setText(foods.get(0).getFoodName().trim());
-                                                    break;
-                                                case 2:
-                                                    ((TextView) mealView.findViewById(R.id.pack2_item2)).setText(foods.get(0).getFoodName().trim());
-                                                    break;
-                                                case 3:
-                                                    ((TextView) mealView.findViewById(R.id.pack2_item3)).setText(foods.get(0).getFoodName().trim());
-                                                    break;
-                                                case 4:
-                                                    ((TextView) mealView.findViewById(R.id.pack2_item4)).setText(foods.get(0).getFoodName().trim());
-                                                    break;
-                                                case 5:
-                                                    ((TextView) mealView.findViewById(R.id.pack2_item5)).setText(foods.get(0).getFoodName().trim());
-                                                    break;
-                                            }
-                                            position++;
-                                        }
-                                        foodQueryBuilder.reset();
-                                    }
-
-                                }
-                                packageFoodQueryBuilder.reset();
-                            }
-                        }
-
-                        packageQueryBuilder.reset();
-                        packageList.clear();
-                        packageQueryBuilder.where().eq("_id", packagesId[2]);
-                        packageList = packageQueryBuilder.query();
-                        if (packageList.size() > 0) {
-//                                    FoodPackage pack1 = packageList1.get(0);
-                            foodsId = packageList.get(0).getFoods().split(",");
-                            position = 1;
-                            for (String foodId : foodsId) {
-                                packageFoodQueryBuilder.where().eq("_id", packagesId[2]).and().eq("foodId", foodId.trim());
-                                packageFoods.clear();
-                                packageFoods = packageFoodQueryBuilder.query();
-                                if(packageFoods.size() > 0){
-                                    amount = "0";
-                                    switch (dietType){
-                                        case "1000":
-                                            amount = packageFoods.get(0).getAmount1000();
-                                            break;
-                                        case "1250":
-                                            amount = packageFoods.get(0).getAmount1250();
-                                            break;
-                                        case "1500":
-                                            amount = packageFoods.get(0).getAmount1500();
-                                            break;
-                                        case "1750":
-                                            amount = packageFoods.get(0).getAmount1750();
-                                            break;
-                                        case "2000":
-                                            amount = packageFoods.get(0).getAmount2000();
-                                            break;
-                                        case "2250":
-                                            amount = packageFoods.get(0).getAmount2250();
-                                            break;
-                                    }
-
-                                    if(!amount.equalsIgnoreCase("0")){
-                                        foodQueryBuilder.where().eq("foodId", Integer.valueOf(foodId.trim()));
-                                        foods.clear();
-                                        foods = foodQueryBuilder.query();
-                                        if (foods.size() > 0) {
-//                                            Food food = foods.get(0);
-                                            System.out.println("food ------------------------------ " + foods.get(0).getFoodName());
-                                            switch (position) {
-                                                case 1:
-                                                    ((TextView) mealView.findViewById(R.id.pack3_item1)).setText(foods.get(0).getFoodName().trim());
-                                                    break;
-                                                case 2:
-                                                    ((TextView) mealView.findViewById(R.id.pack3_item2)).setText(foods.get(0).getFoodName().trim());
-                                                    break;
-                                                case 3:
-                                                    ((TextView) mealView.findViewById(R.id.pack3_item3)).setText(foods.get(0).getFoodName().trim());
-                                                    break;
-                                                case 4:
-                                                    ((TextView) mealView.findViewById(R.id.pack3_item4)).setText(foods.get(0).getFoodName().trim());
-                                                    break;
-                                                case 5:
-                                                    ((TextView) mealView.findViewById(R.id.pack3_item5)).setText(foods.get(0).getFoodName().trim());
-                                                    break;
-                                            }
-                                            position++;
-                                        }
-                                        foodQueryBuilder.reset();
-                                    }
-
-                                }
-                                packageFoodQueryBuilder.reset();
-                            }
-                        }
-
-                        packageQueryBuilder.reset();
-                        packageList.clear();
-                        packageQueryBuilder.where().eq("_id", packagesId[3]);
-                        packageList = packageQueryBuilder.query();
-                        if (packageList.size() > 0) {
-//                                    FoodPackage pack1 = packageList1.get(0);
-                            foodsId = packageList.get(0).getFoods().split(",");
-                            position = 1;
-                            for (String foodId : foodsId) {
-                                packageFoodQueryBuilder.where().eq("_id", packagesId[3]).and().eq("foodId", foodId.trim());
-                                packageFoods.clear();
-                                packageFoods = packageFoodQueryBuilder.query();
-                                if(packageFoods.size() > 0){
-                                    amount = "0";
-                                    switch (dietType){
-                                        case "1000":
-                                            amount = packageFoods.get(0).getAmount1000();
-                                            break;
-                                        case "1250":
-                                            amount = packageFoods.get(0).getAmount1250();
-                                            break;
-                                        case "1500":
-                                            amount = packageFoods.get(0).getAmount1500();
-                                            break;
-                                        case "1750":
-                                            amount = packageFoods.get(0).getAmount1750();
-                                            break;
-                                        case "2000":
-                                            amount = packageFoods.get(0).getAmount2000();
-                                            break;
-                                        case "2250":
-                                            amount = packageFoods.get(0).getAmount2250();
-                                            break;
-                                    }
-
-                                    if(!amount.equalsIgnoreCase("0")){
-                                        foodQueryBuilder.where().eq("foodId", Integer.valueOf(foodId.trim()));
-                                        foods.clear();
-                                        foods = foodQueryBuilder.query();
-                                        if (foods.size() > 0) {
-//                                            Food food = foods.get(0);
-                                            System.out.println("food ------------------------------ " + foods.get(0).getFoodName());
-                                            switch (position) {
-                                                case 1:
-                                                    ((TextView) mealView.findViewById(R.id.pack4_item1)).setText(foods.get(0).getFoodName().trim());
-                                                    break;
-                                                case 2:
-                                                    ((TextView) mealView.findViewById(R.id.pack4_item2)).setText(foods.get(0).getFoodName().trim());
-                                                    break;
-                                                case 3:
-                                                    ((TextView) mealView.findViewById(R.id.pack4_item3)).setText(foods.get(0).getFoodName().trim());
-                                                    break;
-                                                case 4:
-                                                    ((TextView) mealView.findViewById(R.id.pack4_item4)).setText(foods.get(0).getFoodName().trim());
-                                                    break;
-                                                case 5:
-                                                    ((TextView) mealView.findViewById(R.id.pack4_item5)).setText(foods.get(0).getFoodName().trim());
-                                                    break;
-                                            }
-                                            position++;
-                                        }
-                                        foodQueryBuilder.reset();
-                                    }
-
-                                }
-                                packageFoodQueryBuilder.reset();
-                            }
-                        }
-
-                    }
-                }
-
-            } catch (SQLException e) {
-                e.printStackTrace();
-            }
-        }
-
     }
 
 //    private int getDietDay(long diff) {
@@ -619,13 +215,28 @@ public class DietFragment extends Fragment {
 //            return 0;
 //    }
 
-
-    private void setupViewPager(ViewPager viewPager) {
+    private void setupViewPager() {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getFragmentManager());
-        adapter.addFragment(DietDishesFragment.newInstance(DINNER, R.layout.fragment_dishes_dinner), getString(R.string.dinner));
-        adapter.addFragment(DietDishesFragment.newInstance(SNACK, R.layout.fragment_dishes_snack), getString(R.string.snack));
-        adapter.addFragment(DietDishesFragment.newInstance(LUNCH, R.layout.fragment_dishes_lunch), getString(R.string.lunch));
-        adapter.addFragment(DietDishesFragment.newInstance(BREAKFAST, R.layout.fragment_dishes_breakfast), getString(R.string.breakfast));
+        List<List<DummyDish>> breakfastDishes = new ArrayList<>();
+        breakfastDishes.add(todayBreakfastDishes);
+        breakfastDishes.add(tomorrowBreakfastDishes);
+        breakfastDishes.add(afterBreakfastDishes);
+        List<List<DummyDish>> lunchDishes = new ArrayList<>();
+        lunchDishes.add(todayLunchDishes);
+        lunchDishes.add(tomorrowLunchDishes);
+        lunchDishes.add(afterLunchDishes);
+        List<List<DummyDish>> dinnerDishes = new ArrayList<>();
+        dinnerDishes.add(todayDinnerDishes);
+        dinnerDishes.add(tomorrowDinnerDishes);
+        dinnerDishes.add(afterDinnerDishes);
+        List<List<DummyDish>> snackDishes = new ArrayList<>();
+        snackDishes.add(todaySnackDishes);
+        snackDishes.add(tomorrowSnackDishes);
+        snackDishes.add(afterSnackDishes);
+        adapter.addFragment(DietDinnerFragment.newInstance(DINNER, dinnerDishes), getString(R.string.dinner));
+        adapter.addFragment(DietSnackFragment.newInstance(SNACK, snackDishes), getString(R.string.snack));
+        adapter.addFragment(DietLunchFragment.newInstance(LUNCH, lunchDishes), getString(R.string.lunch));
+        adapter.addFragment(DietBreakfastFragment.newInstance(BREAKFAST, breakfastDishes), getString(R.string.breakfast));
         viewPager.setAdapter(adapter);
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
@@ -650,7 +261,6 @@ public class DietFragment extends Fragment {
                         break;
                     default:
                 }
-                inflateDiet();
             }
 
             @Override
@@ -661,6 +271,7 @@ public class DietFragment extends Fragment {
 
 
     }
+
 
     class ViewPagerAdapter extends FragmentPagerAdapter {
 
@@ -697,4 +308,202 @@ public class DietFragment extends Fragment {
             return mFragmentTitleList.get(position);
         }
     }
+
+
+    private List<DummyDish> todayBreakfastDishes = new ArrayList<>();
+    private List<DummyDish> todayLunchDishes = new ArrayList<>();
+    private List<DummyDish> todayDinnerDishes = new ArrayList<>();
+    private List<DummyDish> todaySnackDishes = new ArrayList<>();
+
+    private List<DummyDish> tomorrowBreakfastDishes = new ArrayList<>();
+    private List<DummyDish> tomorrowLunchDishes = new ArrayList<>();
+    private List<DummyDish> tomorrowDinnerDishes = new ArrayList<>();
+    private List<DummyDish> tomorrowSnackDishes = new ArrayList<>();
+
+    private List<DummyDish> afterBreakfastDishes = new ArrayList<>();
+    private List<DummyDish> afterLunchDishes = new ArrayList<>();
+    private List<DummyDish> afterDinnerDishes = new ArrayList<>();
+    private List<DummyDish> afterSnackDishes = new ArrayList<>();
+
+    private QueryBuilder<FoodPackage, Integer> packageQueryBuilder;
+    private List<FoodPackage> packageList;
+    private QueryBuilder<Diet, Integer> dietQueryBuilder;
+    private List<Diet> dietList;
+    private List<Diet> dietDayList;
+    private QueryBuilder<Food, Integer> foodQueryBuilder;
+    private List<Food> foods;
+    private String[] foodsId;
+    private QueryBuilder<PackageFood, Integer> packageFoodQueryBuilder;
+    private List<PackageFood> packageFoods;
+    private String[] packagesId;
+    private String amount;
+    private QueryBuilder<FoodUnit, Integer> foodUnitQueryBuilder;
+    private List<FoodUnit> foodUnits;
+
+    private void loadDishes() {
+        databaseHelper = new DatabaseHelper(getContext());
+        int dietId = appPreference.getDietNumber();
+        try {
+            dietQueryBuilder = databaseHelper.getDietDao().queryBuilder();
+            dietQueryBuilder.where().eq("_id", dietId);
+            dietList = dietQueryBuilder.query();
+            if (dietList.size() > 0) {
+                int today = (int) ((timeToShow - Long.parseLong(dietList.get(0).getStartDate())) / TimeUnit.DAYS.toMillis(1)) + 1;
+                String dietType = dietList.get(0).getDietType().trim();
+                Log.d("DAY", today + "");
+                for(int day = today - 1; day <= today + 2; day++){
+                    dietQueryBuilder.where().eq("day", day);
+                    dietDayList = dietQueryBuilder.query();
+                    if (dietDayList.size() > 0) {
+                        packageQueryBuilder = databaseHelper.getFoodPackageDao().queryBuilder();
+                        foodQueryBuilder = databaseHelper.getFoodDao().queryBuilder();
+                        packageFoodQueryBuilder = databaseHelper.getPackageFoodDao().queryBuilder();
+                        foodUnitQueryBuilder = databaseHelper.getFoodUnitDao().queryBuilder();
+
+                        if(day == today - 1){
+                            packagesId = new String[]{dietDayList.get(0).getSelectedBreakfast(), dietDayList.get(0).getSelectedLunch(), dietDayList.get(0).getSelectedSnack(), dietDayList.get(0).getSelectedDinner()};
+                        }else
+                            packagesId = new String[]{dietDayList.get(0).getBreakfastPack1(), dietDayList.get(0).getBreakfastPack2(), dietDayList.get(0).getBreakfastPack3(), dietDayList.get(0).getLunchPack1(), dietDayList.get(0).getLunchPack2(), dietDayList.get(0).getLunchPack3(), dietDayList.get(0).getSnackPack1(), dietDayList.get(0).getSnackPack2(), dietDayList.get(0).getSnackPack3(), dietDayList.get(0).getDinnerPack1(), dietDayList.get(0).getDinnerPack2(), dietDayList.get(0).getDinnerPack3()};
+
+                        for(int i = 0; i < packagesId.length; i++){
+                            packageQueryBuilder.where().eq("_id", packagesId[i]);
+                            packageList = packageQueryBuilder.query();
+                            if (packageList.size() > 0) {
+                                DummyDish dish = new DummyDish();
+                                dish.setDishId(packagesId[i]);
+                                foodsId = packageList.get(0).getFoods().split(",");
+                                for (String foodId : foodsId) {
+                                    packageFoodQueryBuilder.where().eq("_id", packagesId[i]).and().eq("foodId", foodId.trim());
+                                    packageFoods = packageFoodQueryBuilder.query();
+                                    if (packageFoods.size() > 0) {
+                                        amount = "0";
+                                        switch (dietType) {
+                                            case "1000":
+                                                amount = packageFoods.get(0).getAmount1000();
+                                                break;
+                                            case "1250":
+                                                amount = packageFoods.get(0).getAmount1250();
+                                                break;
+                                            case "1500":
+                                                amount = packageFoods.get(0).getAmount1500();
+                                                break;
+                                            case "1750":
+                                                amount = packageFoods.get(0).getAmount1750();
+                                                break;
+                                            case "2000":
+                                                amount = packageFoods.get(0).getAmount2000();
+                                                break;
+                                            case "2250":
+                                                amount = packageFoods.get(0).getAmount2250();
+                                                break;
+                                        }
+
+                                        if (!amount.equalsIgnoreCase("0")) {
+                                            DummyFood food = new DummyFood();
+                                            food.setAmount(amount);
+                                            foodQueryBuilder.where().eq("foodId", Integer.valueOf(foodId.trim()));
+                                            foods = foodQueryBuilder.query();
+                                            if (foods.size() > 0) {
+                                                food.setFoodName(foods.get(0).getFoodName());
+                                                foodUnitQueryBuilder.where().eq("Unit_ID", foods.get(0).getUnitId());
+                                                foodUnits = foodUnitQueryBuilder.query();
+                                                if(foodUnits.size() > 0)
+                                                    food.setUnit(foodUnits.get(0).getUnitName());
+
+                                                foodUnitQueryBuilder.reset();
+                                            }
+                                            dish.addFood(food);
+                                            foodQueryBuilder.reset();
+                                        }
+
+                                    }
+                                    packageFoodQueryBuilder.reset();
+                                }
+
+                                if(day == today - 1){
+                                    switch (i){
+                                        case 0:
+                                            todayBreakfastDishes.add(dish);
+                                            break;
+                                        case 1:
+                                            todayLunchDishes.add(dish);
+                                            break;
+                                        case 2:
+                                            todaySnackDishes.add(dish);
+                                            break;
+                                        case 3:
+                                            todayDinnerDishes.add(dish);
+                                            break;
+                                    }
+
+                                }else if(day == today){
+                                    switch (i/4){
+                                        case 0:
+                                            todayBreakfastDishes.add(dish);
+                                            break;
+                                        case 1:
+                                            todayLunchDishes.add(dish);
+                                            break;
+                                        case 2:
+                                            todaySnackDishes.add(dish);
+                                            break;
+                                        case 3:
+                                            todayDinnerDishes.add(dish);
+                                            break;
+                                    }
+                                }else if(day == today + 1){
+                                    switch (i/4){
+                                        case 0:
+                                            tomorrowBreakfastDishes.add(dish);
+                                            break;
+                                        case 1:
+                                            tomorrowLunchDishes.add(dish);
+                                            break;
+                                        case 2:
+                                            tomorrowSnackDishes.add(dish);
+                                            break;
+                                        case 3:
+                                            tomorrowDinnerDishes.add(dish);
+                                            break;
+                                    }
+                                }else if(day == today + 2){
+                                    switch (i/4){
+                                        case 0:
+                                            afterBreakfastDishes.add(dish);
+                                            break;
+                                        case 1:
+                                            afterLunchDishes.add(dish);
+                                            break;
+                                        case 2:
+                                            afterSnackDishes.add(dish);
+                                            break;
+                                        case 3:
+                                            afterDinnerDishes.add(dish);
+                                            break;
+                                    }
+                                }
+
+
+
+
+                            }
+                        }
+
+
+                    }
+                    dietQueryBuilder.reset();
+                }
+
+
+
+            }
+
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+
 }

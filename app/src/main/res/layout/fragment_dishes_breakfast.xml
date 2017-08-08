@@ -8,11 +8,13 @@
         android:orientation="vertical">
 
         <android.support.v7.widget.CardView
-            android:id="@+id/card_view_open"
+            android:id="@+id/pack_open"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_margin="10dp"
-            android:visibility="gone">
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:layout_marginRight="10dp"
+            android:layout_marginLeft="10dp"
+            android:visibility="visible">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -32,6 +34,7 @@
                         android:layout_height="wrap_content"
                         android:layout_alignParentRight="true"
                         android:layout_centerVertical="true"
+                        android:layout_marginRight="@dimen/activity_orientation_margin"
                         android:gravity="center"
                         android:padding="6dp"
                         android:text="صبحانه یک"
@@ -44,7 +47,7 @@
                         android:layout_height="24dp"
                         android:layout_alignParentLeft="true"
                         android:layout_centerVertical="true"
-                        android:layout_marginLeft="6dp"
+                        android:layout_marginLeft="@dimen/activity_orientation_margin"
                         android:src="@mipmap/ic_grid" />
                 </RelativeLayout>
 
@@ -108,6 +111,18 @@
                             android:gravity="center"
                             android:text="۲ قاشق چای‌خوری"
                             android:textSize="@dimen/normal_text_size" />
+
+                        <ir.eynakgroup.diet.utils.view.CustomTextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:layout_toRightOf="@+id/amount_item1"
+                            android:layout_toLeftOf="@+id/food_item1"
+                            android:gravity="center"
+                            android:maxLines="1"
+                            android:text="------------------------------------------------"
+                            android:textSize="@dimen/normal_text_size" />
+
                     </RelativeLayout>
 
                     <RelativeLayout
@@ -134,6 +149,17 @@
                             android:layout_centerVertical="true"
                             android:gravity="center"
                             android:text="۱ قاشق غذاخوری"
+                            android:textSize="@dimen/normal_text_size" />
+
+                        <ir.eynakgroup.diet.utils.view.CustomTextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:layout_toRightOf="@+id/amount_item2"
+                            android:layout_toLeftOf="@+id/food_item2"
+                            android:gravity="center"
+                            android:maxLines="1"
+                            android:text="---------------------------------------------------------"
                             android:textSize="@dimen/normal_text_size" />
                     </RelativeLayout>
 
@@ -162,6 +188,17 @@
                             android:gravity="center"
                             android:text="۱ لیوان"
                             android:textSize="@dimen/normal_text_size" />
+
+                        <ir.eynakgroup.diet.utils.view.CustomTextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:layout_toRightOf="@+id/amount_item3"
+                            android:layout_toLeftOf="@+id/food_item3"
+                            android:gravity="center"
+                            android:maxLines="1"
+                            android:text="------------------------------------------------"
+                            android:textSize="@dimen/normal_text_size" />
                     </RelativeLayout>
 
                     <RelativeLayout
@@ -189,6 +226,17 @@
                             android:gravity="center"
                             android:text="۱ کف دست"
                             android:textSize="@dimen/normal_text_size" />
+
+                        <ir.eynakgroup.diet.utils.view.CustomTextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:layout_toRightOf="@+id/amount_item4"
+                            android:layout_toLeftOf="@+id/food_item4"
+                            android:gravity="center"
+                            android:maxLines="1"
+                            android:text="------------------------------------------------"
+                            android:textSize="@dimen/normal_text_size" />
                     </RelativeLayout>
 
                     <RelativeLayout
@@ -204,7 +252,6 @@
                             android:layout_alignParentRight="true"
                             android:layout_centerVertical="true"
                             android:gravity="center"
-                            android:text=""
                             android:textSize="@dimen/normal_text_size" />
 
                         <ir.eynakgroup.diet.utils.view.CustomTextView
@@ -214,7 +261,6 @@
                             android:layout_alignParentLeft="true"
                             android:layout_centerVertical="true"
                             android:gravity="center"
-                            android:text=""
                             android:textSize="@dimen/normal_text_size" />
                     </RelativeLayout>
 
@@ -229,7 +275,7 @@
                     android:background="#efeeee" />
 
                 <ir.eynakgroup.diet.utils.view.CustomTextView
-                    android:id="@+id/option_guide_tv"
+                    android:id="@+id/txt_option_guide"
                     style="@style/Widget.AppCompat.Button.Borderless"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -244,6 +290,7 @@
         </android.support.v7.widget.CardView>
 
         <LinearLayout
+            android:id="@+id/pack12"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
@@ -447,6 +494,7 @@
         </LinearLayout>
 
         <LinearLayout
+            android:id="@+id/pack34"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
@@ -586,7 +634,6 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:gravity="center"
-                            android:text=""
                             android:textSize="@dimen/normal_text_size" />
 
                         <ir.eynakgroup.diet.utils.view.CustomTextView
@@ -622,7 +669,6 @@
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:gravity="center"
-                            android:text=""
                             android:textSize="@dimen/normal_text_size" />
 
                     </LinearLayout>

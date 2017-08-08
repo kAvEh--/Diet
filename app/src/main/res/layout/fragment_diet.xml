@@ -84,6 +84,7 @@
         app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <ir.eynakgroup.diet.utils.view.CustomTextView
+            android:id="@+id/txt_option_select"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:gravity="center"
