@@ -8,6 +8,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.content.ContextCompat;
+import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -23,7 +24,9 @@ import com.j256.ormlite.stmt.QueryBuilder;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import ir.eynakgroup.diet.R;
@@ -62,6 +65,8 @@ public class DietFragment extends Fragment {
     private DatabaseHelper databaseHelper;
 
     private TextView textOptionSelect;
+    boolean notToday = false;
+    static Day currentDay = Day.TODAY;
 
     public DietFragment(Context context) {
         mContext = context;
@@ -115,17 +120,33 @@ public class DietFragment extends Fragment {
 
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                List<Fragment> fragmentList = ((ViewPagerAdapter) viewPager.getAdapter()).getFragmentList();
                 switch (position) {
                     case TODAY:
-//                        timeToShow = Calendar.getInstance().getTimeInMillis();
+                        if (notToday) {
+                            ((DietDinnerFragment) fragmentList.get(0)).updateDishes(Day.TODAY);
+                            ((DietSnackFragment) fragmentList.get(1)).updateDishes(Day.TODAY);
+                            ((DietLunchFragment) fragmentList.get(2)).updateDishes(Day.TODAY);
+                            ((DietBreakfastFragment) fragmentList.get(3)).updateDishes(Day.TODAY);
+                            notToday = false;
+                            currentDay = Day.TODAY;
+                        }
                         break;
                     case TOMORROW:
-//                        timeToShow = Calendar.getInstance().getTimeInMillis() + TimeUnit.DAYS.toMillis(1);
-
+                        ((DietDinnerFragment) fragmentList.get(0)).updateDishes(Day.TOMORROW);
+                        ((DietSnackFragment) fragmentList.get(1)).updateDishes(Day.TOMORROW);
+                        ((DietLunchFragment) fragmentList.get(2)).updateDishes(Day.TOMORROW);
+                        ((DietBreakfastFragment) fragmentList.get(3)).updateDishes(Day.TOMORROW);
+                        notToday = true;
+                        currentDay = Day.TOMORROW;
                         break;
                     case DAY_AFTER_TOMORROW:
-//                        timeToShow = Calendar.getInstance().getTimeInMillis() + TimeUnit.DAYS.toMillis(2);
-
+                        ((DietDinnerFragment) fragmentList.get(0)).updateDishes(Day.DAY_AFTER_TOMORROW);
+                        ((DietSnackFragment) fragmentList.get(1)).updateDishes(Day.DAY_AFTER_TOMORROW);
+                        ((DietLunchFragment) fragmentList.get(2)).updateDishes(Day.DAY_AFTER_TOMORROW);
+                        ((DietBreakfastFragment) fragmentList.get(3)).updateDishes(Day.DAY_AFTER_TOMORROW);
+                        notToday = true;
+                        currentDay = Day.DAY_AFTER_TOMORROW;
                         break;
                 }
                 //TODO do somt hing, date is changed.
@@ -147,22 +168,27 @@ public class DietFragment extends Fragment {
 
     private void setupViewPager() {
         ViewPagerAdapter adapter = new ViewPagerAdapter(getFragmentManager());
-        List<List<DummyDish>> breakfastDishes = new ArrayList<>();
-        breakfastDishes.add(todayBreakfastDishes);
-        breakfastDishes.add(tomorrowBreakfastDishes);
-        breakfastDishes.add(afterBreakfastDishes);
-        List<List<DummyDish>> lunchDishes = new ArrayList<>();
-        lunchDishes.add(todayLunchDishes);
-        lunchDishes.add(tomorrowLunchDishes);
-        lunchDishes.add(afterLunchDishes);
-        List<List<DummyDish>> dinnerDishes = new ArrayList<>();
-        dinnerDishes.add(todayDinnerDishes);
-        dinnerDishes.add(tomorrowDinnerDishes);
-        dinnerDishes.add(afterDinnerDishes);
-        List<List<DummyDish>> snackDishes = new ArrayList<>();
-        snackDishes.add(todaySnackDishes);
-        snackDishes.add(tomorrowSnackDishes);
-        snackDishes.add(afterSnackDishes);
+
+        Map<Day, List<DummyDish>> dinnerDishes = new HashMap<>();
+        dinnerDishes.put(Day.TODAY, todayDinnerDishes);
+        dinnerDishes.put(Day.TOMORROW, tomorrowDinnerDishes);
+        dinnerDishes.put(Day.DAY_AFTER_TOMORROW, afterDinnerDishes);
+
+        Map<Day, List<DummyDish>> lunchDishes = new HashMap<>();
+        lunchDishes.put(Day.TODAY, todayLunchDishes);
+        lunchDishes.put(Day.TOMORROW, tomorrowLunchDishes);
+        lunchDishes.put(Day.DAY_AFTER_TOMORROW, afterLunchDishes);
+
+        Map<Day, List<DummyDish>> snackDishes = new HashMap<>();
+        snackDishes.put(Day.TODAY, todaySnackDishes);
+        snackDishes.put(Day.TOMORROW, tomorrowSnackDishes);
+        snackDishes.put(Day.DAY_AFTER_TOMORROW, afterSnackDishes);
+
+        Map<Day, List<DummyDish>> breakfastDishes = new HashMap<>();
+        breakfastDishes.put(Day.TODAY, todayBreakfastDishes);
+        breakfastDishes.put(Day.TOMORROW, tomorrowBreakfastDishes);
+        breakfastDishes.put(Day.DAY_AFTER_TOMORROW, afterBreakfastDishes);
+
         adapter.addFragment(DietDinnerFragment.newInstance(DINNER, dinnerDishes), getString(R.string.dinner));
         adapter.addFragment(DietSnackFragment.newInstance(SNACK, snackDishes), getString(R.string.snack));
         adapter.addFragment(DietLunchFragment.newInstance(LUNCH, lunchDishes), getString(R.string.lunch));
@@ -232,6 +258,10 @@ public class DietFragment extends Fragment {
             mFragmentTitleList.add(title);
         }
 
+        public List<Fragment> getFragmentList() {
+            return mFragmentList;
+        }
+
 
         @Override
         public CharSequence getPageTitle(int position) {
@@ -279,25 +309,24 @@ public class DietFragment extends Fragment {
             dietQueryBuilder = databaseHelper.getDietDao().queryBuilder();
             dietQueryBuilder.where().eq("_id", dietId);
             dietList = dietQueryBuilder.query();
+            packageQueryBuilder = databaseHelper.getFoodPackageDao().queryBuilder();
+            foodQueryBuilder = databaseHelper.getFoodDao().queryBuilder();
+            packageFoodQueryBuilder = databaseHelper.getPackageFoodDao().queryBuilder();
+            foodUnitQueryBuilder = databaseHelper.getFoodUnitDao().queryBuilder();
             if (dietList.size() > 0) {
                 int today = (int) ((timeToShow - Long.parseLong(dietList.get(0).getStartDate())) / TimeUnit.DAYS.toMillis(1)) + 1;
                 String dietType = dietList.get(0).getDietType().trim();
                 Log.d("DAY", today + "");
-                for(int day = today - 1; day <= today + 2; day++){
+                for (int day = today - 1; day <= today + 2; day++) {
                     dietQueryBuilder.where().eq("day", day);
                     dietDayList = dietQueryBuilder.query();
                     if (dietDayList.size() > 0) {
-                        packageQueryBuilder = databaseHelper.getFoodPackageDao().queryBuilder();
-                        foodQueryBuilder = databaseHelper.getFoodDao().queryBuilder();
-                        packageFoodQueryBuilder = databaseHelper.getPackageFoodDao().queryBuilder();
-                        foodUnitQueryBuilder = databaseHelper.getFoodUnitDao().queryBuilder();
-
-                        if(day == today - 1){
+                        if (day == today - 1) {
                             packagesId = new String[]{dietDayList.get(0).getSelectedBreakfast(), dietDayList.get(0).getSelectedLunch(), dietDayList.get(0).getSelectedSnack(), dietDayList.get(0).getSelectedDinner()};
-                        }else
+                        } else
                             packagesId = new String[]{dietDayList.get(0).getBreakfastPack1(), dietDayList.get(0).getBreakfastPack2(), dietDayList.get(0).getBreakfastPack3(), dietDayList.get(0).getLunchPack1(), dietDayList.get(0).getLunchPack2(), dietDayList.get(0).getLunchPack3(), dietDayList.get(0).getSnackPack1(), dietDayList.get(0).getSnackPack2(), dietDayList.get(0).getSnackPack3(), dietDayList.get(0).getDinnerPack1(), dietDayList.get(0).getDinnerPack2(), dietDayList.get(0).getDinnerPack3()};
 
-                        for(int i = 0; i < packagesId.length; i++){
+                        for (int i = 0; i < packagesId.length; i++) {
                             packageQueryBuilder.where().eq("_id", packagesId[i]);
                             packageList = packageQueryBuilder.query();
                             if (packageList.size() > 0) {
@@ -338,7 +367,7 @@ public class DietFragment extends Fragment {
                                                 food.setFoodName(foods.get(0).getFoodName());
                                                 foodUnitQueryBuilder.where().eq("Unit_ID", foods.get(0).getUnitId());
                                                 foodUnits = foodUnitQueryBuilder.query();
-                                                if(foodUnits.size() > 0)
+                                                if (foodUnits.size() > 0)
                                                     food.setUnit(foodUnits.get(0).getUnitName());
 
                                                 foodUnitQueryBuilder.reset();
@@ -351,9 +380,9 @@ public class DietFragment extends Fragment {
                                     packageFoodQueryBuilder.reset();
                                 }
 
-                                if(day == today - 1){
-                                    dish.setDay(DummyDish.Day.YESTERDAY);
-                                    switch (i){
+                                if (day == today - 1) {
+                                    dish.setDay(Day.YESTERDAY);
+                                    switch (i) {
                                         case 0:
                                             todayBreakfastDishes.add(dish);
                                             break;
@@ -368,9 +397,9 @@ public class DietFragment extends Fragment {
                                             break;
                                     }
 
-                                }else if(day == today){
-                                    dish.setDay(DummyDish.Day.TODAY);
-                                    switch (i/4){
+                                } else if (day == today) {
+                                    dish.setDay(Day.TODAY);
+                                    switch (i / 3) {
                                         case 0:
                                             todayBreakfastDishes.add(dish);
                                             break;
@@ -384,9 +413,9 @@ public class DietFragment extends Fragment {
                                             todayDinnerDishes.add(dish);
                                             break;
                                     }
-                                }else if(day == today + 1){
-                                    dish.setDay(DummyDish.Day.TOMORROW);
-                                    switch (i/4){
+                                } else if (day == today + 1) {
+                                    dish.setDay(Day.TOMORROW);
+                                    switch (i / 3) {
                                         case 0:
                                             tomorrowBreakfastDishes.add(dish);
                                             break;
@@ -400,9 +429,9 @@ public class DietFragment extends Fragment {
                                             tomorrowDinnerDishes.add(dish);
                                             break;
                                     }
-                                }else if(day == today + 2){
-                                    dish.setDay(DummyDish.Day.DAY_AFTER_TOMORROW);
-                                    switch (i/4){
+                                } else if (day == today + 2) {
+                                    dish.setDay(Day.DAY_AFTER_TOMORROW);
+                                    switch (i / 3) {
                                         case 0:
                                             afterBreakfastDishes.add(dish);
                                             break;
@@ -420,13 +449,13 @@ public class DietFragment extends Fragment {
 
 
                             }
+                            packageQueryBuilder.reset();
                         }
 
 
                     }
                     dietQueryBuilder.reset();
                 }
-
 
 
             }
@@ -436,6 +465,13 @@ public class DietFragment extends Fragment {
             e.printStackTrace();
         }
 
+    }
+
+    public enum Day {
+        YESTERDAY,
+        TODAY,
+        TOMORROW,
+        DAY_AFTER_TOMORROW
     }
 
 }

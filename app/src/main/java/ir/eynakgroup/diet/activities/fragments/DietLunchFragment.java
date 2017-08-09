@@ -10,9 +10,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.List;
+import java.util.Map;
 
 import ir.eynakgroup.diet.R;
 import ir.eynakgroup.diet.activities.fragments.dummy.DummyDish;
+import ir.eynakgroup.diet.activities.fragments.dummy.DummyFood;
 
 
 public class DietLunchFragment extends Fragment implements View.OnClickListener {
@@ -23,7 +25,7 @@ public class DietLunchFragment extends Fragment implements View.OnClickListener 
 
     // TODO: Rename and change types of parameters
     private int mMealId;
-    private List<List<DummyDish>> lunchDishes;
+    private Map<DietFragment.Day, List<DummyDish>> lunchDishes;
 
 
     private ImageView imgBackGrid;
@@ -39,11 +41,12 @@ public class DietLunchFragment extends Fragment implements View.OnClickListener 
     private TextView textAmount4;
     private TextView textAmount5;
 
+    private TextView[] dishItem = new TextView[20];
     public DietLunchFragment() {
         // Required empty public constructor
     }
 
-    private DietLunchFragment(List<List<DummyDish>> lunchDishes) {
+    private DietLunchFragment(Map<DietFragment.Day, List<DummyDish>> lunchDishes) {
         this.lunchDishes = lunchDishes;
     }
 
@@ -55,7 +58,7 @@ public class DietLunchFragment extends Fragment implements View.OnClickListener 
      * @return A new instance of fragment DietDishesFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static DietLunchFragment newInstance(int mealId, List<List<DummyDish>> lunchDishes) {
+    public static DietLunchFragment newInstance(int mealId, Map<DietFragment.Day, List<DummyDish>> lunchDishes) {
         DietLunchFragment fragment = new DietLunchFragment(lunchDishes);
         Bundle args = new Bundle();
         args.putInt(MEAL_ID, mealId);
@@ -81,6 +84,28 @@ public class DietLunchFragment extends Fragment implements View.OnClickListener 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
+        dishItem[0] = (TextView) view.findViewById(R.id.pack1_item1);
+        dishItem[1] = (TextView) view.findViewById(R.id.pack1_item2);
+        dishItem[2] = (TextView) view.findViewById(R.id.pack1_item3);
+        dishItem[3] = (TextView) view.findViewById(R.id.pack1_item4);
+        dishItem[4] = (TextView) view.findViewById(R.id.pack1_item5);
+        dishItem[5] = (TextView) view.findViewById(R.id.pack2_item1);
+        dishItem[6] = (TextView) view.findViewById(R.id.pack2_item2);
+        dishItem[7] = (TextView) view.findViewById(R.id.pack2_item3);
+        dishItem[8] = (TextView) view.findViewById(R.id.pack2_item4);
+        dishItem[9] = (TextView) view.findViewById(R.id.pack2_item5);
+        dishItem[10] = (TextView) view.findViewById(R.id.pack3_item1);
+        dishItem[11] = (TextView) view.findViewById(R.id.pack3_item2);
+        dishItem[12] = (TextView) view.findViewById(R.id.pack3_item3);
+        dishItem[13] = (TextView) view.findViewById(R.id.pack3_item4);
+        dishItem[14] = (TextView) view.findViewById(R.id.pack3_item5);
+        dishItem[15] = (TextView) view.findViewById(R.id.pack4_item1);
+        dishItem[16] = (TextView) view.findViewById(R.id.pack4_item2);
+        dishItem[17] = (TextView) view.findViewById(R.id.pack4_item3);
+        dishItem[18] = (TextView) view.findViewById(R.id.pack4_item4);
+        dishItem[19] = (TextView) view.findViewById(R.id.pack4_item5);
+
         textMealTitle = (TextView) view.findViewById(R.id.meal_title);
         imgBackGrid = (ImageView) view.findViewById(R.id.back_group);
         imgBackGrid.setOnClickListener(this);
@@ -104,6 +129,37 @@ public class DietLunchFragment extends Fragment implements View.OnClickListener 
         view.findViewById(R.id.pack3).setOnClickListener(this);
         view.findViewById(R.id.yesterday_pack).setOnClickListener(this);
         view.findViewById(R.id.non_pack).setOnClickListener(this);
+
+
+        updateDishes(DietFragment.currentDay);
+    }
+
+    public void updateDishes(DietFragment.Day day){
+        for(int i = 0; i < dishItem.length; i++)
+            dishItem[i].setText("");
+
+        List<DummyDish> dishList = lunchDishes.get(day);
+        int pack = 0;
+        for(DummyDish dish: dishList){
+            List<DummyFood> foodList = dish.getDishFoods();
+
+            if(!day.equals(dish.getDay())){
+                int position = 0;
+                for(DummyFood food: foodList){
+                    dishItem[15+position].setText(food.getFoodName());
+                    position++;
+                }
+
+            }else{
+                int position = 0;
+                for(DummyFood food: foodList){
+                    dishItem[pack*5+position].setText(food.getFoodName());
+                    position++;
+                }
+
+                pack++;
+            }
+        }
 
     }
 

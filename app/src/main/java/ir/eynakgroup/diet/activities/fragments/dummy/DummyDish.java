@@ -3,12 +3,14 @@ package ir.eynakgroup.diet.activities.fragments.dummy;
 import java.util.ArrayList;
 import java.util.List;
 
+import ir.eynakgroup.diet.activities.fragments.DietFragment;
+
 /**
  * Created by Shayan on 8/8/2017.
  */
 
 public class DummyDish {
-    private Day day = Day.TODAY;
+    private DietFragment.Day day = DietFragment.Day.TODAY;
     private List<DummyFood> foods;
 
     public DummyDish(){
@@ -24,18 +26,13 @@ public class DummyDish {
     }
 
 
-    public Day getDay() {
+    public DietFragment.Day getDay() {
         return day;
     }
 
-    public void setDay(Day day) {
+    public void setDay(DietFragment.Day day) {
         this.day = day;
     }
 
-    public enum Day{
-        YESTERDAY,
-        TODAY,
-        TOMORROW,
-        DAY_AFTER_TOMORROW
-    }
+
 }

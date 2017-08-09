@@ -1048,7 +1048,10 @@ public class SetupDietActivity extends BaseActivity implements View.OnClickListe
                 tempDinner.add(dinnerPackageList.get(i).getId());
 
             float currentWeight = getDBHelper().getUserDao().queryForAll().get(0).getWeight();
-            long startDate = Calendar.getInstance().getTimeInMillis();
+            int hour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
+            int minute = Calendar.getInstance().get(Calendar.MINUTE);
+            int second = Calendar.getInstance().get(Calendar.SECOND);
+            long startDate = Calendar.getInstance().getTimeInMillis() - ((hour*60*60)+(minute*60)+second)*1000;
             int day = 1;
             int lastDietNumber = getAppPreferences().getDietNumber();
             while (day <= 31) {

@@ -14,6 +14,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.util.List;
+import java.util.Map;
 
 import ir.eynakgroup.diet.R;
 import ir.eynakgroup.diet.activities.fragments.dummy.DummyDish;
@@ -28,7 +29,7 @@ public class DietBreakfastFragment extends Fragment implements View.OnClickListe
 
     // TODO: Rename and change types of parameters
     private int mMealId;
-    private List<List<DummyDish>> breakfastDishes;
+    private Map<DietFragment.Day, List<DummyDish>> breakfastDishes;
 
     private ImageView imgBackGrid;
     private TextView textMealTitle;
@@ -49,7 +50,7 @@ public class DietBreakfastFragment extends Fragment implements View.OnClickListe
         // Required empty public constructor
     }
 
-    public DietBreakfastFragment(List<List<DummyDish>> breakfastDishes){
+    public DietBreakfastFragment(Map<DietFragment.Day, List<DummyDish>> breakfastDishes) {
         this.breakfastDishes = breakfastDishes;
     }
 
@@ -62,7 +63,7 @@ public class DietBreakfastFragment extends Fragment implements View.OnClickListe
      * @return A new instance of fragment DietDishesFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static DietBreakfastFragment newInstance(int mealId, List<List<DummyDish>> breakfastDishes) {
+    public static DietBreakfastFragment newInstance(int mealId, Map<DietFragment.Day, List<DummyDish>> breakfastDishes) {
         DietBreakfastFragment fragment = new DietBreakfastFragment(breakfastDishes);
         Bundle args = new Bundle();
         args.putInt(MEAL_ID, mealId);
@@ -88,87 +89,26 @@ public class DietBreakfastFragment extends Fragment implements View.OnClickListe
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        for(int i = 0; i < dishItem.length; i++){
-            switch (i/5){
-                case 0:
-                    switch (i%5){
-                        case 0:
-                            dishItem[i] = (TextView) view.findViewById(R.id.pack1_item1);
-                            break;
-                        case 1:
-                            dishItem[i] = (TextView) view.findViewById(R.id.pack1_item2);
-                            break;
-                        case 2:
-                            dishItem[i] = (TextView) view.findViewById(R.id.pack1_item3);
-                            break;
-                        case 3:
-                            dishItem[i] = (TextView) view.findViewById(R.id.pack1_item4);
-                            break;
-                        case 4:
-                            dishItem[i] = (TextView) view.findViewById(R.id.pack1_item5);
-                            break;
-                    }
-                    break;
-                case 1:
-                    switch (i%5){
-                        case 0:
-                            dishItem[i] = (TextView) view.findViewById(R.id.pack2_item1);
-                            break;
-                        case 1:
-                            dishItem[i] = (TextView) view.findViewById(R.id.pack2_item2);
-                            break;
-                        case 2:
-                            dishItem[i] = (TextView) view.findViewById(R.id.pack2_item3);
-                            break;
-                        case 3:
-                            dishItem[i] = (TextView) view.findViewById(R.id.pack2_item4);
-                            break;
-                        case 4:
-                            dishItem[i] = (TextView) view.findViewById(R.id.pack2_item5);
-                            break;
-                    }
-                    break;
-                case 2:
-                    switch (i%5){
-                        case 0:
-                            dishItem[i] = (TextView) view.findViewById(R.id.pack3_item1);
-                            break;
-                        case 1:
-                            dishItem[i] = (TextView) view.findViewById(R.id.pack3_item2);
-                            break;
-                        case 2:
-                            dishItem[i] = (TextView) view.findViewById(R.id.pack3_item3);
-                            break;
-                        case 3:
-                            dishItem[i] = (TextView) view.findViewById(R.id.pack3_item4);
-                            break;
-                        case 4:
-                            dishItem[i] = (TextView) view.findViewById(R.id.pack3_item5);
-                            break;
-                    }
-                    break;
-                case 3:
-                    switch (i%5){
-                        case 0:
-                            dishItem[i] = (TextView) view.findViewById(R.id.pack4_item1);
-                            break;
-                        case 1:
-                            dishItem[i] = (TextView) view.findViewById(R.id.pack4_item2);
-                            break;
-                        case 2:
-                            dishItem[i] = (TextView) view.findViewById(R.id.pack4_item3);
-                            break;
-                        case 3:
-                            dishItem[i] = (TextView) view.findViewById(R.id.pack4_item4);
-                            break;
-                        case 4:
-                            dishItem[i] = (TextView) view.findViewById(R.id.pack4_item5);
-                            break;
-                    }
-                    break;
-            }
-            dishItem[i].setText("");
-        }
+        dishItem[0] = (TextView) view.findViewById(R.id.pack1_item1);
+        dishItem[1] = (TextView) view.findViewById(R.id.pack1_item2);
+        dishItem[2] = (TextView) view.findViewById(R.id.pack1_item3);
+        dishItem[3] = (TextView) view.findViewById(R.id.pack1_item4);
+        dishItem[4] = (TextView) view.findViewById(R.id.pack1_item5);
+        dishItem[5] = (TextView) view.findViewById(R.id.pack2_item1);
+        dishItem[6] = (TextView) view.findViewById(R.id.pack2_item2);
+        dishItem[7] = (TextView) view.findViewById(R.id.pack2_item3);
+        dishItem[8] = (TextView) view.findViewById(R.id.pack2_item4);
+        dishItem[9] = (TextView) view.findViewById(R.id.pack2_item5);
+        dishItem[10] = (TextView) view.findViewById(R.id.pack3_item1);
+        dishItem[11] = (TextView) view.findViewById(R.id.pack3_item2);
+        dishItem[12] = (TextView) view.findViewById(R.id.pack3_item3);
+        dishItem[13] = (TextView) view.findViewById(R.id.pack3_item4);
+        dishItem[14] = (TextView) view.findViewById(R.id.pack3_item5);
+        dishItem[15] = (TextView) view.findViewById(R.id.pack4_item1);
+        dishItem[16] = (TextView) view.findViewById(R.id.pack4_item2);
+        dishItem[17] = (TextView) view.findViewById(R.id.pack4_item3);
+        dishItem[18] = (TextView) view.findViewById(R.id.pack4_item4);
+        dishItem[19] = (TextView) view.findViewById(R.id.pack4_item5);
 
         textMealTitle = (TextView) view.findViewById(R.id.meal_title);
         imgBackGrid = (ImageView) view.findViewById(R.id.back_group);
@@ -194,24 +134,43 @@ public class DietBreakfastFragment extends Fragment implements View.OnClickListe
         view.findViewById(R.id.yesterday_pack).setOnClickListener(this);
         view.findViewById(R.id.non_pack).setOnClickListener(this);
 
+
+        updateDishes(DietFragment.currentDay);
     }
 
-    public void updateDishes(DummyDish.Day day){
-        for(int i = 0; i < breakfastDishes.size(); i++){
-            List<DummyDish> dishList = breakfastDishes.get(i);
-            for(DummyDish dish: dishList){
-                if(dish.getDay().equals(day)){
-                    List<DummyFood> foodList = dish.getDishFoods();
-                    
+    public void updateDishes(DietFragment.Day day) {
+        for (int i = 0; i < dishItem.length; i++)
+            dishItem[i].setText("");
+
+        List<DummyDish> dishList = breakfastDishes.get(day);
+        int pack = 0;
+        for (DummyDish dish : dishList) {
+            List<DummyFood> foodList = dish.getDishFoods();
+
+            if (!day.equals(dish.getDay())) {
+                int position = 0;
+                for (DummyFood food : foodList) {
+                    dishItem[15 + position].setText(food.getFoodName());
+                    position++;
                 }
+
+            } else {
+                int position = 0;
+                for (DummyFood food : foodList) {
+                    dishItem[pack * 5 + position].setText(food.getFoodName());
+                    position++;
+                }
+
+                pack++;
             }
         }
+
     }
 
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.back_group:
 
                 break;
