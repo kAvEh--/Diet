@@ -8,7 +8,7 @@ import java.util.List;
  */
 
 public class DummyDish {
-    private String dishId;
+    private Day day = Day.TODAY;
     private List<DummyFood> foods;
 
     public DummyDish(){
@@ -24,11 +24,18 @@ public class DummyDish {
     }
 
 
-    public String getDishId() {
-        return dishId;
+    public Day getDay() {
+        return day;
     }
 
-    public void setDishId(String dishId) {
-        this.dishId = dishId;
+    public void setDay(Day day) {
+        this.day = day;
+    }
+
+    public enum Day{
+        YESTERDAY,
+        TODAY,
+        TOMORROW,
+        DAY_AFTER_TOMORROW
     }
 }

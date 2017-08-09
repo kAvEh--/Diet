@@ -88,7 +88,6 @@ public class DietBreakfastFragment extends Fragment implements View.OnClickListe
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
         for(int i = 0; i < dishItem.length; i++){
             switch (i/5){
                 case 0:
@@ -170,25 +169,6 @@ public class DietBreakfastFragment extends Fragment implements View.OnClickListe
             }
             dishItem[i].setText("");
         }
-        int yesterday = 0;
-        int today = 1;
-        int tomorrow = 2;
-        int after = 3;
-        if(breakfastDishes.size() > 3){
-            today = 0;
-            tomorrow = 1;
-            after = 2;
-        }
-
-        List<DummyDish> todayDishes = breakfastDishes.get(today);
-        for(DummyDish dish: todayDishes){
-            List<DummyFood> foodList = dish.getDishFoods();
-            int position = 1;
-            for(DummyFood food: foodList){
-                
-                position++;
-            }
-        }
 
         textMealTitle = (TextView) view.findViewById(R.id.meal_title);
         imgBackGrid = (ImageView) view.findViewById(R.id.back_group);
@@ -216,6 +196,17 @@ public class DietBreakfastFragment extends Fragment implements View.OnClickListe
 
     }
 
+    public void updateDishes(DummyDish.Day day){
+        for(int i = 0; i < breakfastDishes.size(); i++){
+            List<DummyDish> dishList = breakfastDishes.get(i);
+            for(DummyDish dish: dishList){
+                if(dish.getDay().equals(day)){
+                    List<DummyFood> foodList = dish.getDishFoods();
+                    
+                }
+            }
+        }
+    }
 
 
     @Override

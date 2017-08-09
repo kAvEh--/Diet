@@ -302,7 +302,6 @@ public class DietFragment extends Fragment {
                             packageList = packageQueryBuilder.query();
                             if (packageList.size() > 0) {
                                 DummyDish dish = new DummyDish();
-                                dish.setDishId(packagesId[i]);
                                 foodsId = packageList.get(0).getFoods().split(",");
                                 for (String foodId : foodsId) {
                                     packageFoodQueryBuilder.where().eq("_id", packagesId[i]).and().eq("foodId", foodId.trim());
@@ -353,6 +352,7 @@ public class DietFragment extends Fragment {
                                 }
 
                                 if(day == today - 1){
+                                    dish.setDay(DummyDish.Day.YESTERDAY);
                                     switch (i){
                                         case 0:
                                             todayBreakfastDishes.add(dish);
@@ -369,6 +369,7 @@ public class DietFragment extends Fragment {
                                     }
 
                                 }else if(day == today){
+                                    dish.setDay(DummyDish.Day.TODAY);
                                     switch (i/4){
                                         case 0:
                                             todayBreakfastDishes.add(dish);
@@ -384,6 +385,7 @@ public class DietFragment extends Fragment {
                                             break;
                                     }
                                 }else if(day == today + 1){
+                                    dish.setDay(DummyDish.Day.TOMORROW);
                                     switch (i/4){
                                         case 0:
                                             tomorrowBreakfastDishes.add(dish);
@@ -399,6 +401,7 @@ public class DietFragment extends Fragment {
                                             break;
                                     }
                                 }else if(day == today + 2){
+                                    dish.setDay(DummyDish.Day.DAY_AFTER_TOMORROW);
                                     switch (i/4){
                                         case 0:
                                             afterBreakfastDishes.add(dish);
@@ -414,8 +417,6 @@ public class DietFragment extends Fragment {
                                             break;
                                     }
                                 }
-
-
 
 
                             }
@@ -436,6 +437,5 @@ public class DietFragment extends Fragment {
         }
 
     }
-
 
 }
