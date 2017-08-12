@@ -83,6 +83,8 @@
                             android:gravity="center"
                             android:text=""
                             android:textSize="@dimen/normal_text_size" />
+
+
                     </RelativeLayout>
 
 
@@ -111,6 +113,18 @@
                             android:gravity="center"
                             android:text="۲ قاشق چای‌خوری"
                             android:textSize="@dimen/normal_text_size" />
+                        <ir.eynakgroup.diet.utils.view.CustomTextView
+                            android:id="@+id/mid_item1"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:layout_toRightOf="@+id/amount_item1"
+                            android:layout_toLeftOf="@+id/food_item1"
+                            android:gravity="center"
+                            android:maxLines="1"
+                            android:text="------------------------------------------------"
+                            android:textSize="@dimen/normal_text_size" />
+
                     </RelativeLayout>
 
                     <RelativeLayout
@@ -137,6 +151,18 @@
                             android:layout_centerVertical="true"
                             android:gravity="center"
                             android:text="۱ قاشق غذاخوری"
+                            android:textSize="@dimen/normal_text_size" />
+
+                        <ir.eynakgroup.diet.utils.view.CustomTextView
+                            android:id="@+id/mid_item2"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:layout_toRightOf="@+id/amount_item2"
+                            android:layout_toLeftOf="@+id/food_item2"
+                            android:gravity="center"
+                            android:maxLines="1"
+                            android:text="------------------------------------------------"
                             android:textSize="@dimen/normal_text_size" />
                     </RelativeLayout>
 
@@ -165,6 +191,18 @@
                             android:gravity="center"
                             android:text="۱ لیوان"
                             android:textSize="@dimen/normal_text_size" />
+
+                        <ir.eynakgroup.diet.utils.view.CustomTextView
+                            android:id="@+id/mid_item3"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:layout_toRightOf="@+id/amount_item3"
+                            android:layout_toLeftOf="@+id/food_item3"
+                            android:gravity="center"
+                            android:maxLines="1"
+                            android:text="------------------------------------------------"
+                            android:textSize="@dimen/normal_text_size" />
                     </RelativeLayout>
 
                     <RelativeLayout
@@ -191,6 +229,18 @@
                             android:layout_centerVertical="true"
                             android:gravity="center"
                             android:text="۱ کف دست"
+                            android:textSize="@dimen/normal_text_size" />
+
+                        <ir.eynakgroup.diet.utils.view.CustomTextView
+                            android:id="@+id/mid_item4"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:layout_toRightOf="@+id/amount_item4"
+                            android:layout_toLeftOf="@+id/food_item4"
+                            android:gravity="center"
+                            android:maxLines="1"
+                            android:text="------------------------------------------------"
                             android:textSize="@dimen/normal_text_size" />
                     </RelativeLayout>
 
@@ -219,6 +269,18 @@
                             android:gravity="center"
                             android:text=""
                             android:textSize="@dimen/normal_text_size" />
+                        <ir.eynakgroup.diet.utils.view.CustomTextView
+                            android:id="@+id/mid_item5"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:layout_toRightOf="@+id/amount_item5"
+                            android:layout_toLeftOf="@+id/food_item5"
+                            android:gravity="center"
+                            android:maxLines="1"
+                            android:text="------------------------------------------------"
+                            android:textSize="@dimen/normal_text_size" />
+
                     </RelativeLayout>
 
                 </LinearLayout>

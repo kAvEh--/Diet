@@ -3,10 +3,12 @@ package ir.eynakgroup.diet.activities.fragments;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.CardView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import java.util.List;
@@ -30,18 +32,19 @@ public class DietDinnerFragment extends Fragment implements View.OnClickListener
 
     private ImageView imgBackGrid;
     private TextView textMealTitle;
-    private TextView textFood1;
-    private TextView textFood2;
-    private TextView textFood3;
-    private TextView textFood4;
-    private TextView textFood5;
-    private TextView textAmount1;
-    private TextView textAmount2;
-    private TextView textAmount3;
-    private TextView textAmount4;
-    private TextView textAmount5;
+
+
+    private TextView textOptionSelect;
+
+    private LinearLayout layoutPack12;
+    private LinearLayout layoutPack34;
+    private CardView cardOpenPack;
+    private CardView cardNonPack;
 
     private TextView[] dishItem = new TextView[20];
+    private TextView[] foodItem = new TextView[5];
+    private TextView[] amountItem = new TextView[5];
+    private TextView[] midItem = new TextView[5];
 
     public DietDinnerFragment() {
         // Required empty public constructor
@@ -85,6 +88,12 @@ public class DietDinnerFragment extends Fragment implements View.OnClickListener
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+        textOptionSelect = (TextView) view.getRootView().findViewById(R.id.txt_option_select);
+        layoutPack12 = (LinearLayout) view.findViewById(R.id.pack12);
+        layoutPack34 = (LinearLayout) view.findViewById(R.id.pack34);
+        cardOpenPack = (CardView) view.findViewById(R.id.pack_open);
+        cardNonPack = (CardView) view.findViewById(R.id.non_pack);
+
         dishItem[0] = (TextView) view.findViewById(R.id.pack1_item1);
         dishItem[1] = (TextView) view.findViewById(R.id.pack1_item2);
         dishItem[2] = (TextView) view.findViewById(R.id.pack1_item3);
@@ -109,16 +118,21 @@ public class DietDinnerFragment extends Fragment implements View.OnClickListener
         textMealTitle = (TextView) view.findViewById(R.id.meal_title);
         imgBackGrid = (ImageView) view.findViewById(R.id.back_group);
         imgBackGrid.setOnClickListener(this);
-        textFood1 = (TextView) view.findViewById(R.id.food_item1);
-        textFood2 = (TextView) view.findViewById(R.id.food_item2);
-        textFood3 = (TextView) view.findViewById(R.id.food_item3);
-        textFood4 = (TextView) view.findViewById(R.id.food_item4);
-        textFood5 = (TextView) view.findViewById(R.id.food_item5);
-        textAmount1 = (TextView) view.findViewById(R.id.amount_item1);
-        textAmount2 = (TextView) view.findViewById(R.id.amount_item2);
-        textAmount3 = (TextView) view.findViewById(R.id.amount_item3);
-        textAmount4 = (TextView) view.findViewById(R.id.amount_item4);
-        textAmount5 = (TextView) view.findViewById(R.id.amount_item5);
+        foodItem[0] = (TextView) view.findViewById(R.id.food_item1);
+        foodItem[1] = (TextView) view.findViewById(R.id.food_item2);
+        foodItem[2] = (TextView) view.findViewById(R.id.food_item3);
+        foodItem[3] = (TextView) view.findViewById(R.id.food_item4);
+        foodItem[4] = (TextView) view.findViewById(R.id.food_item5);
+        amountItem[0] = (TextView) view.findViewById(R.id.amount_item1);
+        amountItem[1] = (TextView) view.findViewById(R.id.amount_item2);
+        amountItem[2] = (TextView) view.findViewById(R.id.amount_item3);
+        amountItem[3] = (TextView) view.findViewById(R.id.amount_item4);
+        amountItem[4] = (TextView) view.findViewById(R.id.amount_item5);
+        midItem[0] = (TextView) view.findViewById(R.id.mid_item1);
+        midItem[1] = (TextView) view.findViewById(R.id.mid_item2);
+        midItem[2] = (TextView) view.findViewById(R.id.mid_item3);
+        midItem[3] = (TextView) view.findViewById(R.id.mid_item4);
+        midItem[4] = (TextView) view.findViewById(R.id.mid_item5);
         view.findViewById(R.id.choose_option_btn_1).setOnClickListener(this);
         view.findViewById(R.id.choose_option_btn_2).setOnClickListener(this);
         view.findViewById(R.id.choose_option_btn_3).setOnClickListener(this);
@@ -133,30 +147,18 @@ public class DietDinnerFragment extends Fragment implements View.OnClickListener
         updateDishes(DietFragment.currentDay);
     }
 
-    public void updateDishes(DietFragment.Day day){
-        for(int i = 0; i < dishItem.length; i++)
+    private List<DummyDish> dishList;
+    public void updateDishes(DietFragment.Day day) {
+        for (int i = 0; i < dishItem.length; i++)
             dishItem[i].setText("");
 
-        List<DummyDish> dishList = dinnerDishes.get(day);
-        int pack = 0;
-        for(DummyDish dish: dishList){
+        dishList = dinnerDishes.get(day);
+        for (DummyDish dish : dishList) {
             List<DummyFood> foodList = dish.getDishFoods();
-
-            if(!day.equals(dish.getDay())){
-                int position = 0;
-                for(DummyFood food: foodList){
-                    dishItem[15+position].setText(food.getFoodName());
-                    position++;
-                }
-
-            }else{
-                int position = 0;
-                for(DummyFood food: foodList){
-                    dishItem[pack*5+position].setText(food.getFoodName());
-                    position++;
-                }
-
-                pack++;
+            int position = 0;
+            for (DummyFood food : foodList) {
+                dishItem[dish.getDishNumber() * 5 + position].setText(food.getFoodName());
+                position++;
             }
         }
 
@@ -165,33 +167,74 @@ public class DietDinnerFragment extends Fragment implements View.OnClickListener
 
     @Override
     public void onClick(View v) {
-        switch (v.getId()){
+        switch (v.getId()) {
             case R.id.back_group:
+                cardNonPack.setVisibility(View.VISIBLE);
+                layoutPack12.setVisibility(View.VISIBLE);
+                layoutPack34.setVisibility(View.VISIBLE);
+                textOptionSelect.setVisibility(View.VISIBLE);
+                cardOpenPack.setVisibility(View.GONE);
+
 
                 break;
             case R.id.choose_option_btn_1:
             case R.id.pack1:
+                textMealTitle.setText("شام یک");
+                bindPack(0);
 
                 break;
             case R.id.choose_option_btn_2:
             case R.id.pack2:
+                textMealTitle.setText("شام دو");
+                bindPack(1);
 
                 break;
             case R.id.choose_option_btn_3:
             case R.id.pack3:
+                textMealTitle.setText("شام سه");
+                bindPack(2);
 
                 break;
             case R.id.choose_option_btn_4:
             case R.id.yesterday_pack:
+                textMealTitle.setText("شام دیروز");
+                bindPack(3);
+
 
                 break;
             case R.id.choose_option_btn_5:
             case R.id.non_pack:
-
+//                bindPack(4);
                 break;
 
 
         }
+    }
+
+    private void bindPack(int packNum) {
+        for(int i = 0; i < foodItem.length; i++){
+            foodItem[i].setText("");
+            amountItem[i].setText("");
+            midItem[i].setText("");
+        }
+        for(DummyDish dish: dishList){
+            if(dish.getDishNumber() == packNum){
+                List<DummyFood> foodList = dish.getDishFoods();
+                int position = 0;
+                for (DummyFood food : foodList) {
+                    foodItem[position].setText(food.getFoodName());
+                    amountItem[position].setText(food.getAmount()+" "+food.getUnit());
+                    midItem[position].setText("--------------------------------------------------------");
+                    position++;
+                }
+                break;
+            }
+        }
+        cardNonPack.setVisibility(View.GONE);
+        layoutPack12.setVisibility(View.GONE);
+        layoutPack34.setVisibility(View.GONE);
+        textOptionSelect.setVisibility(View.GONE);
+        cardOpenPack.setVisibility(View.VISIBLE);
     }
 
 

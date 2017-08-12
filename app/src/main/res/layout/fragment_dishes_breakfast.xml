@@ -113,6 +113,7 @@
                             android:textSize="@dimen/normal_text_size" />
 
                         <ir.eynakgroup.diet.utils.view.CustomTextView
+                            android:id="@+id/mid_item1"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_centerVertical="true"
@@ -152,6 +153,7 @@
                             android:textSize="@dimen/normal_text_size" />
 
                         <ir.eynakgroup.diet.utils.view.CustomTextView
+                            android:id="@+id/mid_item2"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_centerVertical="true"
@@ -190,6 +192,7 @@
                             android:textSize="@dimen/normal_text_size" />
 
                         <ir.eynakgroup.diet.utils.view.CustomTextView
+                            android:id="@+id/mid_item3"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_centerVertical="true"
@@ -228,6 +231,7 @@
                             android:textSize="@dimen/normal_text_size" />
 
                         <ir.eynakgroup.diet.utils.view.CustomTextView
+                            android:id="@+id/mid_item4"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:layout_centerVertical="true"
@@ -262,6 +266,19 @@
                             android:layout_centerVertical="true"
                             android:gravity="center"
                             android:textSize="@dimen/normal_text_size" />
+
+                        <ir.eynakgroup.diet.utils.view.CustomTextView
+                            android:id="@+id/mid_item5"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_centerVertical="true"
+                            android:layout_toRightOf="@+id/amount_item5"
+                            android:layout_toLeftOf="@+id/food_item5"
+                            android:gravity="center"
+                            android:maxLines="1"
+                            android:text="------------------------------------------------"
+                            android:textSize="@dimen/normal_text_size" />
+
                     </RelativeLayout>
 
                 </LinearLayout>

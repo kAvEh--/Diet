@@ -64,7 +64,6 @@ public class DietFragment extends Fragment {
     private AppPreferences appPreference;
     private DatabaseHelper databaseHelper;
 
-    private TextView textOptionSelect;
     boolean notToday = false;
     static Day currentDay = Day.TODAY;
 
@@ -99,7 +98,6 @@ public class DietFragment extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         loadDishes();
-        textOptionSelect = (TextView) view.findViewById(R.id.txt_option_select);
         /**
          * meal tabs part
          */
@@ -382,6 +380,7 @@ public class DietFragment extends Fragment {
 
                                 if (day == today - 1) {
                                     dish.setDay(Day.YESTERDAY);
+                                    dish.setDishNumber(3);
                                     switch (i) {
                                         case 0:
                                             todayBreakfastDishes.add(dish);
@@ -399,6 +398,7 @@ public class DietFragment extends Fragment {
 
                                 } else if (day == today) {
                                     dish.setDay(Day.TODAY);
+                                    dish.setDishNumber(i%3);
                                     switch (i / 3) {
                                         case 0:
                                             todayBreakfastDishes.add(dish);
@@ -415,6 +415,7 @@ public class DietFragment extends Fragment {
                                     }
                                 } else if (day == today + 1) {
                                     dish.setDay(Day.TOMORROW);
+                                    dish.setDishNumber(i%3);
                                     switch (i / 3) {
                                         case 0:
                                             tomorrowBreakfastDishes.add(dish);
@@ -431,6 +432,7 @@ public class DietFragment extends Fragment {
                                     }
                                 } else if (day == today + 2) {
                                     dish.setDay(Day.DAY_AFTER_TOMORROW);
+                                    dish.setDishNumber(i%3);
                                     switch (i / 3) {
                                         case 0:
                                             afterBreakfastDishes.add(dish);

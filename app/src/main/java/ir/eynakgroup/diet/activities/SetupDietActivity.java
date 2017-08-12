@@ -30,11 +30,6 @@ import android.widget.TextView;
 import com.google.android.flexbox.FlexboxLayout;
 import com.j256.ormlite.stmt.QueryBuilder;
 import com.j256.ormlite.stmt.UpdateBuilder;
-import com.j256.ormlite.table.TableUtils;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -211,6 +206,7 @@ public class SetupDietActivity extends BaseActivity implements View.OnClickListe
             }
             String line = reader.readLine();
             lineNumber++;
+            float weightLoss;
             while (line != null) {
                 String[] splits = line.split(":");
                 if (line.startsWith("app")) {
@@ -219,10 +215,13 @@ public class SetupDietActivity extends BaseActivity implements View.OnClickListe
                     } else if (line.contains("[ideal]") && lineNumber == 3) {
                         addListItem(splits[1].trim().replace("[ideal_weight]", round(calculateIdealWeight(user), 1) + ""), Type.APP);
                     } else if (line.contains("[weight]") && lineNumber == 4) {
-                        addListItem(splits[1].trim().replace("[weight_loss]", round(user.getWeight() - calculateIdealWeight(user), 1) + ""), Type.APP);
+                        if((weightLoss = round(user.getWeight() - calculateIdealWeight(user), 1)) > 0.0f)
+                            addListItem(splits[1].trim().replace("[weight_loss]",  weightLoss + ""), Type.APP);
+
                         reader.readLine();
                         lineNumber++;
                         addResponseView("باشه");
+
                         return;
                     } else if (line.contains("[step]")) {
                         addListItem(splits[1].trim().replace("[diet_step]", Math.round(round(user.getWeight() - calculateIdealWeight(user), 1)) + ""), Type.APP);
@@ -543,7 +542,7 @@ public class SetupDietActivity extends BaseActivity implements View.OnClickListe
                             try {
                                 UpdateBuilder<UserInfo, Integer> updateBuilder = getDBHelper().getUserDao().updateBuilder();
                                 // set the criteria like you would a QueryBuilder
-                                updateBuilder.where().eq("_id", user.getId());
+                                updateBuilder.where().eq("User_ID", user.getId());
                                 // update the value of your field(s)
                                 updateBuilder.updateColumnValue("Credit", credit - 1);
                                 updateBuilder.update();
@@ -903,43 +902,45 @@ public class SetupDietActivity extends BaseActivity implements View.OnClickListe
 
     private Map<Integer, Difficulty> calculateDietTypes(UserInfo user) throws SQLException {
         float bmi = calculateBMI(user);
-        int pivotCal;
-        if (user.getGender() == User.Gender.Female.ordinal()) {
-            if (bmi <= 25)
-                pivotCal = 7700;
-            else
-                pivotCal = 7000;
-        } else {
-            if (bmi <= 25)
-                pivotCal = 8400;
-            else
-                pivotCal = 7700;
-        }
         float reqCal = calculateDailyRequiredCalorie(user);
-        float dietCal;
         Map<Integer, Difficulty> difficulty = new HashMap();
-        if (reqCal - ((pivotCal * 1.2f) / 7) >= 1000) {
-            dietCal = reqCal - (pivotCal / 7);
-            difficulty.put(3, new Difficulty(dietCal, 4.8f));
+
+        if (user.getGender() == User.Gender.Female.ordinal()) {
+            if (bmi > 21 && bmi <= 23)
+                difficulty.put(0, new Difficulty(reqCal, user.getWeight() - calculateIdealWeight(user)));
+            if (bmi <= 21)
+                difficulty.put(-1, new Difficulty(0.0f, 0.0f));
+        } else {
+            if (bmi > 22 && bmi <= 24)
+                difficulty.put(0, new Difficulty(reqCal, user.getWeight() - calculateIdealWeight(user)));
+            if (bmi <= 22)
+                difficulty.put(-1, new Difficulty(0.0f, 0.0f));
         }
-        if ((dietCal = reqCal - (pivotCal / 7)) >= 1000)
-            difficulty.put(2, new Difficulty(dietCal, 4f));
-
-        if ((dietCal = reqCal - (pivotCal / 14)) >= 1000)
-            difficulty.put(1, new Difficulty(dietCal, 2f));
-
         if (difficulty.size() == 0) {
+            int pivotCal;
             if (user.getGender() == User.Gender.Female.ordinal()) {
-                if (bmi > 21 && bmi <= 23)
-                    difficulty.put(0, new Difficulty(reqCal, user.getWeight() - calculateIdealWeight(user)));
-                if (bmi <= 21)
-                    difficulty.put(-1, new Difficulty(0.0f, 0.0f));
+                if (bmi <= 25)
+                    pivotCal = 7700;
+                else
+                    pivotCal = 7000;
             } else {
-                if (bmi > 22 && bmi <= 24)
-                    difficulty.put(0, new Difficulty(reqCal, user.getWeight() - calculateIdealWeight(user)));
-                if (bmi <= 22)
-                    difficulty.put(-1, new Difficulty(0.0f, 0.0f));
+                if (bmi <= 25)
+                    pivotCal = 8400;
+                else
+                    pivotCal = 7700;
             }
+
+            float dietCal;
+            if (reqCal - ((pivotCal * 1.2f) / 7) >= 1000) {
+                dietCal = reqCal - (pivotCal / 7);
+                difficulty.put(3, new Difficulty(dietCal, 4.8f));
+            }
+            if ((dietCal = reqCal - (pivotCal / 7)) >= 1000)
+                difficulty.put(2, new Difficulty(dietCal, 4f));
+
+            if ((dietCal = reqCal - (pivotCal / 14)) >= 1000)
+                difficulty.put(1, new Difficulty(dietCal, 2f));
+
         }
 
         return difficulty;

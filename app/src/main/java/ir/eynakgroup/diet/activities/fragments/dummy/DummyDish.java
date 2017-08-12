@@ -12,6 +12,7 @@ import ir.eynakgroup.diet.activities.fragments.DietFragment;
 public class DummyDish {
     private DietFragment.Day day = DietFragment.Day.TODAY;
     private List<DummyFood> foods;
+    private int dishNumber;
 
     public DummyDish(){
         foods = new ArrayList<>();
@@ -35,4 +36,11 @@ public class DummyDish {
     }
 
 
+    public int getDishNumber() {
+        return dishNumber;
+    }
+
+    public void setDishNumber(int dishNumber) {
+        this.dishNumber = dishNumber;
+    }
 }
