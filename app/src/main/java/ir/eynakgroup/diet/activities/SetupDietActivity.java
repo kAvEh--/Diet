@@ -4,10 +4,8 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
-import android.content.Intent;
 import android.graphics.Rect;
 import android.graphics.Typeface;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
@@ -39,22 +37,17 @@ import java.lang.ref.WeakReference;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 
 import ir.eynakgroup.diet.R;
 import ir.eynakgroup.diet.database.DatabaseHelper;
 import ir.eynakgroup.diet.database.tables.Diet;
 import ir.eynakgroup.diet.database.tables.FoodPackage;
-import ir.eynakgroup.diet.database.tables.PackageFood;
 import ir.eynakgroup.diet.database.tables.UserInfo;
 import ir.eynakgroup.diet.network.response_models.CreateDietResponse;
-import ir.eynakgroup.diet.network.response_models.LoginResponse;
 import ir.eynakgroup.diet.network.response_models.User;
 import ir.eynakgroup.diet.utils.view.CustomTextView;
 import retrofit2.Call;
@@ -81,11 +74,12 @@ public class SetupDietActivity extends BaseActivity implements View.OnClickListe
 
     private static DatabaseHelper mDatabaseHelper;
 
+    private Level diffLevel = Level.NONE;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_setup);
-
 
 //        writeToFile(createDietJson(generateDiet(1750, 2.0f)), this);
         mDatabaseHelper = getDBHelper();
@@ -193,6 +187,7 @@ public class SetupDietActivity extends BaseActivity implements View.OnClickListe
     boolean hardDiet = false;
     int lineNumber = 0;
 
+    private Map<Level, Difficulty> difficulty;
     private void prepareChatData() {
         BufferedReader reader;
         try {
@@ -226,16 +221,16 @@ public class SetupDietActivity extends BaseActivity implements View.OnClickListe
                     } else if (line.contains("[step]")) {
                         addListItem(splits[1].trim().replace("[diet_step]", Math.round(round(user.getWeight() - calculateIdealWeight(user), 1)) + ""), Type.APP);
                     } else if (line.contains("[type]") && lineNumber == 6) {
-                        Map<Integer, Difficulty> difficulty = calculateDietTypes(user);
-                        if (difficulty.containsKey(Integer.valueOf(3))) {
+                        difficulty = calculateDietTypes(user);
+                        if (difficulty.containsKey(Level.DIFFICULT)) {
                             addListItem(splits[1].trim().replace("[diet_type]", "3"), Type.APP);
-                        } else if (difficulty.containsKey(Integer.valueOf(2))) {
+                        } else if (difficulty.containsKey(Level.NORMAL)) {
                             addListItem(splits[1].trim().replace("[diet_type]", "2"), Type.APP);
 
-                        } else if (difficulty.containsKey(Integer.valueOf(1)) || difficulty.containsKey(Integer.valueOf(0))) {
+                        } else if (difficulty.containsKey(Level.EASY)) {
                             addListItem(splits[1].trim().replace("[diet_type]", "1"), Type.APP);
 
-                        } else if (difficulty.containsKey(Integer.valueOf(-1))) {
+                        } else if (difficulty.containsKey(Level.NONE)) {
                             addListItem(getString(R.string.no_diet), Type.APP);
                             return;
                         }
@@ -245,50 +240,40 @@ public class SetupDietActivity extends BaseActivity implements View.OnClickListe
 //                            addListItem(splits[1].trim(), Type.APP);
                         if (lineNumber == 7) {
                             addListItem(splits[1].trim(), Type.APP);
-                            Map<Integer, Difficulty> difficulty = calculateDietTypes(user);
-                            if (difficulty.containsKey(Integer.valueOf(3))) {
+                            difficulty = calculateDietTypes(user);
+                            if (difficulty.containsKey(Level.DIFFICULT)) {
                                 reader.readLine();
                                 lineNumber++;
-                                addResponseView("ساده" + " " + difficulty.get(Integer.valueOf(1)).getAmount() + " کیلویی");
-                                addResponseView("متوسط" + " " + difficulty.get(Integer.valueOf(2)).getAmount() + " کیلویی");
-                                addResponseView("سخت" + " " + difficulty.get(Integer.valueOf(3)).getAmount() + " کیلویی با ورزش");
+                                addResponseView("ساده" + " " + difficulty.get(Level.EASY).getAmount() + " کیلویی");
+                                addResponseView("متوسط" + " " + difficulty.get(Level.NORMAL).getAmount() + " کیلویی");
+                                addResponseView("سخت" + " " + difficulty.get(Level.DIFFICULT).getAmount() + " کیلویی با ورزش");
                                 return;
-                            } else if (difficulty.containsKey(Integer.valueOf(2))) {
+                            } else if (difficulty.containsKey(Level.NORMAL)) {
                                 reader.readLine();
                                 lineNumber++;
-                                addResponseView("ساده" + " " + difficulty.get(Integer.valueOf(1)).getAmount() + " کیلویی");
-                                addResponseView("متوسط" + " " + difficulty.get(Integer.valueOf(2)).getAmount() + " کیلویی");
+                                addResponseView("ساده" + " " + difficulty.get(Level.EASY).getAmount() + " کیلویی");
+                                addResponseView("متوسط" + " " + difficulty.get(Level.NORMAL).getAmount() + " کیلویی");
                                 return;
-                            } else if (difficulty.containsKey(Integer.valueOf(1))) {
+                            } else if (difficulty.containsKey(Level.EASY)) {
                                 reader.readLine();
                                 lineNumber++;
-                                addResponseView("ساده" + " " + difficulty.get(Integer.valueOf(1)).getAmount() + " کیلویی");
-                                return;
-                            } else if (difficulty.containsKey(Integer.valueOf(0))) {
-                                reader.readLine();
-                                lineNumber++;
-                                addResponseView("ساده" + " " + difficulty.get(Integer.valueOf(0)).getAmount() + " کیلویی");
+                                addResponseView("ساده" + " " + difficulty.get(Level.EASY).getAmount() + " کیلویی");
                                 return;
                             }
 
                         } else if (lineNumber == 11 && hardDiet) {
                             addListItem(splits[1].trim(), Type.APP);
-                            Map<Integer, Difficulty> difficulty = calculateDietTypes(user);
-                            if (difficulty.containsKey(Integer.valueOf(2))) {
+                            difficulty = calculateDietTypes(user);
+                            if (difficulty.containsKey(Level.NORMAL)) {
                                 reader.readLine();
                                 lineNumber++;
                                 addResponseView("ساده" + " " + difficulty.get(Integer.valueOf(1)).getAmount() + " کیلویی");
                                 addResponseView("متوسط" + " " + difficulty.get(Integer.valueOf(2)).getAmount() + " کیلویی");
                                 return;
-                            } else if (difficulty.containsKey(Integer.valueOf(1))) {
+                            } else if (difficulty.containsKey(Level.EASY)) {
                                 reader.readLine();
                                 lineNumber++;
                                 addResponseView("ساده" + " " + difficulty.get(Integer.valueOf(1)).getAmount() + " کیلویی");
-                                return;
-                            } else if (difficulty.containsKey(Integer.valueOf(0))) {
-                                reader.readLine();
-                                lineNumber++;
-                                addResponseView("ساده" + " " + difficulty.get(Integer.valueOf(0)).getAmount() + " کیلویی");
                                 return;
                             }
                         }
@@ -410,14 +395,24 @@ public class SetupDietActivity extends BaseActivity implements View.OnClickListe
                 flexBox.removeAllViewsInLayout();
                 flexBox.requestLayout();
                 hardDiet = tv.getText().toString().trim().contains("سخت") ? true : false;
-                if (tv.getText().toString().trim().contains("دریافت رژیم")) {
+                String text = tv.getText().toString().trim();
+                if (text.contains("دریافت رژیم")) {
                     try {
                         showPurchaseDialog();
                     } catch (SQLException e) {
                         e.printStackTrace();
                     }
                     return;
-                }
+                }else if(text.contains("سخت"))
+                    diffLevel = Level.DIFFICULT;
+
+                else if(text.contains("متوسط"))
+                    diffLevel = Level.NORMAL;
+
+                else if(text.contains("ساده"))
+                    diffLevel = Level.EASY;
+
+
                 prepareChatData();
             }
         });
@@ -506,8 +501,8 @@ public class SetupDietActivity extends BaseActivity implements View.OnClickListe
                     .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
                         public void onClick(DialogInterface dialog, int which) {
 
-
-                            final DietProperty property = generateMonthlyDietDB(1250, 2.0f);
+                            Difficulty diff = difficulty.get(diffLevel);
+                            final DietProperty property = generateDiet(diff.getCalorie(), diff.getAmount());
 
                             //TODO
                             Call<CreateDietResponse> call = getRequestMethod().createDiet(user.getSessionId(), user.getUserId(), user.getApiKey(), property.getType(), property.getStartDate(), createDietJson(property.getId()));
@@ -900,21 +895,21 @@ public class SetupDietActivity extends BaseActivity implements View.OnClickListe
         }
     }
 
-    private Map<Integer, Difficulty> calculateDietTypes(UserInfo user) throws SQLException {
+    private Map<Level, Difficulty> calculateDietTypes(UserInfo user) throws SQLException {
         float bmi = calculateBMI(user);
         float reqCal = calculateDailyRequiredCalorie(user);
-        Map<Integer, Difficulty> difficulty = new HashMap();
+        Map<Level, Difficulty> difficulty = new HashMap();
 
         if (user.getGender() == User.Gender.Female.ordinal()) {
             if (bmi > 21 && bmi <= 23)
-                difficulty.put(0, new Difficulty(reqCal, user.getWeight() - calculateIdealWeight(user)));
+                difficulty.put(Level.EASY, new Difficulty(reqCal, user.getWeight() - calculateIdealWeight(user)));
             if (bmi <= 21)
-                difficulty.put(-1, new Difficulty(0.0f, 0.0f));
+                difficulty.put(Level.NONE, new Difficulty(0.0f, 0.0f));
         } else {
             if (bmi > 22 && bmi <= 24)
-                difficulty.put(0, new Difficulty(reqCal, user.getWeight() - calculateIdealWeight(user)));
+                difficulty.put(Level.EASY, new Difficulty(reqCal, user.getWeight() - calculateIdealWeight(user)));
             if (bmi <= 22)
-                difficulty.put(-1, new Difficulty(0.0f, 0.0f));
+                difficulty.put(Level.NONE, new Difficulty(0.0f, 0.0f));
         }
         if (difficulty.size() == 0) {
             int pivotCal;
@@ -933,13 +928,13 @@ public class SetupDietActivity extends BaseActivity implements View.OnClickListe
             float dietCal;
             if (reqCal - ((pivotCal * 1.2f) / 7) >= 1000) {
                 dietCal = reqCal - (pivotCal / 7);
-                difficulty.put(3, new Difficulty(dietCal, 4.8f));
+                difficulty.put(Level.DIFFICULT, new Difficulty(dietCal, 4.8f));
             }
             if ((dietCal = reqCal - (pivotCal / 7)) >= 1000)
-                difficulty.put(2, new Difficulty(dietCal, 4f));
+                difficulty.put(Level.NORMAL, new Difficulty(dietCal, 4f));
 
             if ((dietCal = reqCal - (pivotCal / 14)) >= 1000)
-                difficulty.put(1, new Difficulty(dietCal, 2f));
+                difficulty.put(Level.EASY, new Difficulty(dietCal, 2f));
 
         }
 
@@ -1211,5 +1206,10 @@ public class SetupDietActivity extends BaseActivity implements View.OnClickListe
 //  */
 //        this.createdAt = new Date();
 //    }
-
+    private enum Level{
+        NONE,
+        EASY,
+        NORMAL,
+        DIFFICULT
+    }
 }

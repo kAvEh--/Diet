@@ -1,15 +1,12 @@
 package ir.eynakgroup.diet.activities.fragments;
 
 import android.os.Bundle;
-import android.support.annotation.LayoutRes;
-import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.CardView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -39,6 +36,7 @@ public class DietBreakfastFragment extends Fragment implements View.OnClickListe
     private LinearLayout layoutPack34;
     private CardView cardOpenPack;
     private CardView cardNonPack;
+    private CardView yesterdayPack;
 
 
     private TextView textOptionSelect;
@@ -51,6 +49,7 @@ public class DietBreakfastFragment extends Fragment implements View.OnClickListe
     public DietBreakfastFragment() {
         // Required empty public constructor
     }
+
 
     public DietBreakfastFragment(Map<DietFragment.Day, List<DummyDish>> breakfastDishes) {
         this.breakfastDishes = breakfastDishes;
@@ -145,15 +144,24 @@ public class DietBreakfastFragment extends Fragment implements View.OnClickListe
         view.findViewById(R.id.pack1).setOnClickListener(this);
         view.findViewById(R.id.pack2).setOnClickListener(this);
         view.findViewById(R.id.pack3).setOnClickListener(this);
-        view.findViewById(R.id.yesterday_pack).setOnClickListener(this);
         view.findViewById(R.id.non_pack).setOnClickListener(this);
 
+        yesterdayPack = (CardView) view.findViewById(R.id.yesterday_pack);
+        yesterdayPack.setOnClickListener(this);
 
         updateDishes(DietFragment.currentDay);
     }
 
+
     private List<DummyDish> dishList;
     public void updateDishes(DietFragment.Day day) {
+        if(day.equals(DietFragment.Day.TODAY))
+            yesterdayPack.setVisibility(View.VISIBLE);
+
+        else
+            yesterdayPack.setVisibility(View.INVISIBLE);
+
+
         for (int i = 0; i < dishItem.length; i++)
             dishItem[i].setText("");
 
@@ -217,29 +225,35 @@ public class DietBreakfastFragment extends Fragment implements View.OnClickListe
     }
 
     private void bindPack(int packNum) {
-        for(int i = 0; i < foodItem.length; i++){
-            foodItem[i].setText("");
-            amountItem[i].setText("");
-            midItem[i].setText("");
-        }
-        for(DummyDish dish: dishList){
-            if(dish.getDishNumber() == packNum){
-                List<DummyFood> foodList = dish.getDishFoods();
-                int position = 0;
-                for (DummyFood food : foodList) {
-                    foodItem[position].setText(food.getFoodName());
-                    amountItem[position].setText(food.getAmount()+" "+food.getUnit());
-                    midItem[position].setText("--------------------------------------------------------");
-                    position++;
-                }
-                break;
+        if(DietFragment.currentDay.equals(DietFragment.Day.TODAY)){
+            for(int i = 0; i < foodItem.length; i++){
+                foodItem[i].setText("");
+                amountItem[i].setText("");
+                midItem[i].setText("");
             }
+
+            for(DummyDish dish: dishList){
+                if(dish.getDishNumber() == packNum){
+
+
+                    List<DummyFood> foodList = dish.getDishFoods();
+                    int position = 0;
+                    for (DummyFood food : foodList) {
+                        foodItem[position].setText(food.getFoodName());
+                        amountItem[position].setText(food.getAmount()+" "+food.getUnit());
+                        midItem[position].setText("--------------------------------------------------------");
+                        position++;
+                    }
+                    break;
+                }
+            }
+            cardNonPack.setVisibility(View.GONE);
+            layoutPack12.setVisibility(View.GONE);
+            layoutPack34.setVisibility(View.GONE);
+            textOptionSelect.setVisibility(View.INVISIBLE);
+            cardOpenPack.setVisibility(View.VISIBLE);
         }
-        cardNonPack.setVisibility(View.GONE);
-        layoutPack12.setVisibility(View.GONE);
-        layoutPack34.setVisibility(View.GONE);
-        textOptionSelect.setVisibility(View.GONE);
-        cardOpenPack.setVisibility(View.VISIBLE);
+
     }
 
 

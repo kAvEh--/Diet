@@ -19,10 +19,10 @@
     <!--<color name="colorSnack">#bf4250</color>-->
     <!--<color name="colorDinner">#3999d4</color>-->
 
-    <color name="colorBreakfast">#b3e5fc</color>
-    <color name="colorLunch">#4fc3f7</color>
-    <color name="colorSnack">#03a9f4</color>
-    <color name="colorDinner">#0288d1</color>
+    <color name="colorBreakfast">#3999d4</color>
+    <color name="colorLunch">#3999d4</color>
+    <color name="colorSnack">#3999d4</color>
+    <color name="colorDinner">#3999d4</color>
 
 
 </resources>

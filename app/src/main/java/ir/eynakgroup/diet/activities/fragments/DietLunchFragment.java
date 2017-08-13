@@ -40,6 +40,7 @@ public class DietLunchFragment extends Fragment implements View.OnClickListener 
     private LinearLayout layoutPack34;
     private CardView cardOpenPack;
     private CardView cardNonPack;
+    private CardView yesterdayPack;
 
     private TextView[] dishItem = new TextView[20];
     private TextView[] foodItem = new TextView[5];
@@ -141,15 +142,23 @@ public class DietLunchFragment extends Fragment implements View.OnClickListener 
         view.findViewById(R.id.pack1).setOnClickListener(this);
         view.findViewById(R.id.pack2).setOnClickListener(this);
         view.findViewById(R.id.pack3).setOnClickListener(this);
-        view.findViewById(R.id.yesterday_pack).setOnClickListener(this);
         view.findViewById(R.id.non_pack).setOnClickListener(this);
 
+        yesterdayPack = (CardView) view.findViewById(R.id.yesterday_pack);
+        yesterdayPack.setOnClickListener(this);
 
         updateDishes(DietFragment.currentDay);
     }
 
     private List<DummyDish> dishList;
     public void updateDishes(DietFragment.Day day) {
+        if(day.equals(DietFragment.Day.TODAY))
+            yesterdayPack.setVisibility(View.VISIBLE);
+
+        else
+            yesterdayPack.setVisibility(View.INVISIBLE);
+
+
         for (int i = 0; i < dishItem.length; i++)
             dishItem[i].setText("");
 
@@ -214,29 +223,33 @@ public class DietLunchFragment extends Fragment implements View.OnClickListener 
     }
 
     private void bindPack(int packNum) {
-        for(int i = 0; i < foodItem.length; i++){
-            foodItem[i].setText("");
-            amountItem[i].setText("");
-            midItem[i].setText("");
-        }
-        for(DummyDish dish: dishList){
-            if(dish.getDishNumber() == packNum){
-                List<DummyFood> foodList = dish.getDishFoods();
-                int position = 0;
-                for (DummyFood food : foodList) {
-                    foodItem[position].setText(food.getFoodName());
-                    amountItem[position].setText(food.getAmount()+" "+food.getUnit());
-                    midItem[position].setText("--------------------------------------------------------");
-                    position++;
-                }
-                break;
+        if(DietFragment.currentDay.equals(DietFragment.Day.TODAY)){
+            for(int i = 0; i < foodItem.length; i++){
+                foodItem[i].setText("");
+                amountItem[i].setText("");
+                midItem[i].setText("");
             }
+            for(DummyDish dish: dishList){
+                if(dish.getDishNumber() == packNum){
+                    System.out.println(dish.getPackageId()+"------------------- package id");
+                    List<DummyFood> foodList = dish.getDishFoods();
+                    int position = 0;
+                    for (DummyFood food : foodList) {
+                        foodItem[position].setText(food.getFoodName());
+                        amountItem[position].setText(food.getAmount()+" "+food.getUnit());
+                        midItem[position].setText("--------------------------------------------------------");
+                        position++;
+                    }
+                    break;
+                }
+            }
+            cardNonPack.setVisibility(View.GONE);
+            layoutPack12.setVisibility(View.GONE);
+            layoutPack34.setVisibility(View.GONE);
+            textOptionSelect.setVisibility(View.INVISIBLE);
+            cardOpenPack.setVisibility(View.VISIBLE);
         }
-        cardNonPack.setVisibility(View.GONE);
-        layoutPack12.setVisibility(View.GONE);
-        layoutPack34.setVisibility(View.GONE);
-        textOptionSelect.setVisibility(View.GONE);
-        cardOpenPack.setVisibility(View.VISIBLE);
+
     }
 
 

@@ -12,6 +12,8 @@ import ir.eynakgroup.diet.activities.fragments.DietFragment;
 public class DummyDish {
     private DietFragment.Day day = DietFragment.Day.TODAY;
     private List<DummyFood> foods;
+    private String packageId;
+    private int dietDay;
     private int dishNumber;
 
     public DummyDish(){
@@ -42,5 +44,21 @@ public class DummyDish {
 
     public void setDishNumber(int dishNumber) {
         this.dishNumber = dishNumber;
+    }
+
+    public String getPackageId() {
+        return packageId;
+    }
+
+    public void setPackageId(String packageId) {
+        this.packageId = packageId;
+    }
+
+    public int getDietDay() {
+        return dietDay;
+    }
+
+    public void setDietDay(int dietDay) {
+        this.dietDay = dietDay;
     }
 }

@@ -8,7 +8,6 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 import android.support.v4.content.ContextCompat;
-import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -17,7 +16,6 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.support.v7.widget.AppCompatSpinner;
-import android.widget.TextView;
 
 import com.j256.ormlite.stmt.QueryBuilder;
 
@@ -329,6 +327,8 @@ public class DietFragment extends Fragment {
                             packageList = packageQueryBuilder.query();
                             if (packageList.size() > 0) {
                                 DummyDish dish = new DummyDish();
+                                dish.setPackageId(packagesId[i]);
+                                dish.setDietDay(day);
                                 foodsId = packageList.get(0).getFoods().split(",");
                                 for (String foodId : foodsId) {
                                     packageFoodQueryBuilder.where().eq("_id", packagesId[i]).and().eq("foodId", foodId.trim());
@@ -363,12 +363,14 @@ public class DietFragment extends Fragment {
                                             foods = foodQueryBuilder.query();
                                             if (foods.size() > 0) {
                                                 food.setFoodName(foods.get(0).getFoodName());
-                                                foodUnitQueryBuilder.where().eq("Unit_ID", foods.get(0).getUnitId());
-                                                foodUnits = foodUnitQueryBuilder.query();
-                                                if (foodUnits.size() > 0)
-                                                    food.setUnit(foodUnits.get(0).getUnitName());
+                                                if(packageFoods.get(0).getIsStandard() == 0){
+                                                    foodUnitQueryBuilder.where().eq("Unit_ID", foods.get(0).getUnitId());
+                                                    foodUnits = foodUnitQueryBuilder.query();
+                                                    if (foodUnits.size() > 0)
+                                                        food.setUnit(foodUnits.get(0).getUnitName());
 
-                                                foodUnitQueryBuilder.reset();
+                                                    foodUnitQueryBuilder.reset();
+                                                }
                                             }
                                             dish.addFood(food);
                                             foodQueryBuilder.reset();
