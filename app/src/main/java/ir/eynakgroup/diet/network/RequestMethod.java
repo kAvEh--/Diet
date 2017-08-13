@@ -1,5 +1,9 @@
 package ir.eynakgroup.diet.network;
 
+import com.google.gson.JsonObject;
+
+import org.json.JSONObject;
+
 import ir.eynakgroup.diet.network.response_models.LoginResponse;
 import ir.eynakgroup.diet.network.response_models.CommonResponse;
 import ir.eynakgroup.diet.network.response_models.CreateDietResponse;
@@ -35,7 +39,9 @@ public interface RequestMethod {
     @POST("/diet/new")
     Call<CreateDietResponse> createDiet(@Header("cookie") String cookie, @Field("userId") String userId, @Field("apikey") String apiKey, @Field("type") String type, @Field("startDate") String startDate, @Field("diet") String diet);
 
-
+    @FormUrlEncoded
+    @POST("/diet/purchase")
+    Call<CommonResponse> purchaseSend(@Header("cookie") String cookie, @Field("apikey") String apiKey, @Field("userId") String userId, @Field("package_name") String pName, @Field("product_id") String pId, @Field("token") String token);
 
 
 }
