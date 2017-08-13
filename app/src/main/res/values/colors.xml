@@ -14,15 +14,10 @@
     <color name="colorEditText">#cecfd1</color>
     <color name="colorStatusBar">#39444e</color>
 
-    <!--<color name="colorBreakfast">#6eac43</color>-->
-    <!--<color name="colorLunch">#febe1e</color>-->
-    <!--<color name="colorSnack">#bf4250</color>-->
-    <!--<color name="colorDinner">#3999d4</color>-->
-
-    <color name="colorBreakfast">#3999d4</color>
-    <color name="colorLunch">#3999d4</color>
-    <color name="colorSnack">#3999d4</color>
-    <color name="colorDinner">#3999d4</color>
+    <color name="colorBreakfast">#4FC3F7</color>
+    <color name="colorLunch">#03A9F4</color>
+    <color name="colorSnack">#0288D1</color>
+    <color name="colorDinner">#01579B</color>
 
 
 </resources>
