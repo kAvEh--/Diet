@@ -4,11 +4,12 @@
     android:installLocation="internalOnly">
 
     <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
     <uses-permission android:name="android.permission.AUTHENTICATE_ACCOUNTS" />
     <uses-permission android:name="android.permission.MANAGE_ACCOUNTS" />
     <uses-permission android:name="android.permission.GET_ACCOUNTS" />
     <uses-permission android:name="android.permission.SET_ALARM" />
+    <uses-permission android:name="com.farsitel.bazaar.permission.PAY_THROUGH_BAZAAR" />
 
     <permission
         android:name="ir.eynakgroup.karafs.account.AUTHENTICATION_PERMISSION"
@@ -19,11 +20,11 @@
     <uses-permission android:name="ir.eynakgroup.karafs.account.AUTHENTICATION_PERMISSION" />
 
     <application
-        android:allowBackup="true"
         android:name=".application.DietApp"
+        android:allowBackup="true"
+        android:fullBackupContent="@xml/backup_config"
         android:icon="@drawable/logo"
         android:label="@string/app_name"
-        android:fullBackupContent="@xml/backup_config"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
@@ -77,9 +78,9 @@
             android:name=".activities.MainActivity"
             android:screenOrientation="portrait">
             <!--<intent-filter>-->
-                <!--<action android:name="android.intent.action.MAIN" />-->
+            <!--<action android:name="android.intent.action.MAIN" />-->
 
-                <!--<category android:name="android.intent.category.LAUNCHER" />-->
+            <!--<category android:name="android.intent.category.LAUNCHER" />-->
             <!--</intent-filter>-->
         </activity>
 
@@ -88,9 +89,9 @@
             android:screenOrientation="portrait">
 
             <!--<intent-filter>-->
-                <!--<action android:name="android.intent.action.MAIN" />-->
+            <!--<action android:name="android.intent.action.MAIN" />-->
 
-                <!--<category android:name="android.intent.category.LAUNCHER" />-->
+            <!--<category android:name="android.intent.category.LAUNCHER" />-->
             <!--</intent-filter>-->
         </activity>
 
