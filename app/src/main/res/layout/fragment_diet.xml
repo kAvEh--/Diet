@@ -51,6 +51,7 @@
             android:background="@color/colorStatusBar"
             app:tabTextColor="@color/colorDescription"
             app:tabIndicatorHeight="4dp"
+            app:tabTextAppearance="@style/CustomTabText"
             app:tabSelectedTextColor="@color/colorWhite"
             app:tabIndicatorColor="@color/colorWhite"
             app:tabMode="fixed"
