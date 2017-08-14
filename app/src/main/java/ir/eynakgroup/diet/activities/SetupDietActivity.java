@@ -4,8 +4,10 @@ import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.graphics.Rect;
 import android.graphics.Typeface;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
@@ -24,10 +26,17 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.flexbox.FlexboxLayout;
+import com.google.gson.JsonObject;
 import com.j256.ormlite.stmt.QueryBuilder;
 import com.j256.ormlite.stmt.UpdateBuilder;
+import com.j256.ormlite.table.TableUtils;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -37,18 +46,28 @@ import java.lang.ref.WeakReference;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 import ir.eynakgroup.diet.R;
 import ir.eynakgroup.diet.database.DatabaseHelper;
 import ir.eynakgroup.diet.database.tables.Diet;
 import ir.eynakgroup.diet.database.tables.FoodPackage;
+import ir.eynakgroup.diet.database.tables.PackageFood;
 import ir.eynakgroup.diet.database.tables.UserInfo;
+import ir.eynakgroup.diet.network.RequestMethod;
+import ir.eynakgroup.diet.network.response_models.CommonResponse;
 import ir.eynakgroup.diet.network.response_models.CreateDietResponse;
+import ir.eynakgroup.diet.network.response_models.LoginResponse;
 import ir.eynakgroup.diet.network.response_models.User;
+import ir.eynakgroup.diet.util.IabHelper;
+import ir.eynakgroup.diet.util.IabResult;
+import ir.eynakgroup.diet.util.Purchase;
 import ir.eynakgroup.diet.utils.view.CustomTextView;
 import retrofit2.Call;
 import retrofit2.Callback;
@@ -71,16 +90,21 @@ public class SetupDietActivity extends BaseActivity implements View.OnClickListe
     private static final int LUNCH_ID = 1;
     private static final int SNACK_ID = 2;
     private static final int DINNER_ID = 3;
+    private static RequestMethod mRequestMethod;
 
     private static DatabaseHelper mDatabaseHelper;
 
     private Level diffLevel = Level.NONE;
+
+    private Activity mActivity;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_setup);
 
+        mActivity = this;
+        mRequestMethod = getRequestMethod();
 //        writeToFile(createDietJson(generateDiet(1750, 2.0f)), this);
         mDatabaseHelper = getDBHelper();
         textTyping = (TextView) findViewById(R.id.txt_typing);
@@ -449,45 +473,177 @@ public class SetupDietActivity extends BaseActivity implements View.OnClickListe
         @Override
         public void onClick(View v) {
             int credit = 0;
+            mPayLoad = user.getUserId();
+            System.out.println(user.getUserId() + "**********************");
             switch (v.getId()) {
                 case R.id.diet_card_1:
-                    credit = 1;
+                    mHelper.launchPurchaseFlow(this.activity, getString(R.string.sku_diet_1), RC_REQUEST, mPurchaseFinishedListener, mPayLoad);
                     break;
                 case R.id.diet_card_2:
-                    credit = 2;
+                    mHelper.launchPurchaseFlow(this.activity, getString(R.string.sku_diet_2), RC_REQUEST, mPurchaseFinishedListener, mPayLoad);
                     break;
                 case R.id.diet_card_3:
-                    credit = 3;
+                    mHelper.launchPurchaseFlow(this.activity, getString(R.string.sku_diet_3), RC_REQUEST, mPurchaseFinishedListener, mPayLoad);
                     break;
                 case R.id.diet_card_4:
-                    credit = 4;
+                    mHelper.launchPurchaseFlow(this.activity, getString(R.string.sku_diet_4), RC_REQUEST, mPurchaseFinishedListener, mPayLoad);
                     break;
                 case R.id.diet_card_5:
-                    credit = 5;
+                    mHelper.launchPurchaseFlow(this.activity, getString(R.string.sku_diet_5), RC_REQUEST, mPurchaseFinishedListener, mPayLoad);
                     break;
                 case R.id.diet_card_6:
-                    credit = 6;
+                    mHelper.launchPurchaseFlow(this.activity, getString(R.string.sku_diet_6), RC_REQUEST, mPurchaseFinishedListener, mPayLoad);
                     break;
                 default:
                     break;
             }
-            try {
+            dismiss();
+//            try {
 //                UserInfo user = getDBHelper().getUserDao().queryForAll().get(0);
-                UpdateBuilder<UserInfo, Integer> updateBuilder = getDBHelper().getUserDao().updateBuilder();
-                // set the criteria like you would a QueryBuilder
-                updateBuilder.where().eq("User_ID", user.getUserId());
-                // update the value of your field(s)
-                updateBuilder.updateColumnValue("Credit" /* column */, credit /* value */);
-                updateBuilder.update();
-                System.out.println("------------ user credit updated");
-                dismiss();
-                showPurchaseDialog();
-            } catch (SQLException e) {
-                e.printStackTrace();
-                dismiss();
+//                UpdateBuilder<UserInfo, Integer> updateBuilder = getDBHelper().getUserDao().updateBuilder();
+            // set the criteria like you would a QueryBuilder
+//                updateBuilder.where().eq("User_ID", user.getUserId());
+            // update the value of your field(s)
+//                updateBuilder.updateColumnValue("Credit" /* column */, credit /* value */);
+//                updateBuilder.update();
+//                System.out.println("------------ user credit updated");
+
+//                showPurchaseDialog();
+//            } catch (SQLException e) {
+//                e.printStackTrace();
+//                dismiss();
+//            }
+        }
+    }
+
+    IabHelper.OnIabPurchaseFinishedListener mPurchaseFinishedListener = new IabHelper.OnIabPurchaseFinishedListener() {
+        public void onIabPurchaseFinished(IabResult result, Purchase purchase) {
+            if (result.isFailure()) {
+                Log.d(TAG, "Error purchasing: " + result);
+                return;
+                //TODO Clean up code....
+            } else {
+                System.out.println("consuming .................................................." + purchase.getPurchaseState());
+                mHelper.consumeAsync(purchase,
+                        mConsumeFinishedListener);
+            }
+        }
+    };
+
+    IabHelper.OnConsumeFinishedListener mConsumeFinishedListener =
+            new IabHelper.OnConsumeFinishedListener() {
+                public void onConsumeFinished(Purchase purchase, IabResult result) {
+                    if (result.isSuccess()) {
+                        if (purchase.getSku().equals(getString(R.string.sku_diet_1))) {
+                            try {
+                                sendPurchasetoServer(purchase);
+                            } catch (SQLException e) {
+                                e.printStackTrace();
+                            }
+                        } else if (purchase.getSku().equals(getString(R.string.sku_diet_2))) {
+                            try {
+                                sendPurchasetoServer(purchase);
+                            } catch (SQLException e) {
+                                e.printStackTrace();
+                            }
+                        } else if (purchase.getSku().equals(getString(R.string.sku_diet_3))) {
+                            try {
+                                sendPurchasetoServer(purchase);
+                            } catch (SQLException e) {
+                                e.printStackTrace();
+                            }
+                        } else if (purchase.getSku().equals(getString(R.string.sku_diet_4))) {
+                            try {
+                                sendPurchasetoServer(purchase);
+                            } catch (SQLException e) {
+                                e.printStackTrace();
+                            }
+                        } else if (purchase.getSku().equals(getString(R.string.sku_diet_5))) {
+                            try {
+                                sendPurchasetoServer(purchase);
+                            } catch (SQLException e) {
+                                e.printStackTrace();
+                            }
+                        } else if (purchase.getSku().equals(getString(R.string.sku_diet_6))) {
+                            try {
+                                sendPurchasetoServer(purchase);
+                            } catch (SQLException e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    } else {
+                        // handle error
+                    }
+                }
+            };
+
+    private void sendPurchasetoServer(final Purchase purchase) throws SQLException {
+        final UserInfo user = getDBHelper().getUserDao().queryForAll().get(0);
+        Call<CommonResponse> call = mRequestMethod.purchaseSend(user.getSessionId(), user.getApiKey(), user.getUserId(),
+                purchase.getPackageName(), purchase.getSku(), purchase.getToken());
+        final int[] values = getResources().getIntArray(R.array.sku_values);
+        call.enqueue(new Callback<CommonResponse>() {
+            @Override
+            public void onResponse(Call<CommonResponse> call, retrofit2.Response<CommonResponse> response) {
+                System.out.println(response.body().getError() + ">>>>>>>>" + response.body().getStatus());
+                try {
+                    if (response.body().getStatus().equals("success")) {
+                        UpdateBuilder<UserInfo, Integer> updateBuilder = getDBHelper().getUserDao().updateBuilder();
+                        // set the criteria like you would a QueryBuilder
+                        updateBuilder.where().eq("User_ID", user.getUserId());
+                        // update the value of your field(s)
+                        if (purchase.getSku().equals(getString(R.string.sku_diet_1))) {
+                            updateBuilder.updateColumnValue("Credit" /* column */, values[0] /* value */);
+                            updateBuilder.update();
+                        } else if (purchase.getSku().equals(getString(R.string.sku_diet_2))) {
+                            updateBuilder.updateColumnValue("Credit" /* column */, values[1] /* value */);
+                            updateBuilder.update();
+                        } else if (purchase.getSku().equals(getString(R.string.sku_diet_3))) {
+                            updateBuilder.updateColumnValue("Credit" /* column */, values[2] /* value */);
+                            updateBuilder.update();
+                        } else if (purchase.getSku().equals(getString(R.string.sku_diet_4))) {
+                            updateBuilder.updateColumnValue("Credit" /* column */, values[3] /* value */);
+                            updateBuilder.update();
+                        } else if (purchase.getSku().equals(getString(R.string.sku_diet_5))) {
+                            updateBuilder.updateColumnValue("Credit" /* column */, values[4] /* value */);
+                            updateBuilder.update();
+                        } else if (purchase.getSku().equals(getString(R.string.sku_diet_6))) {
+                            updateBuilder.updateColumnValue("Credit" /* column */, values[5] /* value */);
+                            updateBuilder.update();
+                        }
+                        showPurchaseDialog();
+                    } else {
+                        //TODO
+                        Toast.makeText(getApplicationContext(), "Something is wrong!!",
+                                Toast.LENGTH_LONG).show();
+                    }
+                } catch (SQLException e) {
+                    e.printStackTrace();
+                    //TODO
+                    Toast.makeText(getApplicationContext(), "Something is wrong in DB!!",
+                            Toast.LENGTH_LONG).show();
+                }
+
             }
 
+            @Override
+            public void onFailure(Call<CommonResponse> call, Throwable t) {
 
+            }
+        });
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        Log.d(TAG, "onActivityResult(" + requestCode + "," + resultCode + "," + data);
+
+        // Pass on the activity result to the helper for handling
+        if (!mHelper.handleActivityResult(requestCode, resultCode, data)) {
+            super.onActivityResult(requestCode, resultCode, data);
+        } else {
+            Log.d(TAG, "onActivityResult handled by IABUtil.");
         }
     }
 
@@ -1157,10 +1313,10 @@ public class SetupDietActivity extends BaseActivity implements View.OnClickListe
                 String snackChoices = "[" + "\"" + diet.getSnackPack1() + "\"" + "," + "\"" + diet.getSnackPack2() + "\"" + "," + "\"" + diet.getSnackPack3() + "\"" + "]";
                 String dinnerChoices = "[" + "\"" + diet.getDinnerPack1() + "\"" + "," + "\"" + diet.getDinnerPack2() + "\"" + "," + "\"" + diet.getDinnerPack3() + "\"" + "]";
 
-                dietJson.append("\"" + diet.getDay() + "\"" + ":{" + "\"" + BREAKFAST_ID + "\"" + ":{" + "\"" + "status" + "\"" + ":0," + "\"" + "choices" + "\"" + ":" + breakfastChoices + "," + "\"" + "selected" + "\"" + ":\""+diet.getSelectedBreakfast()+"\"}");
-                dietJson.append("," + "\"" + LUNCH_ID + "\"" + ":{" + "\"" + "status" + "\"" + ":0," + "\"" + "choices" + "\"" + ":" + lunchChoices + "," + "\"" + "selected" + "\"" + ":\""+diet.getSelectedLunch()+"\"}");
-                dietJson.append("," + "\"" + SNACK_ID + "\"" + ":{" + "\"" + "status" + "\"" + ":0," + "\"" + "choices" + "\"" + ":" + snackChoices + "," + "\"" + "selected" + "\"" + ":\""+diet.getSelectedSnack()+"\"}");
-                dietJson.append("," + "\"" + DINNER_ID + "\"" + ":{" + "\"" + "status" + "\"" + ":0," + "\"" + "choices" + "\"" + ":" + dinnerChoices + "," + "\"" + "selected" + "\"" + ":\""+diet.getSelectedDinner()+"\"}}");
+                dietJson.append("\"" + diet.getDay() + "\"" + ":{" + "\"" + BREAKFAST_ID + "\"" + ":{" + "\"" + "status" + "\"" + ":0," + "\"" + "choices" + "\"" + ":" + breakfastChoices + "," + "\"" + "selected" + "\"" + ":\"" + diet.getSelectedBreakfast() + "\"}");
+                dietJson.append("," + "\"" + LUNCH_ID + "\"" + ":{" + "\"" + "status" + "\"" + ":0," + "\"" + "choices" + "\"" + ":" + lunchChoices + "," + "\"" + "selected" + "\"" + ":\"" + diet.getSelectedLunch() + "\"}");
+                dietJson.append("," + "\"" + SNACK_ID + "\"" + ":{" + "\"" + "status" + "\"" + ":0," + "\"" + "choices" + "\"" + ":" + snackChoices + "," + "\"" + "selected" + "\"" + ":\"" + diet.getSelectedSnack() + "\"}");
+                dietJson.append("," + "\"" + DINNER_ID + "\"" + ":{" + "\"" + "status" + "\"" + ":0," + "\"" + "choices" + "\"" + ":" + dinnerChoices + "," + "\"" + "selected" + "\"" + ":\"" + diet.getSelectedDinner() + "\"}}");
 
                 if (i != dietList.size() - 1)
                     dietJson.append(",");
