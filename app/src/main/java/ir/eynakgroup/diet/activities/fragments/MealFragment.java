@@ -242,11 +242,13 @@ public class MealFragment extends Fragment implements View.OnClickListener {
 
 
         for (DummyDish dish : dishList) {
-            List<DummyFood> foodList = dish.getDishFoods();
-            int position = 0;
-            for (DummyFood food : foodList) {
-                dishItem[dish.getDishNumber() * 4 + position].setText(food.getFoodName());
-                position++;
+            if(!dish.getPackageId().equals("0")){
+                List<DummyFood> foodList = dish.getDishFoods();
+                int position = 0;
+                for (DummyFood food : foodList) {
+                    dishItem[dish.getDishNumber() * 4 + position].setText(food.getFoodName());
+                    position++;
+                }
             }
         }
 
