@@ -9,7 +9,6 @@ public class DummyFood {
     private String amount;
     private String unit = "گرم";
 
-
     public String getFoodName() {
         return foodName;
     }

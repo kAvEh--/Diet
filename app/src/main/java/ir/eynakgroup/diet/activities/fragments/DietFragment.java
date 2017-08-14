@@ -120,27 +120,27 @@ public class DietFragment extends Fragment {
                 switch (position) {
                     case TODAY:
                         if (notToday) {
-                            ((DietDinnerFragment) fragmentList.get(0)).updateDishes(Day.TODAY);
-                            ((DietSnackFragment) fragmentList.get(1)).updateDishes(Day.TODAY);
-                            ((DietLunchFragment) fragmentList.get(2)).updateDishes(Day.TODAY);
-                            ((DietBreakfastFragment) fragmentList.get(3)).updateDishes(Day.TODAY);
+                            ((DietDinnerFragment) fragmentList.get(0)).updateDishes(Day.TODAY, false);
+                            ((DietSnackFragment) fragmentList.get(1)).updateDishes(Day.TODAY, false);
+                            ((DietLunchFragment) fragmentList.get(2)).updateDishes(Day.TODAY, false);
+                            ((DietBreakfastFragment) fragmentList.get(3)).updateDishes(Day.TODAY, false);
                             notToday = false;
                             currentDay = Day.TODAY;
                         }
                         break;
                     case TOMORROW:
-                        ((DietDinnerFragment) fragmentList.get(0)).updateDishes(Day.TOMORROW);
-                        ((DietSnackFragment) fragmentList.get(1)).updateDishes(Day.TOMORROW);
-                        ((DietLunchFragment) fragmentList.get(2)).updateDishes(Day.TOMORROW);
-                        ((DietBreakfastFragment) fragmentList.get(3)).updateDishes(Day.TOMORROW);
+                        ((DietDinnerFragment) fragmentList.get(0)).updateDishes(Day.TOMORROW,false);
+                        ((DietSnackFragment) fragmentList.get(1)).updateDishes(Day.TOMORROW, false);
+                        ((DietLunchFragment) fragmentList.get(2)).updateDishes(Day.TOMORROW, false);
+                        ((DietBreakfastFragment) fragmentList.get(3)).updateDishes(Day.TOMORROW, false);
                         notToday = true;
                         currentDay = Day.TOMORROW;
                         break;
                     case DAY_AFTER_TOMORROW:
-                        ((DietDinnerFragment) fragmentList.get(0)).updateDishes(Day.DAY_AFTER_TOMORROW);
-                        ((DietSnackFragment) fragmentList.get(1)).updateDishes(Day.DAY_AFTER_TOMORROW);
-                        ((DietLunchFragment) fragmentList.get(2)).updateDishes(Day.DAY_AFTER_TOMORROW);
-                        ((DietBreakfastFragment) fragmentList.get(3)).updateDishes(Day.DAY_AFTER_TOMORROW);
+                        ((DietDinnerFragment) fragmentList.get(0)).updateDishes(Day.DAY_AFTER_TOMORROW, false);
+                        ((DietSnackFragment) fragmentList.get(1)).updateDishes(Day.DAY_AFTER_TOMORROW, false);
+                        ((DietLunchFragment) fragmentList.get(2)).updateDishes(Day.DAY_AFTER_TOMORROW, false);
+                        ((DietBreakfastFragment) fragmentList.get(3)).updateDishes(Day.DAY_AFTER_TOMORROW, false);
                         notToday = true;
                         currentDay = Day.DAY_AFTER_TOMORROW;
                         break;
@@ -381,7 +381,6 @@ public class DietFragment extends Fragment {
                                 }
 
                                 if (day == today - 1) {
-                                    dish.setDay(Day.YESTERDAY);
                                     dish.setDishNumber(3);
                                     switch (i) {
                                         case 0:
@@ -399,7 +398,6 @@ public class DietFragment extends Fragment {
                                     }
 
                                 } else if (day == today) {
-                                    dish.setDay(Day.TODAY);
                                     dish.setDishNumber(i%3);
                                     switch (i / 3) {
                                         case 0:
@@ -416,7 +414,6 @@ public class DietFragment extends Fragment {
                                             break;
                                     }
                                 } else if (day == today + 1) {
-                                    dish.setDay(Day.TOMORROW);
                                     dish.setDishNumber(i%3);
                                     switch (i / 3) {
                                         case 0:
@@ -433,7 +430,6 @@ public class DietFragment extends Fragment {
                                             break;
                                     }
                                 } else if (day == today + 2) {
-                                    dish.setDay(Day.DAY_AFTER_TOMORROW);
                                     dish.setDishNumber(i%3);
                                     switch (i / 3) {
                                         case 0:
@@ -472,7 +468,6 @@ public class DietFragment extends Fragment {
     }
 
     public enum Day {
-        YESTERDAY,
         TODAY,
         TOMORROW,
         DAY_AFTER_TOMORROW

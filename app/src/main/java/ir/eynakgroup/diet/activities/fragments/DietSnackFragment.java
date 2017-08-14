@@ -20,32 +20,6 @@ import ir.eynakgroup.diet.activities.fragments.dummy.DummyFood;
 
 
 public class DietSnackFragment extends MealFragment implements View.OnClickListener {
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String MEAL_ID = "meal_id";
-
-
-    // TODO: Rename and change types of parameters
-    private int mMealId;
-//    private Map<DietFragment.Day, List<DummyDish>> dinnerDishes;
-
-
-//    private ImageView imgBackGrid;
-//    private TextView textMealTitle;
-//
-//
-//    private TextView textOptionSelect;
-//
-//    private LinearLayout layoutPack12;
-//    private LinearLayout layoutPack34;
-//    private CardView cardOpenPack;
-//    private CardView cardNonPack;
-//    private CardView yesterdayPack;
-//
-//    private TextView[] dishItem = new TextView[20];
-//    private TextView[] foodItem = new TextView[5];
-//    private TextView[] amountItem = new TextView[5];
-//    private TextView[] midItem = new TextView[5];
 
     public DietSnackFragment() {
         // Required empty public constructor
@@ -73,14 +47,6 @@ public class DietSnackFragment extends MealFragment implements View.OnClickListe
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mMealId = getArguments().getInt(MEAL_ID);
-        }
-    }
-
-    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
@@ -91,15 +57,16 @@ public class DietSnackFragment extends MealFragment implements View.OnClickListe
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         imgBackGrid.setOnClickListener(this);
-        view.findViewById(R.id.choose_option_btn_1).setOnClickListener(this);
-        view.findViewById(R.id.choose_option_btn_2).setOnClickListener(this);
-        view.findViewById(R.id.choose_option_btn_3).setOnClickListener(this);
-        view.findViewById(R.id.choose_option_btn_4).setOnClickListener(this);
-        view.findViewById(R.id.choose_option_btn_5).setOnClickListener(this);
-        view.findViewById(R.id.pack1).setOnClickListener(this);
-        view.findViewById(R.id.pack2).setOnClickListener(this);
-        view.findViewById(R.id.pack3).setOnClickListener(this);
-        view.findViewById(R.id.non_pack).setOnClickListener(this);
+        btnPack1.setOnClickListener(this);
+        btnPack2.setOnClickListener(this);
+        btnPack3.setOnClickListener(this);
+        btnPack4.setOnClickListener(this);
+        btnNoPack.setOnClickListener(this);
+
+        cardPack1.setOnClickListener(this);
+        cardPack2.setOnClickListener(this);
+        cardPack3.setOnClickListener(this);
+        cardNoPack.setOnClickListener(this);
         yesterdayPack.setOnClickListener(this);
     }
 
@@ -131,11 +98,8 @@ public class DietSnackFragment extends MealFragment implements View.OnClickListe
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.back_group:
-                cardNonPack.setVisibility(View.VISIBLE);
-                layoutPack12.setVisibility(View.VISIBLE);
-                layoutPack34.setVisibility(View.VISIBLE);
-                textOptionSelect.setVisibility(View.VISIBLE);
-                cardOpenPack.setVisibility(View.GONE);
+                updateDishes(DietFragment.currentDay, true);
+                backToOptions();
 
 
                 break;
@@ -165,7 +129,7 @@ public class DietSnackFragment extends MealFragment implements View.OnClickListe
 
                 break;
             case R.id.choose_option_btn_5:
-            case R.id.non_pack:
+            case R.id.no_pack:
 //                bindPack(4);
                 break;
 

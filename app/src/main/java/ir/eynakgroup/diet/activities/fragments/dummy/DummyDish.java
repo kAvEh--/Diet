@@ -10,7 +10,6 @@ import ir.eynakgroup.diet.activities.fragments.DietFragment;
  */
 
 public class DummyDish {
-    private DietFragment.Day day = DietFragment.Day.TODAY;
     private List<DummyFood> foods;
     private String packageId;
     private int dietDay;
@@ -27,16 +26,6 @@ public class DummyDish {
     public List<DummyFood> getDishFoods(){
         return this.foods;
     }
-
-
-    public DietFragment.Day getDay() {
-        return day;
-    }
-
-    public void setDay(DietFragment.Day day) {
-        this.day = day;
-    }
-
 
     public int getDishNumber() {
         return dishNumber;
