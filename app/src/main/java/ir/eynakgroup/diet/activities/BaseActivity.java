@@ -38,7 +38,7 @@ class BaseActivity extends AppCompatActivity {
     private String base64EncodedPublicKey = "MIHNMA0GCSqGSIb3DQEBAQUAA4G7ADCBtwKBrwC7Qyfd4F3X3XROaY6SOSyD3zG4tDN58LtLRJ0Q5oQIaKG5ll6TuJTj1XbXEPpqS8/VdfXKL1QYPR560aMvlELh84k/Cy9G5KzpW1glJiPHkgOoSBvTOsnpnrz7WkHr3vfjATjm3hKyaDDGyPFIr7wb5i89BlEtNqwa0tOaKgI0LVZ7oLGPQ7nogMfGVJLBh320AsJwzsjpRVc17kRNi6b3UmYWB9VEJNcltrEG0kkCAwEAAQ==";
 
     // The helper object
-    IabHelper mHelper;
+    protected IabHelper mHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,8 +89,10 @@ class BaseActivity extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (mHelper != null) mHelper.dispose();
-        mHelper = null;
+        if (mHelper != null){
+            mHelper.dispose();
+            mHelper = null;
+        }
         if (mDatabaseHelper != null) {
 //            OpenHelperManager.releaseHelper();
             mDatabaseHelper.close();

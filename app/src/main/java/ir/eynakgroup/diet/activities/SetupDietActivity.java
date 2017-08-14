@@ -7,7 +7,6 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Rect;
 import android.graphics.Typeface;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.content.ContextCompat;
@@ -29,14 +28,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.flexbox.FlexboxLayout;
-import com.google.gson.JsonObject;
 import com.j256.ormlite.stmt.QueryBuilder;
 import com.j256.ormlite.stmt.UpdateBuilder;
-import com.j256.ormlite.table.TableUtils;
-
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -46,24 +39,19 @@ import java.lang.ref.WeakReference;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collection;
 import java.util.Collections;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Random;
 
 import ir.eynakgroup.diet.R;
 import ir.eynakgroup.diet.database.DatabaseHelper;
 import ir.eynakgroup.diet.database.tables.Diet;
 import ir.eynakgroup.diet.database.tables.FoodPackage;
-import ir.eynakgroup.diet.database.tables.PackageFood;
 import ir.eynakgroup.diet.database.tables.UserInfo;
 import ir.eynakgroup.diet.network.RequestMethod;
 import ir.eynakgroup.diet.network.response_models.CommonResponse;
 import ir.eynakgroup.diet.network.response_models.CreateDietResponse;
-import ir.eynakgroup.diet.network.response_models.LoginResponse;
 import ir.eynakgroup.diet.network.response_models.User;
 import ir.eynakgroup.diet.util.IabHelper;
 import ir.eynakgroup.diet.util.IabResult;
@@ -96,14 +84,11 @@ public class SetupDietActivity extends BaseActivity implements View.OnClickListe
 
     private Level diffLevel = Level.NONE;
 
-    private Activity mActivity;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_setup);
 
-        mActivity = this;
         mRequestMethod = getRequestMethod();
 //        writeToFile(createDietJson(generateDiet(1750, 2.0f)), this);
         mDatabaseHelper = getDBHelper();
@@ -212,6 +197,7 @@ public class SetupDietActivity extends BaseActivity implements View.OnClickListe
     int lineNumber = 0;
 
     private Map<Level, Difficulty> difficulty;
+
     private void prepareChatData() {
         BufferedReader reader;
         try {
@@ -234,8 +220,8 @@ public class SetupDietActivity extends BaseActivity implements View.OnClickListe
                     } else if (line.contains("[ideal]") && lineNumber == 3) {
                         addListItem(splits[1].trim().replace("[ideal_weight]", round(calculateIdealWeight(user), 1) + ""), Type.APP);
                     } else if (line.contains("[weight]") && lineNumber == 4) {
-                        if((weightLoss = round(user.getWeight() - calculateIdealWeight(user), 1)) > 0.0f)
-                            addListItem(splits[1].trim().replace("[weight_loss]",  weightLoss + ""), Type.APP);
+                        if ((weightLoss = round(user.getWeight() - calculateIdealWeight(user), 1)) > 0.0f)
+                            addListItem(splits[1].trim().replace("[weight_loss]", weightLoss + ""), Type.APP);
 
                         reader.readLine();
                         lineNumber++;
@@ -427,13 +413,13 @@ public class SetupDietActivity extends BaseActivity implements View.OnClickListe
                         e.printStackTrace();
                     }
                     return;
-                }else if(text.contains("سخت"))
+                } else if (text.contains("سخت"))
                     diffLevel = Level.DIFFICULT;
 
-                else if(text.contains("متوسط"))
+                else if (text.contains("متوسط"))
                     diffLevel = Level.NORMAL;
 
-                else if(text.contains("ساده"))
+                else if (text.contains("ساده"))
                     diffLevel = Level.EASY;
 
 
@@ -472,47 +458,31 @@ public class SetupDietActivity extends BaseActivity implements View.OnClickListe
 
         @Override
         public void onClick(View v) {
-            int credit = 0;
-            mPayLoad = user.getUserId();
+            String mPayLoad = user.getUserId();
             System.out.println(user.getUserId() + "**********************");
             switch (v.getId()) {
                 case R.id.diet_card_1:
-                    mHelper.launchPurchaseFlow(this.activity, getString(R.string.sku_diet_1), RC_REQUEST, mPurchaseFinishedListener, mPayLoad);
+                    mHelper.launchPurchaseFlow(SetupDietActivity.this, getString(R.string.sku_diet_1), RC_REQUEST, mPurchaseFinishedListener, mPayLoad);
                     break;
                 case R.id.diet_card_2:
-                    mHelper.launchPurchaseFlow(this.activity, getString(R.string.sku_diet_2), RC_REQUEST, mPurchaseFinishedListener, mPayLoad);
+                    mHelper.launchPurchaseFlow(SetupDietActivity.this, getString(R.string.sku_diet_2), RC_REQUEST, mPurchaseFinishedListener, mPayLoad);
                     break;
                 case R.id.diet_card_3:
-                    mHelper.launchPurchaseFlow(this.activity, getString(R.string.sku_diet_3), RC_REQUEST, mPurchaseFinishedListener, mPayLoad);
+                    mHelper.launchPurchaseFlow(SetupDietActivity.this, getString(R.string.sku_diet_3), RC_REQUEST, mPurchaseFinishedListener, mPayLoad);
                     break;
                 case R.id.diet_card_4:
-                    mHelper.launchPurchaseFlow(this.activity, getString(R.string.sku_diet_4), RC_REQUEST, mPurchaseFinishedListener, mPayLoad);
+                    mHelper.launchPurchaseFlow(SetupDietActivity.this, getString(R.string.sku_diet_4), RC_REQUEST, mPurchaseFinishedListener, mPayLoad);
                     break;
                 case R.id.diet_card_5:
-                    mHelper.launchPurchaseFlow(this.activity, getString(R.string.sku_diet_5), RC_REQUEST, mPurchaseFinishedListener, mPayLoad);
+                    mHelper.launchPurchaseFlow(SetupDietActivity.this, getString(R.string.sku_diet_5), RC_REQUEST, mPurchaseFinishedListener, mPayLoad);
                     break;
                 case R.id.diet_card_6:
-                    mHelper.launchPurchaseFlow(this.activity, getString(R.string.sku_diet_6), RC_REQUEST, mPurchaseFinishedListener, mPayLoad);
+                    mHelper.launchPurchaseFlow(SetupDietActivity.this, getString(R.string.sku_diet_6), RC_REQUEST, mPurchaseFinishedListener, mPayLoad);
                     break;
                 default:
                     break;
             }
             dismiss();
-//            try {
-//                UserInfo user = getDBHelper().getUserDao().queryForAll().get(0);
-//                UpdateBuilder<UserInfo, Integer> updateBuilder = getDBHelper().getUserDao().updateBuilder();
-            // set the criteria like you would a QueryBuilder
-//                updateBuilder.where().eq("User_ID", user.getUserId());
-            // update the value of your field(s)
-//                updateBuilder.updateColumnValue("Credit" /* column */, credit /* value */);
-//                updateBuilder.update();
-//                System.out.println("------------ user credit updated");
-
-//                showPurchaseDialog();
-//            } catch (SQLException e) {
-//                e.printStackTrace();
-//                dismiss();
-//            }
         }
     }
 
@@ -536,37 +506,37 @@ public class SetupDietActivity extends BaseActivity implements View.OnClickListe
                     if (result.isSuccess()) {
                         if (purchase.getSku().equals(getString(R.string.sku_diet_1))) {
                             try {
-                                sendPurchasetoServer(purchase);
+                                sendPurchaseToServer(purchase);
                             } catch (SQLException e) {
                                 e.printStackTrace();
                             }
                         } else if (purchase.getSku().equals(getString(R.string.sku_diet_2))) {
                             try {
-                                sendPurchasetoServer(purchase);
+                                sendPurchaseToServer(purchase);
                             } catch (SQLException e) {
                                 e.printStackTrace();
                             }
                         } else if (purchase.getSku().equals(getString(R.string.sku_diet_3))) {
                             try {
-                                sendPurchasetoServer(purchase);
+                                sendPurchaseToServer(purchase);
                             } catch (SQLException e) {
                                 e.printStackTrace();
                             }
                         } else if (purchase.getSku().equals(getString(R.string.sku_diet_4))) {
                             try {
-                                sendPurchasetoServer(purchase);
+                                sendPurchaseToServer(purchase);
                             } catch (SQLException e) {
                                 e.printStackTrace();
                             }
                         } else if (purchase.getSku().equals(getString(R.string.sku_diet_5))) {
                             try {
-                                sendPurchasetoServer(purchase);
+                                sendPurchaseToServer(purchase);
                             } catch (SQLException e) {
                                 e.printStackTrace();
                             }
                         } else if (purchase.getSku().equals(getString(R.string.sku_diet_6))) {
                             try {
-                                sendPurchasetoServer(purchase);
+                                sendPurchaseToServer(purchase);
                             } catch (SQLException e) {
                                 e.printStackTrace();
                             }
@@ -577,7 +547,7 @@ public class SetupDietActivity extends BaseActivity implements View.OnClickListe
                 }
             };
 
-    private void sendPurchasetoServer(final Purchase purchase) throws SQLException {
+    private void sendPurchaseToServer(final Purchase purchase) throws SQLException {
         final UserInfo user = getDBHelper().getUserDao().queryForAll().get(0);
         Call<CommonResponse> call = mRequestMethod.purchaseSend(user.getSessionId(), user.getApiKey(), user.getUserId(),
                 purchase.getPackageName(), purchase.getSku(), purchase.getToken());
@@ -1166,7 +1136,7 @@ public class SetupDietActivity extends BaseActivity implements View.OnClickListe
         DietProperty property = new DietProperty();
         try {
             QueryBuilder<FoodPackage, Integer> foodPackageQueryBuilder = getDBHelper().getFoodPackageDao().queryBuilder();
-
+            //hated foods must be added here
             foodPackageQueryBuilder.where().eq("mealId", BREAKFAST_ID);
             List<FoodPackage> breakfastPackageList = foodPackageQueryBuilder.query();
             ArrayList<String> tempBreakfast = new ArrayList<>();
@@ -1203,7 +1173,7 @@ public class SetupDietActivity extends BaseActivity implements View.OnClickListe
             int hour = Calendar.getInstance().get(Calendar.HOUR_OF_DAY);
             int minute = Calendar.getInstance().get(Calendar.MINUTE);
             int second = Calendar.getInstance().get(Calendar.SECOND);
-            long startDate = Calendar.getInstance().getTimeInMillis() - ((hour*60*60)+(minute*60)+second)*1000;
+            long startDate = Calendar.getInstance().getTimeInMillis() - ((hour * 60 * 60) + (minute * 60) + second) * 1000;
             int day = 1;
             int lastDietNumber = getAppPreferences().getDietNumber();
             while (day <= 31) {
@@ -1344,7 +1314,7 @@ public class SetupDietActivity extends BaseActivity implements View.OnClickListe
         }
     }
 
-//    var dietHistory = function(userId, startDate, diet, type){
+    //    var dietHistory = function(userId, startDate, diet, type){
 //        this.userId = userId;
 //        this.startDate = startDate;
 //        this.diet = diet;
@@ -1362,7 +1332,7 @@ public class SetupDietActivity extends BaseActivity implements View.OnClickListe
 //  */
 //        this.createdAt = new Date();
 //    }
-    private enum Level{
+    private enum Level {
         NONE,
         EASY,
         NORMAL,
