@@ -3,6 +3,7 @@ package ir.eynakgroup.diet.database;
 import android.content.Context;
 import android.content.res.AssetManager;
 import android.database.sqlite.SQLiteDatabase;
+import android.os.AsyncTask;
 import android.util.Log;
 
 import com.j256.ormlite.android.apptools.OrmLiteSqliteOpenHelper;
@@ -61,8 +62,15 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
             mAppPreferences = new AppPreferences(context);
 
         if (mAppPreferences.getFirstTime() || !existDB()) {
-            copyDB();
-            insertPackages();
+            new AsyncTask<Void, Void, Void>(){
+
+                @Override
+                protected Void doInBackground(Void... params) {
+                    copyDB();
+                    insertPackages();
+                    return null;
+                }
+            }.execute();
         }
     }
 
