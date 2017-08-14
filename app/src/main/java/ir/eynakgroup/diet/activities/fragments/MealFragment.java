@@ -1,10 +1,13 @@
 package ir.eynakgroup.diet.activities.fragments;
 
 import android.os.Bundle;
+import android.support.annotation.LayoutRes;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.CardView;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -26,12 +29,15 @@ import ir.eynakgroup.diet.database.tables.UserInfo;
 import ir.eynakgroup.diet.utils.AppPreferences;
 
 
-public class MealFragment extends Fragment {
+public class MealFragment extends Fragment implements View.OnClickListener {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     protected static final String MEAL_ID = "meal_id";
+    protected static final String LAYOUT_RES = "layout_resource";
+
 
     private int mealId;
+    private int layoutRes;
     // TODO: Rename and change types of parameters
     protected Map<DietFragment.Day, List<DummyDish>> dishes;
 
@@ -70,8 +76,23 @@ public class MealFragment extends Fragment {
     }
 
 
-    public MealFragment(Map<DietFragment.Day, List<DummyDish>> dishes) {
+    private MealFragment(Map<DietFragment.Day, List<DummyDish>> dishes) {
         this.dishes = dishes;
+    }
+
+    public static MealFragment newInstance(int mealId, @LayoutRes int layoutRes, Map<DietFragment.Day, List<DummyDish>> dishes) {
+        MealFragment fragment = new MealFragment(dishes);
+        Bundle args = new Bundle();
+        args.putInt(MEAL_ID, mealId);
+        args.putInt(LAYOUT_RES, layoutRes);
+        fragment.setArguments(args);
+        return fragment;
+    }
+
+    @Nullable
+    @Override
+    public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        return inflater.inflate(layoutRes, container, false);
     }
 
     @Override
@@ -79,6 +100,7 @@ public class MealFragment extends Fragment {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
             mealId = getArguments().getInt(MEAL_ID);
+            layoutRes = getArguments().getInt(LAYOUT_RES);
         }
     }
 
@@ -133,6 +155,19 @@ public class MealFragment extends Fragment {
         cardPack3 = (CardView) view.findViewById(R.id.pack3);
         yesterdayPack = (CardView) view.findViewById(R.id.yesterday_pack);
 
+        imgBackGrid.setOnClickListener(this);
+        btnPack1.setOnClickListener(this);
+        btnPack2.setOnClickListener(this);
+        btnPack3.setOnClickListener(this);
+        btnPack4.setOnClickListener(this);
+        btnNoPack.setOnClickListener(this);
+
+        cardPack1.setOnClickListener(this);
+        cardPack2.setOnClickListener(this);
+        cardPack3.setOnClickListener(this);
+        cardNoPack.setOnClickListener(this);
+        yesterdayPack.setOnClickListener(this);
+
         appPreferences = new AppPreferences(getContext());
         databaseHelper = new DatabaseHelper(getContext());
         try {
@@ -146,15 +181,16 @@ public class MealFragment extends Fragment {
     }
 
     private List<DummyDish> dishList;
+
     public void updateDishes(DietFragment.Day day, boolean backToOption) {
-        if(getView()==null)
+        if (getView() == null)
             return;
 //        backToOptions();
         dishList = dishes.get(day);
-        if(!backToOption){
-            for (DummyDish dish: dishList){
+        if (!backToOption) {
+            for (DummyDish dish : dishList) {
                 try {
-                    switch (mealId){
+                    switch (mealId) {
                         case 0:
                             dietQueryBuilder.where().eq("_id", appPreferences.getDietNumber()).and().eq("day", dish.getDietDay()).and().eq("selectedBreakfast", dish.getPackageId());
                             break;
@@ -168,7 +204,7 @@ public class MealFragment extends Fragment {
                             dietQueryBuilder.where().eq("_id", appPreferences.getDietNumber()).and().eq("day", dish.getDietDay()).and().eq("selectedDinner", dish.getPackageId());
                             break;
                     }
-                    if(dietQueryBuilder.query().size() > 0){
+                    if (dietQueryBuilder.query().size() > 0) {
                         bindPack(dish.getDishNumber());
                         return;
 
@@ -205,7 +241,7 @@ public class MealFragment extends Fragment {
             dishItem[i].setText("");
 
 
-        for (DummyDish dish: dishList) {
+        for (DummyDish dish : dishList) {
             List<DummyFood> foodList = dish.getDishFoods();
             int position = 0;
             for (DummyFood food : foodList) {
@@ -216,7 +252,6 @@ public class MealFragment extends Fragment {
 
     }
 
-    private List<Diet> dietList;
     protected void bindPack(int packNum) {
         if (DietFragment.currentDay.equals(DietFragment.Day.TODAY)) {
             for (int i = 0; i < foodItem.length; i++) {
@@ -224,11 +259,10 @@ public class MealFragment extends Fragment {
                 amountItem[i].setText("");
                 midItem[i].setText("");
             }
-
-            for (DummyDish dish : dishList) {
+            for (DummyDish dish: dishList) {
                 if (dish.getDishNumber() == packNum) {
-                     try {
-                        switch (mealId){
+                    try {
+                        switch (mealId) {
                             case 0:
                                 dietQueryBuilder.where().eq("_id", appPreferences.getDietNumber()).and().eq("day", dish.getDietDay()).and().eq("selectedBreakfast", dish.getPackageId());
                                 break;
@@ -242,10 +276,9 @@ public class MealFragment extends Fragment {
                                 dietQueryBuilder.where().eq("_id", appPreferences.getDietNumber()).and().eq("day", dish.getDietDay()).and().eq("selectedDinner", dish.getPackageId());
                                 break;
                         }
-                        dietList = dietQueryBuilder.query();
-                        if(dietList.size() == 0){
+                        if(dietQueryBuilder.query().size() == 0){
                             dietUpdateBuilder.where().eq("_id", appPreferences.getDietNumber()).and().eq("day", dish.getDietDay());
-                            switch (mealId){
+                            switch (mealId) {
                                 case 0:
                                     dietUpdateBuilder.updateColumnValue("selectedBreakfast", dish.getPackageId());
                                     break;
@@ -260,6 +293,7 @@ public class MealFragment extends Fragment {
                                     break;
                             }
                             dietUpdateBuilder.update();
+                            dietUpdateBuilder.reset();
                         }
                         dietQueryBuilder.reset();
 
@@ -267,9 +301,11 @@ public class MealFragment extends Fragment {
                         e.printStackTrace();
                     }
 
+
+                    setMealTitles(packNum);
                     List<DummyFood> foodList = dish.getDishFoods();
                     int position = 0;
-                    for (DummyFood food : foodList) {
+                    for (DummyFood food: foodList) {
                         foodItem[position].setText(food.getFoodName());
                         amountItem[position].setText(food.getAmount() + " " + food.getUnit());
                         midItem[position].setText("--------------------------------------------------------");
@@ -287,6 +323,39 @@ public class MealFragment extends Fragment {
 
     }
 
+    private void setMealTitles(int packNum) {
+        String mealType = "";
+        switch (packNum){
+            case 0:
+                mealType = "یک";
+                break;
+            case 1:
+                mealType = "دو";
+                break;
+            case 2:
+                mealType = "سه";
+                break;
+            case 3:
+                mealType = "دیروز";
+                break;
+        }
+        switch (mealId){
+            case 0:
+                textMealTitle.setText("صبحانه " + mealType);
+                break;
+            case 1:
+                textMealTitle.setText("ناهار " + mealType);
+                break;
+            case 2:
+                textMealTitle.setText("میان‌وعده " + mealType);
+                break;
+            case 3:
+                textMealTitle.setText("شام " + mealType);
+                break;
+        }
+
+    }
+
     protected void backToOptions() {
         cardNoPack.setVisibility(View.VISIBLE);
         layoutPack12.setVisibility(View.VISIBLE);
@@ -296,5 +365,42 @@ public class MealFragment extends Fragment {
     }
 
 
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.back_group:
+                updateDishes(DietFragment.currentDay, true);
+                backToOptions();
+
+                break;
+            case R.id.choose_option_btn_1:
+            case R.id.pack1:
+                bindPack(0);
+
+                break;
+            case R.id.choose_option_btn_2:
+            case R.id.pack2:
+                bindPack(1);
+
+                break;
+            case R.id.choose_option_btn_3:
+            case R.id.pack3:
+                bindPack(2);
+
+                break;
+            case R.id.choose_option_btn_4:
+            case R.id.yesterday_pack:
+                bindPack(3);
+
+
+                break;
+            case R.id.choose_option_btn_5:
+            case R.id.no_pack:
+//                bindPack(4);
+                break;
+
+
+        }
+    }
 }
 
