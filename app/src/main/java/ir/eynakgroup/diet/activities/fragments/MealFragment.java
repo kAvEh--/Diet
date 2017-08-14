@@ -147,6 +147,8 @@ public class MealFragment extends Fragment {
 
     private List<DummyDish> dishList;
     public void updateDishes(DietFragment.Day day, boolean backToOption) {
+        if(getView()==null)
+            return;
 //        backToOptions();
         dishList = dishes.get(day);
         if(!backToOption){
@@ -168,7 +170,6 @@ public class MealFragment extends Fragment {
                     }
                     if(dietQueryBuilder.query().size() > 0){
                         bindPack(dish.getDishNumber());
-                        textOptionSelect.setVisibility(View.INVISIBLE);
                         return;
 
                     }

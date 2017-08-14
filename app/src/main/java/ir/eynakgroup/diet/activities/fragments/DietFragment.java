@@ -7,6 +7,7 @@ import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
+import android.support.v4.app.FragmentStatePagerAdapter;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
@@ -120,29 +121,29 @@ public class DietFragment extends Fragment {
                 switch (position) {
                     case TODAY:
                         if (notToday) {
+                            notToday = false;
+                            currentDay = Day.TODAY;
                             ((DietDinnerFragment) fragmentList.get(0)).updateDishes(Day.TODAY, false);
                             ((DietSnackFragment) fragmentList.get(1)).updateDishes(Day.TODAY, false);
                             ((DietLunchFragment) fragmentList.get(2)).updateDishes(Day.TODAY, false);
                             ((DietBreakfastFragment) fragmentList.get(3)).updateDishes(Day.TODAY, false);
-                            notToday = false;
-                            currentDay = Day.TODAY;
                         }
                         break;
                     case TOMORROW:
+                        notToday = true;
+                        currentDay = Day.TOMORROW;
                         ((DietDinnerFragment) fragmentList.get(0)).updateDishes(Day.TOMORROW,false);
                         ((DietSnackFragment) fragmentList.get(1)).updateDishes(Day.TOMORROW, false);
                         ((DietLunchFragment) fragmentList.get(2)).updateDishes(Day.TOMORROW, false);
                         ((DietBreakfastFragment) fragmentList.get(3)).updateDishes(Day.TOMORROW, false);
-                        notToday = true;
-                        currentDay = Day.TOMORROW;
                         break;
                     case DAY_AFTER_TOMORROW:
+                        notToday = true;
+                        currentDay = Day.DAY_AFTER_TOMORROW;
                         ((DietDinnerFragment) fragmentList.get(0)).updateDishes(Day.DAY_AFTER_TOMORROW, false);
                         ((DietSnackFragment) fragmentList.get(1)).updateDishes(Day.DAY_AFTER_TOMORROW, false);
                         ((DietLunchFragment) fragmentList.get(2)).updateDishes(Day.DAY_AFTER_TOMORROW, false);
                         ((DietBreakfastFragment) fragmentList.get(3)).updateDishes(Day.DAY_AFTER_TOMORROW, false);
-                        notToday = true;
-                        currentDay = Day.DAY_AFTER_TOMORROW;
                         break;
                 }
                 //TODO do somt hing, date is changed.
@@ -190,6 +191,7 @@ public class DietFragment extends Fragment {
         adapter.addFragment(DietLunchFragment.newInstance(LUNCH, lunchDishes), getString(R.string.lunch));
         adapter.addFragment(DietBreakfastFragment.newInstance(BREAKFAST, breakfastDishes), getString(R.string.breakfast));
         viewPager.setAdapter(adapter);
+        viewPager.setOffscreenPageLimit(0);
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
