@@ -1,0 +1,55 @@
+{
+  "project_info": {
+    "project_number": "216970044657",
+    "firebase_url": "https://diet-a564a.firebaseio.com",
+    "project_id": "diet-a564a",
+    "storage_bucket": "diet-a564a.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:216970044657:android:e95f0c013456d14a",
+        "android_client_info": {
+          "package_name": "ir.eynakgroup.diet"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "216970044657-n4605r7decq869poo9a3ksp0b06upgeh.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "ir.eynakgroup.diet",
+            "certificate_hash": "76d7364d160f3c2a770a1d271a10da4741049c03"
+          }
+        },
+        {
+          "client_id": "216970044657-lalhsd0msspb4kabr7fa3cj4308udh3p.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyD4aNikvB1yIHn6crKhJSq3UEKvktjPQK8"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "216970044657-lalhsd0msspb4kabr7fa3cj4308udh3p.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
