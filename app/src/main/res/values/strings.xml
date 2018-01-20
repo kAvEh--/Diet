@@ -1,4 +1,6 @@
 <resources>
+    <string name="app_version">1.0</string>
+    <string name="app_market">1</string>
     <string name="app_name">رژیم کرفس</string>
     <string name="title_activity_intro">IntroActivity</string>
     <string name="action_settings">Settings</string>
@@ -87,6 +89,12 @@
     <string name="recovery_submit">ثبت</string>
     <string name="title_activity_profile">ProfileActivity</string>
 
+    //Setting Page
+    <string name="title_weight">وزن خود را وارد کنید</string>
+    <string name="title_height">قد خود را وارد کنید</string>
+    <string name="title_activity">سطح فعالیت خود را وارد کنید</string>
+    <string name="title_sex">جنسیت خود را وارد کنید</string>
+
     <string-array name="months">
         <item>فروردین</item>
         <item>اردیبهشت</item>
@@ -123,12 +131,84 @@
     <string name="diet">رژیم</string>
     <string name="dialog_purchase_message">برای شروع رژیم، ابتدا باید حساب کاربری خود را شارژ کنید.</string>
     <string name="dialog_diet_message">برای دریافت رژیم غذایی ۱ رژیم از حساب کاربری شما کم خواهد شد.</string>
+    <string name="logout_message">آیا می‌خواهید از حساب کاربری خارج شوید؟</string>
+
+    //Errors
+    <string name="err_date_change">تاریخ دستگاه شما تغییر کرده است. لطفا تاریخ را اصلاح کنید.</string>
 
     <!-- date spinner resources-->
     <string-array name="date_spinner_array">
         <item>امروز</item>
         <item>فردا</item>
         <item>پس‌فردا</item>
+    </string-array>
+
+    <string-array name="days">
+        <item>روز اول</item>
+        <item>روز دوم</item>
+        <item>روز سوم</item>
+        <item>روز چهارم</item>
+        <item>روز پنجم</item>
+        <item>روز ششم</item>
+        <item>روز هفتم</item>
+        <item>روز هشتم</item>
+        <item>روز نهم</item>
+        <item>روز دهم</item>
+        <item>روز یازدهم</item>
+        <item>روز دوازدهم</item>
+        <item>روز سیزدهم</item>
+        <item>روز چهاردهم</item>
+        <item>روز پانزدهم</item>
+        <item>روز شانزدهم</item>
+        <item>روز هفدهم</item>
+        <item>روز هجدهم</item>
+        <item>روز نوزدهم</item>
+        <item>روز بیستم</item>
+        <item>روز بیست و یکم</item>
+        <item>روز بیست و دوم</item>
+        <item>روز بیست و سوم</item>
+        <item>روز بیست و چهارم</item>
+        <item>روز بیست و پنجم</item>
+        <item>روز بیست و ششم</item>
+        <item>روز بیست و هفتم</item>
+        <item>روز بیست و هشتم</item>
+        <item>روز بیست و نهم</item>
+        <item>روز سی‌ام</item>
+        <item>رژیم تمام شده</item>
+        <item>رژیم تمام شده</item>
+    </string-array>
+
+    <string-array name="diet_list">
+        <item>رژیم اول</item>
+        <item>رژیم دوم</item>
+        <item>رژیم سوم</item>
+        <item>رژیم چهارم</item>
+        <item>رژیم پنجم</item>
+        <item>رژیم ششم</item>
+        <item>رژیم هفتم</item>
+        <item>رژیم هشتم</item>
+        <item>رژیم نهم</item>
+        <item>رژیم دهم</item>
+        <item>رژیم یازدهم</item>
+        <item>رژیم دوازدهم</item>
+        <item>رژیم سیزدهم</item>
+        <item>رژیم چهاردهم</item>
+        <item>رژیم پانزدهم</item>
+        <item>رژیم شانزدهم</item>
+        <item>رژیم هفدهم</item>
+        <item>رژیم هجدهم</item>
+        <item>رژیم نوزدهم</item>
+        <item>رژیم بیستم</item>
+        <item>رژیم بیست و یکم</item>
+        <item>رژیم بیست و دوم</item>
+        <item>رژیم بیست و سوم</item>
+        <item>رژیم بیست و چهارم</item>
+        <item>رژیم بیست و پنجم</item>
+        <item>رژیم بیست و ششم</item>
+        <item>رژیم بیست و هفتم</item>
+        <item>رژیم بیست و هشتم</item>
+        <item>رژیم بیست و نهم</item>
+        <item>رژیم سی‌ام</item>
     </string-array>
 
     <string name="breakfast">صبحانه</string>

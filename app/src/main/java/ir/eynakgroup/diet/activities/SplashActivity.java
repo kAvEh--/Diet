@@ -13,6 +13,7 @@ import android.os.RemoteException;
 import android.util.Log;
 
 
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Map;
 
@@ -36,18 +37,17 @@ public class SplashActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_splash);
 
-        GifImageView gifSplash = (GifImageView)findViewById(R.id.gif_splash);
-        gifSplash.getLayoutParams().width = (int)(getDisplayMetrics().widthPixels / 1.9);
-        gifSplash.getLayoutParams().height = (int)(getDisplayMetrics().widthPixels / 1.9);
+        GifImageView gifSplash = (GifImageView) findViewById(R.id.gif_splash);
+        gifSplash.getLayoutParams().width = (int) (getDisplayMetrics().widthPixels / 1.9);
+        gifSplash.getLayoutParams().height = (int) (getDisplayMetrics().widthPixels / 1.9);
         gifSplash.requestLayout();
-
     }
 
-    private class BindServiceTask extends AsyncTask<Void, Void, Boolean>{
+    private class BindServiceTask extends AsyncTask<Void, Void, Boolean> {
         protected void onPreExecute() {
             super.onPreExecute();
 
-            if(mConnection == null){
+            if (mConnection == null) {
                 mConnection = new ServiceConnection() {
                     @Override
                     public void onServiceConnected(ComponentName name, IBinder service) {
@@ -64,10 +64,11 @@ public class SplashActivity extends BaseActivity {
                             System.out.println(accountProperty.get(KarafsAccountConfig.ACCOUNT_NAME));
 
                         } else {
-                            if(getAppPreferences().getFirstTime())
+                            if (getAppPreferences().getFirstTime()) {
                                 startActivity(new Intent(SplashActivity.this, IntroActivity.class));
-                            else
+                            } else {
                                 startActivity(new Intent(SplashActivity.this, RegisterActivity.class));
+                            }
 
                             finish();
                         }
@@ -95,14 +96,13 @@ public class SplashActivity extends BaseActivity {
     }
 
 
-
     @Override
     protected void onStart() {
         super.onStart();
-        new CountDownTimer(3000, 3000){
+        new CountDownTimer(3000, 3000) {
             @Override
             public void onTick(long millisUntilFinished) {
-
+                System.out.println("---;:::::::::::");
             }
 
             @Override
@@ -112,18 +112,22 @@ public class SplashActivity extends BaseActivity {
             }
         }.start();
 
+        try {
+            updateData();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
     }
 
     private boolean authenticate() {
         Intent serviceIntent = new Intent(getString(R.string.action_authentication));
         serviceIntent.setClass(this, AuthenticationService.class);
         List<ResolveInfo> intentServices = getPackageManager().queryIntentServices(serviceIntent, 0);
-        if(intentServices != null && !intentServices.isEmpty())
+        if (intentServices != null && !intentServices.isEmpty())
             return boundService = bindService(serviceIntent, mConnection, Context.BIND_AUTO_CREATE);
 
         return false;
     }
-
 
 
     @Override
@@ -137,7 +141,7 @@ public class SplashActivity extends BaseActivity {
      * Unbinds this activity from the service.
      */
     private void releaseService() {
-        if(mConnection != null && boundService){
+        if (mConnection != null && boundService) {
             unbindService(mConnection);
             mConnection = null;
             mService = null;

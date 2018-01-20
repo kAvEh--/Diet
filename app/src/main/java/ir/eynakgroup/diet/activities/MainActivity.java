@@ -56,32 +56,32 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         barDiet = findViewById(R.id.bar_tab_diet);
         viewPager = (CustomViewPager) findViewById(R.id.container_fragment);
 
-        if(getAppPreferences().hasDiet()){
+        System.out.println(getAppPreferences().hasDiet() + ">>>>>>>>>>>>>>>>>,,,,,,");
+        if (getAppPreferences().hasDiet()) {
             try {
                 QueryBuilder<Diet, Integer> dietQueryBuilder = getDBHelper().getDietDao().queryBuilder();
                 dietQueryBuilder.where().eq("_id", getAppPreferences().getDietNumber());
                 List<Diet> dietList = dietQueryBuilder.query();
-                if(dietList.size() > 0){
+                if (dietList.size() > 0) {
                     long diff = Calendar.getInstance().getTimeInMillis() - Long.parseLong(dietList.get(0).getStartDate());
-                    int day = (int) (diff/TimeUnit.DAYS.toMillis(1));
-                    if(day > 30)
+                    int day = (int) (diff / TimeUnit.DAYS.toMillis(1));
+                    System.out.println(day + "======================");
+                    if (day > 30)
                         getAppPreferences().setAlreadyDiet(false);
-
                 }
             } catch (SQLException e) {
                 e.printStackTrace();
             }
-        }else{
+        } else {
             try {
                 QueryBuilder<Diet, Integer> dietQueryBuilder = getDBHelper().getDietDao().queryBuilder();
                 dietQueryBuilder.where().eq("_id", getAppPreferences().getDietNumber());
                 List<Diet> dietList = dietQueryBuilder.query();
-                if(dietList.size() > 0){
+                if (dietList.size() > 0) {
                     long diff = Calendar.getInstance().getTimeInMillis() - Long.parseLong(dietList.get(0).getStartDate());
-                    int day = (int) (diff/TimeUnit.DAYS.toMillis(1));
-                    if(day > 0 && day <= 30)
+                    int day = (int) (diff / TimeUnit.DAYS.toMillis(1));
+                    if (day > 0 && day <= 30)
                         getAppPreferences().setAlreadyDiet(true);
-
                 }
             } catch (SQLException e) {
                 e.printStackTrace();
@@ -122,7 +122,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 //                        float goalWeight = 0.0f;
 //                        if(goalWeight != getAppPreferences().getGoalWeight())
 //                            ((CustomTextView)profile.getView().findViewById(R.id.txt_goal_weight)).setText(round(goalWeight, 1)+"");
-
                         try {
                             UserInfo user = getDBHelper().getUserDao().queryForAll().get(0);
                             ((CustomTextView) profile.getView().findViewById(R.id.txt_credit)).setText(user.getCredit() + "");
@@ -276,24 +275,21 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         }
     }
 
+    public void sendToast(String mssg) {
+        getToast(mssg).show();
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == SETUP_REQUEST_CODE) {
             if (resultCode == RESULT_OK) {
-                if (requestCode == SETUP_REQUEST_CODE) {
-                    System.out.println("------------------- result");
-                    getAppPreferences().setAlreadyDiet(true);
-                    decorateStatusBar();
-                    viewPager.setAdapter(new PagerAdapter(getSupportFragmentManager(), this));
-
-                }
+                System.out.println("------------------- result");
+                getAppPreferences().setAlreadyDiet(true);
+                decorateStatusBar();
+                viewPager.setAdapter(new PagerAdapter(getSupportFragmentManager(), this));
             } else if (resultCode == RESULT_CANCELED) {
-                if (requestCode == SETUP_REQUEST_CODE) {
-
-                }
             }
         }
     }
-
 }

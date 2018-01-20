@@ -1,6 +1,9 @@
 package ir.eynakgroup.diet.activities.fragments;
 
+import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.annotation.LayoutRes;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -12,6 +15,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.j256.ormlite.stmt.QueryBuilder;
 import com.j256.ormlite.stmt.UpdateBuilder;
@@ -26,7 +30,12 @@ import ir.eynakgroup.diet.activities.fragments.dummy.DummyFood;
 import ir.eynakgroup.diet.database.DatabaseHelper;
 import ir.eynakgroup.diet.database.tables.Diet;
 import ir.eynakgroup.diet.database.tables.UserInfo;
+import ir.eynakgroup.diet.network.ClientFactory;
+import ir.eynakgroup.diet.network.RequestMethod;
+import ir.eynakgroup.diet.network.response_models.CommonResponse;
 import ir.eynakgroup.diet.utils.AppPreferences;
+import retrofit2.Call;
+import retrofit2.Callback;
 
 
 public class MealFragment extends Fragment implements View.OnClickListener {
@@ -35,6 +44,7 @@ public class MealFragment extends Fragment implements View.OnClickListener {
     protected static final String MEAL_ID = "meal_id";
     protected static final String LAYOUT_RES = "layout_resource";
 
+    private int current_day;
 
     private int mealId;
     private int layoutRes;
@@ -59,6 +69,7 @@ public class MealFragment extends Fragment implements View.OnClickListener {
     protected Button btnPack3;
     protected Button btnPack4;
 
+    private RequestMethod mRequestMethod;
 
     protected TextView textOptionSelect;
     protected TextView[] dishItem = new TextView[16];
@@ -76,12 +87,13 @@ public class MealFragment extends Fragment implements View.OnClickListener {
     }
 
 
-    private MealFragment(Map<DietFragment.Day, List<DummyDish>> dishes) {
+    private MealFragment(Map<DietFragment.Day, List<DummyDish>> dishes, int cday) {
         this.dishes = dishes;
+        this.current_day = cday;
     }
 
-    public static MealFragment newInstance(int mealId, @LayoutRes int layoutRes, Map<DietFragment.Day, List<DummyDish>> dishes) {
-        MealFragment fragment = new MealFragment(dishes);
+    public static MealFragment newInstance(int cday, int mealId, @LayoutRes int layoutRes, Map<DietFragment.Day, List<DummyDish>> dishes) {
+        MealFragment fragment = new MealFragment(dishes, cday);
         Bundle args = new Bundle();
         args.putInt(MEAL_ID, mealId);
         args.putInt(LAYOUT_RES, layoutRes);
@@ -185,34 +197,35 @@ public class MealFragment extends Fragment implements View.OnClickListener {
     public void updateDishes(DietFragment.Day day, boolean backToOption) {
         if (getView() == null)
             return;
-//        backToOptions();
         dishList = dishes.get(day);
         if (!backToOption) {
             for (DummyDish dish : dishList) {
-                try {
-                    switch (mealId) {
-                        case 0:
-                            dietQueryBuilder.where().eq("_id", appPreferences.getDietNumber()).and().eq("day", dish.getDietDay()).and().eq("selectedBreakfast", dish.getPackageId());
-                            break;
-                        case 1:
-                            dietQueryBuilder.where().eq("_id", appPreferences.getDietNumber()).and().eq("day", dish.getDietDay()).and().eq("selectedLunch", dish.getPackageId());
-                            break;
-                        case 2:
-                            dietQueryBuilder.where().eq("_id", appPreferences.getDietNumber()).and().eq("day", dish.getDietDay()).and().eq("selectedSnack", dish.getPackageId());
-                            break;
-                        case 3:
-                            dietQueryBuilder.where().eq("_id", appPreferences.getDietNumber()).and().eq("day", dish.getDietDay()).and().eq("selectedDinner", dish.getPackageId());
-                            break;
-                    }
-                    if (dietQueryBuilder.query().size() > 0) {
-                        bindPack(dish.getDishNumber());
-                        return;
+                if (current_day == dish.getDietDay()) {
+                    try {
+                        switch (mealId) {
+                            case 0:
+                                dietQueryBuilder.where().eq("_id", appPreferences.getDietNumber()).and().eq("day", dish.getDietDay()).and().eq("selectedBreakfast", dish.getPackageId());
+                                break;
+                            case 1:
+                                dietQueryBuilder.where().eq("_id", appPreferences.getDietNumber()).and().eq("day", dish.getDietDay()).and().eq("selectedLunch", dish.getPackageId());
+                                break;
+                            case 2:
+                                dietQueryBuilder.where().eq("_id", appPreferences.getDietNumber()).and().eq("day", dish.getDietDay()).and().eq("selectedSnack", dish.getPackageId());
+                                break;
+                            case 3:
+                                dietQueryBuilder.where().eq("_id", appPreferences.getDietNumber()).and().eq("day", dish.getDietDay()).and().eq("selectedDinner", dish.getPackageId());
+                                break;
+                        }
+                        if (dietQueryBuilder.query().size() > 0) {
+                            bindPack(dish.getDishNumber());
+                            return;
 
-                    }
-                    dietQueryBuilder.reset();
+                        }
+                        dietQueryBuilder.reset();
 
-                } catch (SQLException e) {
-                    e.printStackTrace();
+                    } catch (SQLException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         }
@@ -242,7 +255,7 @@ public class MealFragment extends Fragment implements View.OnClickListener {
 
 
         for (DummyDish dish : dishList) {
-            if(!dish.getPackageId().equals("0")){
+            if (!dish.getPackageId().equals("0")) {
                 List<DummyFood> foodList = dish.getDishFoods();
                 int position = 0;
                 for (DummyFood food : foodList) {
@@ -251,7 +264,6 @@ public class MealFragment extends Fragment implements View.OnClickListener {
                 }
             }
         }
-
     }
 
     protected void bindPack(int packNum) {
@@ -261,7 +273,7 @@ public class MealFragment extends Fragment implements View.OnClickListener {
                 amountItem[i].setText("");
                 midItem[i].setText("");
             }
-            for (DummyDish dish: dishList) {
+            for (DummyDish dish : dishList) {
                 if (dish.getDishNumber() == packNum) {
                     try {
                         switch (mealId) {
@@ -278,24 +290,67 @@ public class MealFragment extends Fragment implements View.OnClickListener {
                                 dietQueryBuilder.where().eq("_id", appPreferences.getDietNumber()).and().eq("day", dish.getDietDay()).and().eq("selectedDinner", dish.getPackageId());
                                 break;
                         }
-                        if(dietQueryBuilder.query().size() == 0){
+                        if (dietQueryBuilder.query().size() == 0) {
                             dietUpdateBuilder.where().eq("_id", appPreferences.getDietNumber()).and().eq("day", dish.getDietDay());
+                            System.out.println("~~~~~~>> select dishes " + dish.getDietDay() + ":" + dish.getPackageId());
+                            boolean flag = false;
                             switch (mealId) {
                                 case 0:
                                     dietUpdateBuilder.updateColumnValue("selectedBreakfast", dish.getPackageId());
+                                    flag = true;
                                     break;
                                 case 1:
                                     dietUpdateBuilder.updateColumnValue("selectedLunch", dish.getPackageId());
+                                    flag = true;
                                     break;
                                 case 2:
                                     dietUpdateBuilder.updateColumnValue("selectedSnack", dish.getPackageId());
+                                    flag = true;
                                     break;
                                 case 3:
                                     dietUpdateBuilder.updateColumnValue("selectedDinner", dish.getPackageId());
+                                    flag = true;
                                     break;
                             }
                             dietUpdateBuilder.update();
                             dietUpdateBuilder.reset();
+                            QueryBuilder<Diet, Integer> dietQueryBuilder = databaseHelper.getDietDao().queryBuilder();
+                            dietQueryBuilder.where().eq("_id", appPreferences.getDietNumber());
+                            List<Diet> dietList = dietQueryBuilder.query();
+                            String serverId = dietList.get(0).getServerId();
+                            if (flag) {
+                                int curr_diet = appPreferences.getDietNumber();
+                                appPreferences.setTotalPoints(appPreferences.getTotalPoint() + 1);
+                                appPreferences.setDietPoint("P" + curr_diet, appPreferences.getDietPoint("P" + curr_diet) + 1);
+
+                                final UserInfo user = databaseHelper.getUserDao().queryForAll().get(0);
+                                Call<CommonResponse> call = getRequestMethod().changeStatus(user.getSessionId(), user.getApiKey(), user.getUserId(),
+                                        serverId, dish.getDietDay(), mealId, 1, dish.getPackageId());
+                                call.enqueue(new Callback<CommonResponse>() {
+                                    @Override
+                                    public void onResponse(Call<CommonResponse> call, retrofit2.Response<CommonResponse> response) {
+                                        System.out.println(response.body().getError() + ">>>>>>>>" + response.body().getStatus());
+                                        try {
+                                            if (response.body().getStatus().equals("success")) {
+                                                // set the criteria like you would a QueryBuilder
+//                        updateBuilder.where().eq("User_ID", user.getUserId());
+                                                System.out.println("seccess--------------------------------------->>");
+                                            } else {
+                                                //TODO
+                                            }
+                                        } catch (Exception e) {
+                                            e.printStackTrace();
+                                            //TODO
+                                        }
+
+                                    }
+
+                                    @Override
+                                    public void onFailure(Call<CommonResponse> call, Throwable t) {
+
+                                    }
+                                });
+                            }
                         }
                         dietQueryBuilder.reset();
 
@@ -307,7 +362,7 @@ public class MealFragment extends Fragment implements View.OnClickListener {
                     setMealTitles(packNum);
                     List<DummyFood> foodList = dish.getDishFoods();
                     int position = 0;
-                    for (DummyFood food: foodList) {
+                    for (DummyFood food : foodList) {
                         foodItem[position].setText(food.getFoodName());
                         amountItem[position].setText(food.getAmount() + " " + food.getUnit());
                         midItem[position].setText("--------------------------------------------------------");
@@ -322,12 +377,18 @@ public class MealFragment extends Fragment implements View.OnClickListener {
             textOptionSelect.setVisibility(View.INVISIBLE);
             cardOpenPack.setVisibility(View.VISIBLE);
         }
+    }
 
+    protected RequestMethod getRequestMethod() {
+        if (mRequestMethod == null)
+            mRequestMethod = ClientFactory.getRetrofitInstance().create(RequestMethod.class);
+
+        return mRequestMethod;
     }
 
     private void setMealTitles(int packNum) {
         String mealType = "";
-        switch (packNum){
+        switch (packNum) {
             case 0:
                 mealType = "یک";
                 break;
@@ -341,7 +402,7 @@ public class MealFragment extends Fragment implements View.OnClickListener {
                 mealType = "دیروز";
                 break;
         }
-        switch (mealId){
+        switch (mealId) {
             case 0:
                 textMealTitle.setText("صبحانه " + mealType);
                 break;
@@ -366,11 +427,82 @@ public class MealFragment extends Fragment implements View.OnClickListener {
         cardOpenPack.setVisibility(View.GONE);
     }
 
+    protected void deselectFood(DietFragment.Day day) {
+        try {
+            System.out.println("~~~~~~>> deselect selected " + current_day);
+            dietUpdateBuilder.where().eq("_id", appPreferences.getDietNumber()).and().eq("day", current_day);
+            boolean flag = false;
+            switch (mealId) {
+                case 0:
+                    flag = true;
+                    dietUpdateBuilder.updateColumnValue("selectedBreakfast", 0);
+                    break;
+                case 1:
+                    flag = true;
+                    dietUpdateBuilder.updateColumnValue("selectedLunch", 0);
+                    break;
+                case 2:
+                    flag = true;
+                    dietUpdateBuilder.updateColumnValue("selectedSnack", 0);
+                    break;
+                case 3:
+                    flag = true;
+                    dietUpdateBuilder.updateColumnValue("selectedDinner", 0);
+                    break;
+            }
+            dietUpdateBuilder.update();
+            dietUpdateBuilder.reset();
+            if (flag) {
+                int curr_diet = appPreferences.getDietNumber();
+                appPreferences.setTotalPoints(appPreferences.getTotalPoint() - 1);
+                System.out.println("current __________ P" + curr_diet);
+                appPreferences.setDietPoint("P" + curr_diet, appPreferences.getDietPoint("P" + curr_diet) - 1);
+
+                QueryBuilder<Diet, Integer> dietQueryBuilder = databaseHelper.getDietDao().queryBuilder();
+                dietQueryBuilder.where().eq("_id", appPreferences.getDietNumber());
+                List<Diet> dietList = dietQueryBuilder.query();
+                String serverId = dietList.get(0).getServerId();
+
+                final UserInfo user = databaseHelper.getUserDao().queryForAll().get(0);
+                Call<CommonResponse> call = getRequestMethod().changeStatus(user.getSessionId(), user.getApiKey(), user.getUserId(),
+                        serverId, current_day, mealId, 0, "0");
+                call.enqueue(new Callback<CommonResponse>() {
+                    @Override
+                    public void onResponse(Call<CommonResponse> call, retrofit2.Response<CommonResponse> response) {
+                        System.out.println(response.body().getError() + ">>>>>>>>" + response.body().getStatus());
+                        try {
+                            if (response.body().getStatus().equals("success")) {
+                                // set the criteria like you would a QueryBuilder
+//                        updateBuilder.where().eq("User_ID", user.getUserId());
+                                System.out.println("seccess--------------------------------------->>");
+                            } else {
+                                //TODO
+                            }
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                            //TODO
+                        }
+
+                    }
+
+                    @Override
+                    public void onFailure(Call<CommonResponse> call, Throwable t) {
+
+                    }
+                });
+            }
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
+
 
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.back_group:
+                deselectFood(DietFragment.currentDay);
                 updateDishes(DietFragment.currentDay, true);
                 backToOptions();
 

@@ -7,6 +7,7 @@ import com.j256.ormlite.table.DatabaseTable;
 
 /**
  * Created by Shayan on 4/30/2017.
+ *
  */
 @DatabaseTable(tableName = "Users")
 public class UserInfo {
@@ -44,9 +45,10 @@ public class UserInfo {
     private String hatedList;
     @DatabaseField(columnName = "_id", dataType = DataType.STRING)
     private String id;
-
-
-
+    @DatabaseField(columnName = "_point", dataType = DataType.INTEGER)
+    private int point;
+    @DatabaseField(columnName = "_diet_num", dataType = DataType.INTEGER)
+    private int diet_num;
 
     public int getActivityLevel() {
         return activityLevel;
@@ -183,5 +185,21 @@ public class UserInfo {
 
     public void setId(String id) {
         this.id = id;
+    }
+
+    public int getPoint() {
+        return point;
+    }
+
+    public void setPoint(int point) {
+        this.point = point;
+    }
+
+    public int getDiet_num() {
+        return diet_num;
+    }
+
+    public void setDiet_num(int diet_num) {
+        this.diet_num = diet_num;
     }
 }

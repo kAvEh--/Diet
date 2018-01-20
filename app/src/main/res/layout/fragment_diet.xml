@@ -41,6 +41,13 @@
 
                 </android.support.v7.widget.AppCompatSpinner>
             </RelativeLayout>
+            <TextView
+                android:id="@+id/dietDayNum"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="left"
+                android:textColor="#fff"
+                android:textSize="17sp"/>
 
 
         </android.support.v7.widget.Toolbar>

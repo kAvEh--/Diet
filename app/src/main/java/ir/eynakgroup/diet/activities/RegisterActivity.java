@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.ServiceConnection;
 import android.content.pm.ResolveInfo;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.os.IBinder;
@@ -28,20 +29,30 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.firebase.iid.FirebaseInstanceId;
+import com.google.gson.JsonObject;
 import com.j256.ormlite.table.TableUtils;
 
+import org.json.JSONArray;
+
 import java.sql.SQLException;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
 import ir.eynakgroup.diet.R;
 import ir.eynakgroup.diet.account.KarafsAccountConfig;
 import ir.eynakgroup.diet.database.DatabaseHelper;
+import ir.eynakgroup.diet.database.tables.Diet;
 import ir.eynakgroup.diet.database.tables.UserInfo;
 import ir.eynakgroup.diet.network.RequestMethod;
+import ir.eynakgroup.diet.network.response_models.DietListResponse;
 import ir.eynakgroup.diet.network.response_models.LoginResponse;
 import ir.eynakgroup.diet.network.response_models.User;
 import ir.eynakgroup.diet.services.AuthenticationService;
+import ir.eynakgroup.diet.utils.AppPreferences;
+import ir.eynakgroup.diet.utils.JDF;
 import ir.eynakgroup.diet.utils.view.CustomViewPager;
 import ir.eynakgroup.karafs.account.IAuthentication;
 import retrofit2.Call;
@@ -52,6 +63,7 @@ import retrofit2.Response;
 /**
  * Created by Shayan on 2/7/2017.
  */
+
 public class RegisterActivity extends BaseActivity {
 
 
@@ -75,6 +87,7 @@ public class RegisterActivity extends BaseActivity {
     private static DisplayMetrics mDisplayMetrics;
     private static RequestMethod mRequestMethod;
     private static DatabaseHelper mDatabaseHelper;
+    private static AppPreferences mAppPreferences;
 
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -88,10 +101,10 @@ public class RegisterActivity extends BaseActivity {
         mDisplayMetrics = getDisplayMetrics();
         mRequestMethod = getRequestMethod();
         mDatabaseHelper = getDBHelper();
+        mAppPreferences = getAppPreferences();
 
         viewPager = (CustomViewPager) findViewById(R.id.container_fragment);
         pagerAdapter = new PagerAdapter(getSupportFragmentManager(), this);
-
 
         mBackImg = (ImageView) findViewById(R.id.back_step);
         mBackImg.setOnClickListener(new View.OnClickListener() {
@@ -101,11 +114,7 @@ public class RegisterActivity extends BaseActivity {
             }
         });
 
-        int waiting = 3000;
-//        if (getAppPreferences().getFirstTime())
-//            waiting = 3000;
-//        else
-//            waiting = 2150;
+        int waiting = 3010;
 
         new CountDownTimer(waiting, waiting) {
             @Override
@@ -116,8 +125,6 @@ public class RegisterActivity extends BaseActivity {
             @Override
             public void onFinish() {
                 cancel();
-//                viewPager.setAdapter(pagerAdapter);
-//                new BindServiceTask().execute();
                 try {
                     checkUserExisting();
                 } catch (SQLException e) {
@@ -130,10 +137,9 @@ public class RegisterActivity extends BaseActivity {
 
     private void checkUserExisting() throws SQLException {
         if (getDBHelper().getUserDao().queryForAll().size() > 0) {
-            if (getAppPreferences().getFirstTime()){
+            if (getAppPreferences().getFirstTime()) {
                 startActivityForResult(new Intent(RegisterActivity.this, IntroActivity.class), INTRO_REQUEST_CODE);
-            }
-            else {
+            } else {
                 startActivity(new Intent(RegisterActivity.this, MainActivity.class));
                 finish();
             }
@@ -142,8 +148,7 @@ public class RegisterActivity extends BaseActivity {
         } else {
             if (getAppPreferences().getFirstTime()) {
                 startActivityForResult(new Intent(RegisterActivity.this, IntroActivity.class), INTRO_REQUEST_CODE);
-            }
-            else {
+            } else {
                 viewPager.setAdapter(pagerAdapter);
 //                                if (mSignInBtn.getVisibility() == View.GONE) {
 //                                    mSignInBtn.setVisibility(View.VISIBLE);
@@ -563,14 +568,9 @@ public class RegisterActivity extends BaseActivity {
                         return;
                     }
 
-//                    if (pass.length() < 4 || (
-//                            !pass.matches("^(.*[A-Za-z]+.*[0-9]+.*)$") && !pass.matches("^(.*[0-9]+.*[A-Za-z]+.*)$"))) {
-//                        mPassEdit.setError(getString(R.string.pass_error));
-//                        mPassEdit.requestFocus();
-//                        return;
-//                    }
-
-                    Call<LoginResponse> call = mRequestMethod.login(phone, pass, "true");
+                    String fbToken = FirebaseInstanceId.getInstance().getToken();
+                    String deviceModel = getDeviceName();
+                    Call<LoginResponse> call = mRequestMethod.login(phone, pass, "true", getResources().getString(R.string.app_version), getResources().getString(R.string.app_market), fbToken, deviceModel);
                     call.enqueue(new Callback<LoginResponse>() {
                         @Override
                         public void onResponse(Call<LoginResponse> call, Response<LoginResponse> response) {
@@ -587,8 +587,8 @@ public class RegisterActivity extends BaseActivity {
                                 userInfo.setDisease(responseUser.getDiseases().toString());
                                 userInfo.setEmail(responseUser.getEmail());
                                 userInfo.setGender(responseUser.getGender().ordinal());
-                                userInfo.setHeight(responseUser.getHeight()+"");
-                                userInfo.setWeight(responseUser.getWeight()+"");
+                                userInfo.setHeight(responseUser.getHeight() + "");
+                                userInfo.setWeight(responseUser.getWeight() + "");
                                 userInfo.setUserId(responseUser.getUserId());
                                 userInfo.setName(responseUser.getName());
                                 userInfo.setId(responseUser.getId());
@@ -597,10 +597,82 @@ public class RegisterActivity extends BaseActivity {
 
                                 mDatabaseHelper.getUserDao().create(userInfo);
 
-                                System.out.println(response.body().getUpdatedDate()+"----------------------------------");
-                                System.out.println("--------------------------- user created !!!!");
-                                getActivity().startActivity(new Intent(mContext, MainActivity.class));
-                                getActivity().finish();
+                                Call<List<DietListResponse>> getData = mRequestMethod.getDietList(userInfo.getSessionId(), userInfo.getUserId(), userInfo.getApiKey());
+
+                                getData.enqueue(new Callback<List<DietListResponse>>() {
+                                    @Override
+                                    public void onResponse(Call<List<DietListResponse>> call, Response<List<DietListResponse>> response) {
+                                        List<DietListResponse> list = response.body();
+                                        JSONArray datas = new JSONArray();
+                                        JsonObject tmp2;
+                                        for (int i = 0; i < list.size(); i++) {
+                                            JsonObject tmp = list.get(i).getDietData();
+                                            for (int j = 0; j < tmp.size() - 1; j++) {
+                                                tmp2 = tmp.get(String.valueOf(j + 1)).getAsJsonObject();
+                                                Diet diet = new Diet();
+                                                diet.setDay(j + 1);
+                                                System.out.println(tmp2.getAsJsonObject("0").get("choices") + ",,,,,,,,,,,,,,,");
+                                                diet.setDietType(String.valueOf(list.get(i).getType()));
+                                                diet.setStartDate(String.valueOf(parseJavascriptDate(list.get(i).getStartDate())));
+                                                diet.setStartWeight(String.valueOf(list.get(i).getStartWeight()));
+                                                diet.setGoalWeight(String.valueOf(list.get(i).getGoalWeight()));
+                                                diet.setId(list.size());
+
+                                                diet.setSelectedBreakfast(tmp2.getAsJsonObject("0").get("selected").getAsString());
+                                                diet.setBreakfastPack1(tmp2.getAsJsonObject("0").getAsJsonArray("choices").get(0).getAsString());
+                                                diet.setBreakfastPack2(tmp2.getAsJsonObject("0").getAsJsonArray("choices").get(1).getAsString());
+                                                diet.setBreakfastPack3(tmp2.getAsJsonObject("0").getAsJsonArray("choices").get(2).getAsString());
+
+                                                diet.setSelectedLunch(tmp2.getAsJsonObject("1").get("selected").getAsString());
+                                                diet.setLunchPack1(tmp2.getAsJsonObject("1").getAsJsonArray("choices").get(0).getAsString());
+                                                diet.setLunchPack2(tmp2.getAsJsonObject("1").getAsJsonArray("choices").get(1).getAsString());
+                                                diet.setLunchPack3(tmp2.getAsJsonObject("1").getAsJsonArray("choices").get(2).getAsString());
+
+                                                diet.setSelectedSnack(tmp2.getAsJsonObject("2").get("selected").getAsString());
+                                                diet.setSnackPack1(tmp2.getAsJsonObject("2").getAsJsonArray("choices").get(0).getAsString());
+                                                diet.setSnackPack2(tmp2.getAsJsonObject("2").getAsJsonArray("choices").get(1).getAsString());
+                                                diet.setSnackPack3(tmp2.getAsJsonObject("2").getAsJsonArray("choices").get(2).getAsString());
+
+                                                diet.setSelectedDinner(tmp2.getAsJsonObject("3").get("selected").getAsString());
+                                                diet.setDinnerPack1(tmp2.getAsJsonObject("3").getAsJsonArray("choices").get(0).getAsString());
+                                                diet.setDinnerPack2(tmp2.getAsJsonObject("3").getAsJsonArray("choices").get(1).getAsString());
+                                                diet.setDinnerPack3(tmp2.getAsJsonObject("3").getAsJsonArray("choices").get(2).getAsString());
+
+                                                try {
+                                                    mDatabaseHelper.getDietDao().create(diet);
+                                                } catch (SQLException e) {
+                                                    e.printStackTrace();
+                                                }
+                                                tmp2.get("0").getAsJsonObject().remove("choices");
+                                                tmp2.get("1").getAsJsonObject().remove("choices");
+                                                tmp2.get("2").getAsJsonObject().remove("choices");
+                                                tmp2.get("3").getAsJsonObject().remove("choices");
+                                                tmp2.get("0").getAsJsonObject().remove("selected");
+                                                tmp2.get("1").getAsJsonObject().remove("selected");
+                                                tmp2.get("2").getAsJsonObject().remove("selected");
+                                                tmp2.get("3").getAsJsonObject().remove("selected");
+                                            }
+                                            tmp.addProperty("id", list.size());
+                                            tmp.addProperty("point", list.get(i).getPoint());
+                                            tmp.addProperty("type", list.get(i).getType());
+                                            tmp.addProperty("startWeight", list.get(i).getStartWeight());
+                                            tmp.addProperty("goalWeight", list.get(i).getGoalWeight());
+                                            tmp.addProperty("startDate", parseJavascriptDate(list.get(i).getStartDate()));
+                                            datas.put(tmp);
+                                        }
+                                        mAppPreferences.setDietNumber(list.size());
+                                        mAppPreferences.setDietData(datas.toString());
+                                        mAppPreferences.setAlreadyDiet(true);
+                                        getActivity().startActivity(new Intent(mContext, MainActivity.class));
+                                        getActivity().finish();
+                                    }
+
+                                    @Override
+                                    public void onFailure(Call<List<DietListResponse>> call, Throwable t) {
+                                        System.out.println("Failed------------!!!!!" + call.toString());
+                                        t.printStackTrace();
+                                    }
+                                });
                             } catch (SQLException e) {
                                 e.printStackTrace();
                             }
@@ -636,6 +708,46 @@ public class RegisterActivity extends BaseActivity {
                     break;
                 default:
                     break;
+            }
+        }
+
+        private long parseJavascriptDate(String time) {
+            if (!(time == null || time.matches("null") || time.matches(""))) {
+                String date = time.split("T")[0];
+                String yearMonthDay[] = date.split("-");
+                int year = Integer.parseInt(yearMonthDay[0]);
+                int month = Integer.parseInt(yearMonthDay[1]);
+                int day = Integer.parseInt(yearMonthDay[2]);
+                JDF j = new JDF(year, month, day);
+                Calendar c = Calendar.getInstance();
+                c.set(j.getGregorianYear(), j.getGregorianMonth(), j.getGregorianDay());
+                Date d = c.getTime();
+                return d.getTime();
+            } else {
+                return 0;
+            }
+        }
+
+        public String getDeviceName() {
+            String manufacturer = Build.MANUFACTURER;
+            String model = Build.MODEL;
+            if (model.startsWith(manufacturer)) {
+                return capitalize(model);
+            } else {
+                return capitalize(manufacturer) + " " + model;
+            }
+        }
+
+
+        private String capitalize(String s) {
+            if (s == null || s.length() == 0) {
+                return "";
+            }
+            char first = s.charAt(0);
+            if (Character.isUpperCase(first)) {
+                return s;
+            } else {
+                return Character.toUpperCase(first) + s.substring(1);
             }
         }
     }

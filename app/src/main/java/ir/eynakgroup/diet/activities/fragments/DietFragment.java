@@ -17,18 +17,23 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.support.v7.widget.AppCompatSpinner;
+import android.widget.TextView;
 
 import com.j256.ormlite.stmt.QueryBuilder;
+
+import org.w3c.dom.Text;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 import ir.eynakgroup.diet.R;
+import ir.eynakgroup.diet.activities.MainActivity;
 import ir.eynakgroup.diet.activities.fragments.dummy.DummyDish;
 import ir.eynakgroup.diet.activities.fragments.dummy.DummyFood;
 import ir.eynakgroup.diet.database.DatabaseHelper;
@@ -62,6 +67,8 @@ public class DietFragment extends Fragment {
     private AppCompatSpinner date_spinner;
     private AppPreferences appPreference;
     private DatabaseHelper databaseHelper;
+    private TextView dietDayNum;
+    private String[] days;
 
     boolean notToday = false;
     static Day currentDay = Day.TODAY;
@@ -97,17 +104,20 @@ public class DietFragment extends Fragment {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         loadDishes();
-        /**
+        /*
          * meal tabs part
          */
         viewPager = (ViewPager) view.findViewById(R.id.meals_tab_viewpager);
+        viewPager.setOffscreenPageLimit(3);
         setupViewPager();
 
         tabLayout = (TabLayout) view.findViewById(R.id.meals_tabs);
         tabLayout.setupWithViewPager(viewPager);
-        /**
+        /*
          * date spinner part
          */
+        dietDayNum = (TextView) view.findViewById(R.id.dietDayNum);
+        dietDayNum.setText(days[0]);
         date_spinner = (AppCompatSpinner) view.findViewById(R.id.date_spinner);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(mContext,
                 R.array.date_spinner_array, R.layout.date_spinner_view);
@@ -120,6 +130,7 @@ public class DietFragment extends Fragment {
                 List<Fragment> fragmentList = ((ViewPagerAdapter) viewPager.getAdapter()).getFragmentList();
                 switch (position) {
                     case TODAY:
+                        dietDayNum.setText(days[0]);
                         if (notToday) {
                             notToday = false;
                             currentDay = Day.TODAY;
@@ -130,14 +141,16 @@ public class DietFragment extends Fragment {
                         }
                         break;
                     case TOMORROW:
+                        dietDayNum.setText(days[1]);
                         notToday = true;
                         currentDay = Day.TOMORROW;
-                        ((MealFragment) fragmentList.get(0)).updateDishes(Day.TOMORROW,false);
+                        ((MealFragment) fragmentList.get(0)).updateDishes(Day.TOMORROW, false);
                         ((MealFragment) fragmentList.get(1)).updateDishes(Day.TOMORROW, false);
                         ((MealFragment) fragmentList.get(2)).updateDishes(Day.TOMORROW, false);
                         ((MealFragment) fragmentList.get(3)).updateDishes(Day.TOMORROW, false);
                         break;
                     case DAY_AFTER_TOMORROW:
+                        dietDayNum.setText(days[2]);
                         notToday = true;
                         currentDay = Day.DAY_AFTER_TOMORROW;
                         ((MealFragment) fragmentList.get(0)).updateDishes(Day.DAY_AFTER_TOMORROW, false);
@@ -146,8 +159,7 @@ public class DietFragment extends Fragment {
                         ((MealFragment) fragmentList.get(3)).updateDishes(Day.DAY_AFTER_TOMORROW, false);
                         break;
                 }
-                //TODO do somt hing, date is changed.
-
+                //TODO do some hint, date is changed.
             }
 
             @Override
@@ -186,12 +198,11 @@ public class DietFragment extends Fragment {
         breakfastDishes.put(Day.TOMORROW, tomorrowBreakfastDishes);
         breakfastDishes.put(Day.DAY_AFTER_TOMORROW, afterBreakfastDishes);
 
-        adapter.addFragment(MealFragment.newInstance(DINNER, R.layout.fragment_dishes_dinner, dinnerDishes), getString(R.string.dinner));
-        adapter.addFragment(MealFragment.newInstance(SNACK, R.layout.fragment_dishes_snack, snackDishes), getString(R.string.snack));
-        adapter.addFragment(MealFragment.newInstance(LUNCH, R.layout.fragment_dishes_lunch, lunchDishes), getString(R.string.lunch));
-        adapter.addFragment(MealFragment.newInstance(BREAKFAST, R.layout.fragment_dishes_breakfast, breakfastDishes), getString(R.string.breakfast));
+        adapter.addFragment(MealFragment.newInstance(today, DINNER, R.layout.fragment_dishes_dinner, dinnerDishes), getString(R.string.dinner));
+        adapter.addFragment(MealFragment.newInstance(today, SNACK, R.layout.fragment_dishes_snack, snackDishes), getString(R.string.snack));
+        adapter.addFragment(MealFragment.newInstance(today, LUNCH, R.layout.fragment_dishes_lunch, lunchDishes), getString(R.string.lunch));
+        adapter.addFragment(MealFragment.newInstance(today, BREAKFAST, R.layout.fragment_dishes_breakfast, breakfastDishes), getString(R.string.breakfast));
         viewPager.setAdapter(adapter);
-        viewPager.setOffscreenPageLimit(0);
         viewPager.addOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
@@ -298,11 +309,14 @@ public class DietFragment extends Fragment {
     private QueryBuilder<FoodUnit, Integer> foodUnitQueryBuilder;
     private List<FoodUnit> foodUnits;
 
+    private int today = -1;
+
     private void loadDishes() {
         timeToShow = Calendar.getInstance().getTimeInMillis();
         appPreference = new AppPreferences(getContext());
         databaseHelper = new DatabaseHelper(getContext());
         int dietId = appPreference.getDietNumber();
+        System.out.println(dietId + ",,,,,,,,,,,,,,,,,,,");
         try {
             dietQueryBuilder = databaseHelper.getDietDao().queryBuilder();
             dietQueryBuilder.where().eq("_id", dietId);
@@ -311,12 +325,27 @@ public class DietFragment extends Fragment {
             foodQueryBuilder = databaseHelper.getFoodDao().queryBuilder();
             packageFoodQueryBuilder = databaseHelper.getPackageFoodDao().queryBuilder();
             foodUnitQueryBuilder = databaseHelper.getFoodUnitDao().queryBuilder();
+            System.out.println(dietList.size() + ",,,,,,,,,,,,,,,,,,,");
             if (dietList.size() > 0) {
-                int today = (int) ((timeToShow - Long.parseLong(dietList.get(0).getStartDate())) / TimeUnit.DAYS.toMillis(1)) + 1;
+                today = (int) ((timeToShow - Long.parseLong(dietList.get(0).getStartDate())) / TimeUnit.DAYS.toMillis(1)) + 1;
+                System.out.println("~~~~~~>> day " + today);
                 String dietType = dietList.get(0).getDietType().trim();
-                Log.d("DAY", today + "");
+                String[] temp = getResources().getStringArray(R.array.days);
+                days = new String[3];
+                if (today > 0 && today < 31) {
+                    days[0] = temp[today - 1];
+                    days[1] = temp[today];
+                    days[2] = temp[today + 1];
+                } else {
+                    ((MainActivity) getActivity()).sendToast(getString(R.string.err_date_change));
+                    days[0] = temp[31];
+                    days[1] = temp[31];
+                    days[2] = temp[31];
+                }
+                Log.d("DAY", today + " " + dietList.get(0).getStartDate());
                 for (int day = today - 1; day <= today + 2; day++) {
-                    dietQueryBuilder.where().eq("day", day);
+                    dietQueryBuilder.where().eq("_id", dietId).and().eq("day", day);
+                    System.out.println("~~~~~~>> query of food list " + day);
                     dietDayList = dietQueryBuilder.query();
                     if (dietDayList.size() > 0) {
                         if (day == today - 1) {
@@ -325,6 +354,7 @@ public class DietFragment extends Fragment {
                             packagesId = new String[]{dietDayList.get(0).getBreakfastPack1(), dietDayList.get(0).getBreakfastPack2(), dietDayList.get(0).getBreakfastPack3(), dietDayList.get(0).getLunchPack1(), dietDayList.get(0).getLunchPack2(), dietDayList.get(0).getLunchPack3(), dietDayList.get(0).getSnackPack1(), dietDayList.get(0).getSnackPack2(), dietDayList.get(0).getSnackPack3(), dietDayList.get(0).getDinnerPack1(), dietDayList.get(0).getDinnerPack2(), dietDayList.get(0).getDinnerPack3()};
 
                         for (int i = 0; i < packagesId.length; i++) {
+                            packageQueryBuilder.reset();
                             packageQueryBuilder.where().eq("_id", packagesId[i]);
                             packageList = packageQueryBuilder.query();
                             if (packageList.size() > 0) {
@@ -365,7 +395,7 @@ public class DietFragment extends Fragment {
                                             foods = foodQueryBuilder.query();
                                             if (foods.size() > 0) {
                                                 food.setFoodName(foods.get(0).getFoodName());
-                                                if(packageFoods.get(0).getIsStandard() == 0){
+                                                if (packageFoods.get(0).getIsStandard() == 0) {
                                                     foodUnitQueryBuilder.where().eq("Unit_ID", foods.get(0).getUnitId());
                                                     foodUnits = foodUnitQueryBuilder.query();
                                                     if (foodUnits.size() > 0)
@@ -377,7 +407,6 @@ public class DietFragment extends Fragment {
                                             dish.addFood(food);
                                             foodQueryBuilder.reset();
                                         }
-
                                     }
                                     packageFoodQueryBuilder.reset();
                                 }
@@ -398,9 +427,8 @@ public class DietFragment extends Fragment {
                                             todayDinnerDishes.add(dish);
                                             break;
                                     }
-
                                 } else if (day == today) {
-                                    dish.setDishNumber(i%3);
+                                    dish.setDishNumber(i % 3);
                                     switch (i / 3) {
                                         case 0:
                                             todayBreakfastDishes.add(dish);
@@ -416,7 +444,7 @@ public class DietFragment extends Fragment {
                                             break;
                                     }
                                 } else if (day == today + 1) {
-                                    dish.setDishNumber(i%3);
+                                    dish.setDishNumber(i % 3);
                                     switch (i / 3) {
                                         case 0:
                                             tomorrowBreakfastDishes.add(dish);
@@ -432,7 +460,7 @@ public class DietFragment extends Fragment {
                                             break;
                                     }
                                 } else if (day == today + 2) {
-                                    dish.setDishNumber(i%3);
+                                    dish.setDishNumber(i % 3);
                                     switch (i / 3) {
                                         case 0:
                                             afterBreakfastDishes.add(dish);

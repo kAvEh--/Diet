@@ -2,30 +2,30 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@android:color/white"
     android:orientation="vertical"
     android:paddingBottom="@dimen/activity_orientation_margin"
     android:paddingLeft="@dimen/activity_orientation_margin"
     android:paddingRight="@dimen/activity_orientation_margin"
     android:paddingTop="@dimen/activity_orientation_margin"
-    android:background="@android:color/white"
     tools:context=".activities.SignUpActivity$PlaceholderFragment">
 
 
     <include
-        android:layout_marginTop="@dimen/activity_orientation_margin_2x"
         android:id="@+id/title"
         layout="@layout/layout_title"
         android:layout_width="wrap_content"
         android:layout_height="0dp"
-        android:layout_weight="1"
-        android:layout_gravity="center_horizontal"/>
+        android:layout_gravity="center_horizontal"
+        android:layout_marginTop="@dimen/activity_orientation_margin_2x"
+        android:layout_weight="1" />
 
     <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1.5"
         android:layout_gravity="center_horizontal"
-        >
+        android:layout_weight="1.5">
+
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -35,39 +35,36 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:orientation="vertical"
-                >
+                android:orientation="vertical">
 
                 <android.support.v7.widget.AppCompatRadioButton
-                    android:button="@null"
-                    android:drawableLeft="?android:attr/listChoiceIndicatorSingle"
                     android:id="@+id/radio_female"
                     android:layout_width="wrap_content"
                     android:layout_height="@dimen/indicator_padding"
-                    android:text="@string/female"
-                    android:background="@drawable/background_radio_button"
-                    android:textColor="@color/colorDescription"
-                    android:buttonTint="@color/colorEditText"
-                    android:paddingRight="@dimen/activity_orientation_margin"
-                    android:paddingLeft="@dimen/activity_orientation_margin"
+                    android:layout_gravity="center_horizontal"
                     android:layout_marginBottom="@dimen/button_margin"
-                    android:layout_gravity="center_horizontal"/>
+                    android:background="@drawable/background_radio_button"
+                    android:button="@null"
+                    android:buttonTint="@color/colorEditText"
+                    android:drawableLeft="?android:attr/listChoiceIndicatorSingle"
+                    android:paddingLeft="@dimen/activity_orientation_margin"
+                    android:paddingRight="@dimen/activity_orientation_margin"
+                    android:text="@string/female"
+                    android:textColor="@color/colorDescription" />
 
                 <android.support.v7.widget.AppCompatRadioButton
-                    android:button="@null"
-                    android:drawableLeft="?android:attr/listChoiceIndicatorSingle"
                     android:id="@+id/radio_male"
                     android:layout_width="wrap_content"
                     android:layout_height="@dimen/indicator_padding"
+                    android:layout_gravity="center_horizontal"
                     android:background="@drawable/background_radio_button"
-                    android:text="@string/male"
-                    android:paddingRight="@dimen/activity_orientation_margin"
-                    android:paddingLeft="@dimen/activity_orientation_margin"
+                    android:button="@null"
                     android:buttonTint="@color/colorEditText"
-                    android:textColor="@color/colorDescription"
-                    android:layout_gravity="center_horizontal"/>
-
-
+                    android:drawableLeft="?android:attr/listChoiceIndicatorSingle"
+                    android:paddingLeft="@dimen/activity_orientation_margin"
+                    android:paddingRight="@dimen/activity_orientation_margin"
+                    android:text="@string/male"
+                    android:textColor="@color/colorDescription" />
 
 
             </RadioGroup>
@@ -76,13 +73,7 @@
         </LinearLayout>
 
 
-
     </RelativeLayout>
-
-
-
-
-
 
 
 </LinearLayout>

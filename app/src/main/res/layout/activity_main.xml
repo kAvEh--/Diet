@@ -3,26 +3,25 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:orientation="vertical"
     android:fitsSystemWindows="true"
+    android:orientation="vertical"
     android:weightSum="10"
     tools:context=".activities.MainActivity">
-
 
 
     <ir.eynakgroup.diet.utils.view.CustomViewPager
         android:id="@+id/container_fragment"
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="9"/>
+        android:layout_weight="9" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="0dp"
-        android:layout_weight="1"
         android:layout_gravity="bottom"
-        android:weightSum="2"
-        android:orientation="horizontal">
+        android:layout_weight="1"
+        android:orientation="horizontal"
+        android:weightSum="2">
 
         <RelativeLayout
             android:id="@+id/tab_diet"
@@ -34,16 +33,15 @@
                 android:id="@+id/bar_tab_diet"
                 android:layout_width="match_parent"
                 android:layout_height="2dp"
-                android:background="@color/colorPrimary"
-                />
+                android:background="@color/colorPrimary" />
 
             <android.support.v7.widget.AppCompatImageView
-                android:padding="12dp"
                 android:id="@+id/img_diet"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/icn_tab_diet_selected"
-                android:layout_centerInParent="true"/>
+                android:layout_centerInParent="true"
+                android:padding="12dp"
+                android:src="@drawable/icn_tab_diet_selected" />
 
 
         </RelativeLayout>
@@ -58,17 +56,16 @@
                 android:id="@+id/bar_tab_profile"
                 android:layout_width="match_parent"
                 android:layout_height="2dp"
-                android:background="@color/colorGrey"
-                />
+                android:background="@color/colorGrey" />
 
 
             <android.support.v7.widget.AppCompatImageView
-                android:padding="12dp"
                 android:id="@+id/img_profile"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:src="@drawable/icn_tab_profile"
-                android:layout_centerInParent="true"/>
+                android:layout_centerInParent="true"
+                android:padding="12dp"
+                android:src="@drawable/icn_tab_profile" />
 
         </RelativeLayout>
 

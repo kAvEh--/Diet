@@ -236,15 +236,12 @@ public class SetupDietActivity extends BaseActivity implements View.OnClickListe
                             addListItem(splits[1].trim().replace("[diet_type]", "3"), Type.APP);
                         } else if (difficulty.containsKey(Level.NORMAL)) {
                             addListItem(splits[1].trim().replace("[diet_type]", "2"), Type.APP);
-
                         } else if (difficulty.containsKey(Level.EASY)) {
                             addListItem(splits[1].trim().replace("[diet_type]", "1"), Type.APP);
-
                         } else if (difficulty.containsKey(Level.NONE)) {
                             addListItem(getString(R.string.no_diet), Type.APP);
                             return;
                         }
-
                     } else if (line.contains("[prefer]")) {
 //                        if(!calculateDietTypes(user).containsKey(Integer.valueOf(-1)))
 //                            addListItem(splits[1].trim(), Type.APP);
@@ -459,7 +456,6 @@ public class SetupDietActivity extends BaseActivity implements View.OnClickListe
         @Override
         public void onClick(View v) {
             String mPayLoad = user.getUserId();
-            System.out.println(user.getUserId() + "**********************");
             switch (v.getId()) {
                 case R.id.diet_card_1:
                     mHelper.launchPurchaseFlow(SetupDietActivity.this, getString(R.string.sku_diet_1), RC_REQUEST, mPurchaseFinishedListener, mPayLoad);
@@ -560,7 +556,7 @@ public class SetupDietActivity extends BaseActivity implements View.OnClickListe
                     if (response.body().getStatus().equals("success")) {
                         UpdateBuilder<UserInfo, Integer> updateBuilder = getDBHelper().getUserDao().updateBuilder();
                         // set the criteria like you would a QueryBuilder
-                        updateBuilder.where().eq("User_ID", user.getUserId());
+//                        updateBuilder.where().eq("User_ID", user.getUserId());
                         // update the value of your field(s)
                         if (purchase.getSku().equals(getString(R.string.sku_diet_1))) {
                             updateBuilder.updateColumnValue("Credit" /* column */, values[0] /* value */);
@@ -628,15 +624,18 @@ public class SetupDietActivity extends BaseActivity implements View.OnClickListe
                         public void onClick(DialogInterface dialog, int which) {
 
                             Difficulty diff = difficulty.get(diffLevel);
+                            System.out.println(diff.getAmount() + "::::::::::::::::::::::::::::::::");
                             final DietProperty property = generateDiet(diff.getCalorie(), diff.getAmount());
 
-                            //TODO
-                            Call<CreateDietResponse> call = getRequestMethod().createDiet(user.getSessionId(), user.getUserId(), user.getApiKey(), property.getType(), property.getStartDate(), createDietJson(property.getId()));
+                            Call<CreateDietResponse> call = getRequestMethod().createDiet(user.getSessionId(),
+                                    user.getUserId(), user.getApiKey(), property.getType(),
+                                    property.getStartDate(), createDietJson(property.getId()),
+                                    String.valueOf(user.getWeight()), String.valueOf(user.getWeight() - diff.getAmount()));
 
                             call.enqueue(new Callback<CreateDietResponse>() {
                                 @Override
                                 public void onResponse(Call<CreateDietResponse> call, Response<CreateDietResponse> response) {
-                                    System.out.println("----------------Diet gene1rated to server!!");
+                                    System.out.println("----------------Diet generated to server!!" + response.body());
 
                                     if (response.body().getError() == null)
                                         try {
@@ -656,14 +655,15 @@ public class SetupDietActivity extends BaseActivity implements View.OnClickListe
 
                                 @Override
                                 public void onFailure(Call<CreateDietResponse> call, Throwable t) {
-
+                                    System.out.println("Failed------------");
+                                    t.printStackTrace();
                                 }
                             });
 
                             try {
                                 UpdateBuilder<UserInfo, Integer> updateBuilder = getDBHelper().getUserDao().updateBuilder();
                                 // set the criteria like you would a QueryBuilder
-                                updateBuilder.where().eq("User_ID", user.getId());
+//                                updateBuilder.where().eq("User_ID", user.getId());
                                 // update the value of your field(s)
                                 updateBuilder.updateColumnValue("Credit", credit - 1);
                                 updateBuilder.update();
@@ -1027,14 +1027,14 @@ public class SetupDietActivity extends BaseActivity implements View.OnClickListe
         Map<Level, Difficulty> difficulty = new HashMap();
 
         if (user.getGender() == User.Gender.Female.ordinal()) {
-            if (bmi > 21 && bmi <= 23)
-                difficulty.put(Level.EASY, new Difficulty(reqCal, user.getWeight() - calculateIdealWeight(user)));
-            if (bmi <= 21)
-                difficulty.put(Level.NONE, new Difficulty(0.0f, 0.0f));
-        } else {
-            if (bmi > 22 && bmi <= 24)
+            if (bmi > 22 && bmi <= 23)
                 difficulty.put(Level.EASY, new Difficulty(reqCal, user.getWeight() - calculateIdealWeight(user)));
             if (bmi <= 22)
+                difficulty.put(Level.NONE, new Difficulty(0.0f, 0.0f));
+        } else {
+            if (bmi > 23 && bmi <= 24)
+                difficulty.put(Level.EASY, new Difficulty(reqCal, user.getWeight() - calculateIdealWeight(user)));
+            if (bmi <= 23)
                 difficulty.put(Level.NONE, new Difficulty(0.0f, 0.0f));
         }
         if (difficulty.size() == 0) {
@@ -1151,7 +1151,6 @@ public class SetupDietActivity extends BaseActivity implements View.OnClickListe
             Collections.shuffle(lunchPackageList);
             for (int i = 0; i < 9; i++)
                 tempLunch.add(lunchPackageList.get(i).getId());
-
 
             foodPackageQueryBuilder.reset();
             foodPackageQueryBuilder.where().eq("mealId", SNACK_ID);

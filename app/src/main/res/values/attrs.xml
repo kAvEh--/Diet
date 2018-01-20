@@ -1,7 +1,58 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <declare-styleable name="TextViewWithCustomFont">
-        <attr name="font" format="string"/>
+        <attr name="font" format="string" />
 
+    </declare-styleable>
+
+    <declare-styleable name="ArcProgress">
+        <attr name="arc_progress" format="integer" />
+        <attr name="arc_angle" format="float" />
+        <attr name="arc_stroke_width" format="dimension" />
+        <attr name="arc_max" format="integer" />
+        <attr name="arc_unfinished_color" format="color" />
+        <attr name="arc_finished_color" format="color" />
+        <attr name="arc_text_size" format="dimension" />
+        <attr name="arc_text_color" format="color" />
+        <attr name="arc_suffix_text" format="string" />
+        <attr name="arc_suffix_text_size" format="dimension" />
+        <attr name="arc_suffix_text_padding" format="dimension" />
+        <attr name="arc_bottom_text" format="string" />
+        <attr name="arc_bottom_text_size" format="dimension" />
+    </declare-styleable>
+
+    <declare-styleable name="Slidr">
+        <attr name="slidr_barHeight" format="dimension" />
+        <attr name="slidr_textTop_visible" format="boolean" />
+        <attr name="slidr_textTop_size" format="dimension" />
+        <attr name="slidr_textBottom_visible" format="boolean" />
+        <attr name="slidr_textBottom_size" format="dimension" />
+        <attr name="slidr_backgroundColor" format="color" />
+
+        <attr name="slidr_step_colorizeAfterLast" format="boolean" />
+        <attr name="slidr_step_drawLine" format="boolean" />
+        <attr name="slidr_step_colorizeOnlyBeforeIndicator" format="boolean" />
+
+        <attr name="slidr_draw_bubble" format="boolean" />
+
+        <attr name="slidr_regions" format="boolean" />
+        <attr name="slidr_regions_centerText" format="boolean" />
+        <attr name="slidr_regions_textFollowRegionColor" format="boolean" />
+        <attr name="slidr_region_leftColor" format="color" />
+        <attr name="slidr_region_rightColor" format="color" />
+
+        <attr name="slidr_indicator_inside" format="boolean" />
+        <attr name="slidr_edditable" format="boolean" />
+    </declare-styleable>
+
+    <declare-styleable name="PersianDatePicker">
+        <attr name="minYear" format="integer" />
+        <attr name="maxYear" format="integer" />
+        <attr name="selectedYear" format="integer" />
+        <attr name="selectedMonth" format="integer" />
+        <attr name="selectedDay" format="integer" />
+        <attr name="displayMonthNames" format="boolean" />
+        <attr name="yearRange" format="integer" />
+        <attr name="displayDescription" format="boolean" />
     </declare-styleable>
 </resources>

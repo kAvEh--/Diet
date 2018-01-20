@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!--<color name="colorPrimary">#3F51B5</color>-->
-    <!--<color name="colorPrimaryDark">#303F9F</color>-->
-    <!--<color name="colorAccent">#FF4081</color>-->
+
     <color name="colorWhite">@android:color/white</color>
     <color name="colorPrimary">#5aaee7</color>
     <color name="colorPrimaryDark">@color/colorWhite</color>
@@ -19,5 +17,7 @@
     <color name="colorSnack">#0288D1</color>
     <color name="colorDinner">#01579B</color>
 
+    <color name="colorGreen">#54cdc6</color>
+    <color name="colorGreenbg">#46d8c3</color>
 
 </resources>

@@ -1,14 +1,224 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
-    android:layout_height="match_parent">
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/main_content"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fitsSystemWindows="true"
+    tools:context=".activities.SettingActivity">
 
-    <pl.droidsonroids.gif.GifImageView
-        android:id="@+id/gif_splash"
-        android:layout_centerInParent="true"
-        android:layout_width="wrap_content"
+    <android.support.design.widget.AppBarLayout
+        android:id="@+id/appbar"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:src="@drawable/splash"/>
+        android:background="@android:color/white"
+        android:theme="@style/AppTheme.SettingTheme"
+        app:elevation="0dp">
 
+        <android.support.v7.widget.Toolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:layout_gravity="end"
+            android:background="@color/colorStatusBar"
+            android:gravity="end"
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
 
-</RelativeLayout>
+        </android.support.v7.widget.Toolbar>
+
+    </android.support.design.widget.AppBarLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_margin="16dp"
+        android:background="@drawable/background_setting"
+        android:orientation="vertical"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="16dp">
+
+            <ir.eynakgroup.diet.utils.view.CustomTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:text="وزن"
+                android:textColor="@color/colorPrimary"
+                android:textSize="17sp" />
+
+            <ir.eynakgroup.diet.utils.view.CustomTextView
+                android:id="@+id/setting_weight"
+                android:layout_width="150dp"
+                android:layout_height="wrap_content"
+                android:background="@drawable/background_setting_item"
+                android:gravity="center"
+                android:padding="4dp"
+                android:textAlignment="center"
+                android:textColor="#fff" />
+
+        </RelativeLayout>
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:background="@color/colorPrimary" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="16dp">
+
+            <ir.eynakgroup.diet.utils.view.CustomTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:text="قد"
+                android:textColor="@color/colorPrimary"
+                android:textSize="17sp" />
+
+            <ir.eynakgroup.diet.utils.view.CustomTextView
+                android:id="@+id/setting_height"
+                android:layout_width="150dp"
+                android:layout_height="wrap_content"
+                android:background="@drawable/background_setting_item"
+                android:gravity="center"
+                android:padding="4dp"
+                android:textAlignment="center"
+                android:textColor="#fff" />
+
+        </RelativeLayout>
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:background="@color/colorPrimary" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="16dp">
+
+            <ir.eynakgroup.diet.utils.view.CustomTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:text="تاریخ تولد"
+                android:textColor="@color/colorPrimary"
+                android:textSize="17sp" />
+
+            <ir.eynakgroup.diet.utils.view.CustomTextView
+                android:id="@+id/setting_bdate"
+                android:layout_width="150dp"
+                android:layout_height="wrap_content"
+                android:background="@drawable/background_setting_item"
+                android:gravity="center"
+                android:padding="4dp"
+                android:textAlignment="center"
+                android:textColor="#fff" />
+
+        </RelativeLayout>
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:background="@color/colorPrimary" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="16dp">
+
+            <ir.eynakgroup.diet.utils.view.CustomTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:text="سطح فعالیت"
+                android:textColor="@color/colorPrimary"
+                android:textSize="17sp" />
+
+            <ir.eynakgroup.diet.utils.view.CustomTextView
+                android:id="@+id/setting_activity"
+                android:layout_width="150dp"
+                android:layout_height="wrap_content"
+                android:background="@drawable/background_setting_item"
+                android:gravity="center"
+                android:padding="4dp"
+                android:textAlignment="center"
+                android:textColor="#fff" />
+
+        </RelativeLayout>
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:background="@color/colorPrimary" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="16dp">
+
+            <ir.eynakgroup.diet.utils.view.CustomTextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:text="جنسیت"
+                android:textColor="@color/colorPrimary"
+                android:textSize="17sp" />
+
+            <ir.eynakgroup.diet.utils.view.CustomTextView
+                android:id="@+id/setting_sex"
+                android:layout_width="150dp"
+                android:layout_height="wrap_content"
+                android:background="@drawable/background_setting_item"
+                android:gravity="center"
+                android:padding="4dp"
+                android:textAlignment="center"
+                android:textColor="#fff" />
+
+        </RelativeLayout>
+
+        <ImageView
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginRight="16dp"
+            android:background="@color/colorPrimary" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="16dp">
+
+            <ir.eynakgroup.diet.utils.view.CustomTextView
+                android:id="@+id/setting_logout"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:text="خروج از حساب کاربری"
+                android:textColor="@color/colorPrimary"
+                android:textSize="17sp" />
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
+</android.support.design.widget.CoordinatorLayout>

@@ -92,7 +92,7 @@ public class IntroActivity extends BaseActivity {
             public void onPageSelected(int position) {
                 if (position + 1 == 3) {
                     mIndicator.setVisibility(View.INVISIBLE);
-                    mButton.setAnimation(animFadeIn);
+                    mButton.startAnimation(animFadeIn);
                     mButton.setVisibility(View.VISIBLE);
                 } else {
                     mIndicator.setVisibility(View.VISIBLE);

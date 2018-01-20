@@ -10,28 +10,33 @@
     <android.support.design.widget.AppBarLayout
         android:id="@+id/main.appbar"
         android:layout_width="match_parent"
-        android:layout_height="450dp"
+        android:layout_height="wrap_content"
         android:background="#efeeee"
         android:fitsSystemWindows="true"
         android:orientation="vertical"
-        android:weightSum="4.75"
         app:elevation="0dp">
 
-        <android.support.design.widget.CollapsingToolbarLayout
+        <LinearLayout
             android:id="@+id/main.collapsing"
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="3"
+            android:layout_height="wrap_content"
             android:background="@color/colorStatusBar"
-            android:fitsSystemWindows="true"
-            app:expandedTitleMarginEnd="64dp"
-            app:expandedTitleMarginStart="48dp"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior"
-            app:layout_scrollFlags="scroll|exitUntilCollapsed">
+            android:orientation="vertical">
+
+            <android.support.v7.widget.Toolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="?attr/actionBarSize"
+                android:background="@color/colorStatusBar"
+                android:gravity="end"
+                android:layout_gravity="end"
+                app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
+
+            </android.support.v7.widget.Toolbar>
 
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal">
 
                 <LinearLayout
@@ -42,10 +47,9 @@
 
                     <ir.eynakgroup.diet.utils.view.CircularImageView
                         android:id="@+id/img_profile"
-                        android:layout_width="110dp"
-                        android:layout_height="110dp"
+                        android:layout_width="70dp"
+                        android:layout_height="70dp"
                         android:layout_gravity="center_horizontal"
-                        android:layout_marginTop="@dimen/activity_orientation_margin_2x"
                         android:src="@drawable/user" />
 
                     <ir.eynakgroup.diet.utils.view.CustomTextView
@@ -53,70 +57,17 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_gravity="center_horizontal"
-                        android:layout_marginTop="@dimen/activity_orientation_margin"
+                        android:layout_marginTop="8dp"
                         android:text="شایان میرجعفری"
                         android:textColor="@android:color/white"
                         android:textSize="22dp" />
-
                 </LinearLayout>
-
             </RelativeLayout>
-
-
-            <android.support.v7.widget.Toolbar
-                android:id="@+id/toolbar"
-                android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
-                android:background="@color/colorStatusBar"
-                app:layout_collapseMode="pin"
-                app:popupTheme="@style/ThemeOverlay.AppCompat.Light">
-
-                <ImageView
-                    android:id="@+id/action_more"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="right|center_vertical"
-                    android:paddingRight="@dimen/appbar_padding_top"
-                    android:src="@drawable/ic_more_vert_white_24dp" />
-
-                <ImageView
-                    android:id="@+id/action_setting"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="right|center_vertical"
-                    android:layout_marginBottom="18dp"
-                    android:layout_marginTop="18dp"
-                    android:paddingRight="@dimen/appbar_padding_top"
-                    android:src="@drawable/icn_setting" />
-
-                <ImageView
-                    android:id="@+id/action_credit"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="left|center_vertical"
-                    android:paddingLeft="@dimen/appbar_padding_top"
-                    android:src="@drawable/ic_shopping_cart_white_24dp" />
-
-                <!--<ir.eynakgroup.diet.utils.view.CustomTextView-->
-                <!--android:id="@+id/txt_credit"-->
-                <!--android:layout_width="wrap_content"-->
-                <!--android:layout_height="wrap_content"-->
-                <!--android:textSize="24dp"-->
-                <!--android:textStyle="bold"-->
-                <!--android:layout_gravity="left|center_vertical"-->
-                <!--android:gravity="center"-->
-                <!--android:textColor="@color/colorWhite"-->
-                <!--android:paddingLeft="@dimen/appbar_padding_top"-->
-                <!--/>-->
-
-            </android.support.v7.widget.Toolbar>
-
-        </android.support.design.widget.CollapsingToolbarLayout>
+        </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight=".75"
+            android:layout_height="wrap_content"
             android:background="@color/colorStatusBar"
             android:orientation="horizontal">
 
@@ -238,85 +189,43 @@
                         android:textColor="@color/colorWhite"
                         android:textSize="18dp" />
 
-
                 </LinearLayout>
-
             </RelativeLayout>
-
-
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:layout_weight="1"
+            android:layout_height="90dp"
+            android:layout_gravity="center_horizontal"
             android:background="@drawable/profile_mid_bar"
-            android:orientation="vertical"
-            android:weightSum="3">
-
-            <!--<com.wefika.horizontalpicker.HorizontalPicker-->
-            <!--android:id="@+id/picker"-->
-            <!--android:layout_width="match_parent"-->
-            <!--android:layout_height="0dp"-->
-            <!--android:layout_weight="2"-->
-            <!--android:textColor="@color/colorWhite"-->
-            <!--android:textSize="16sp"-->
-            <!--android:layout_marginTop="8dp"-->
-            <!--android:ellipsize="marquee"-->
-            <!--android:marqueeRepeatLimit="2"-->
-            <!--android:focusable="true"-->
-            <!--android:focusableInTouchMode="true"-->
-            <!--app:values="@array/months"-->
-            <!--app:dividerSize="10dp"-->
-            <!--app:sideItems="2"/>-->
+            android:orientation="vertical">
 
             <com.shawnlin.numberpicker.NumberPicker
                 android:id="@+id/diet_picker"
                 android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_marginTop="8dp"
-                android:layout_weight="2"
+                android:layout_height="wrap_content"
                 app:np_dividerColor="@android:color/transparent"
                 app:np_formatter="%02d"
-                app:np_max="1"
+                app:np_max="20"
                 app:np_min="1"
                 app:np_orientation="horizontal"
                 app:np_selectedTextColor="@color/colorWhite"
                 app:np_textColor="@color/colorDescription"
-                app:np_textSize="20dp"
+                app:np_textSize="18dp"
                 app:np_wheelItemCount="7" />
 
             <ir.eynakgroup.diet.utils.view.CustomTextView
                 android:id="@+id/txt_list"
                 android:layout_width="wrap_content"
-                android:layout_height="0dp"
+                android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:layout_weight="1"
-                android:drawableLeft="@drawable/sort_left"
-                android:paddingTop="4dp"
                 android:text="لیست همه رژیم‌ها"
-
                 android:textColor="@color/colorWhite"
-                android:textSize="18dp" />
-            <!--android:drawableRight="@drawable/sort_right"-->
-
+                android:textSize="14dp" />
         </LinearLayout>
-
-
     </android.support.design.widget.AppBarLayout>
 
-
     <include layout="@layout/content_profile" />
-
-
-    <!--<anroid.support.design.widget.FloatingActionButton-->
-    <!--android:id="@+id/fab"-->
-    <!--android:layout_width="wrap_content"-->
-    <!--android:layout_height="wrap_content"-->
-    <!--android:layout_margin="@dimen/fab_margin"-->
-    <!--android:src="@android:drawable/ic_dialog_email"-->
-    <!--app:layout_anchor="@id/app_bar"-->
-    <!--app:layout_anchorGravity="bottom|end" />-->
 
 </android.support.design.widget.CoordinatorLayout>
 

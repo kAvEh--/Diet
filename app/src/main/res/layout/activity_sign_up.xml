@@ -13,40 +13,37 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:background="@android:color/white"
-        app:elevation="0dp"
-        android:theme="@style/AppTheme.AppBarOverlay">
+        android:theme="@style/AppTheme.AppBarOverlay"
+        app:elevation="0dp">
 
         <android.support.v7.widget.Toolbar
             android:id="@+id/toolbar"
-            android:layout_marginTop="@dimen/activity_orientation_margin"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            app:popupTheme="@style/AppTheme.PopupOverlay"
+            android:layout_marginTop="@dimen/activity_orientation_margin"
             app:layout_scrollFlags="enterAlways"
-            >
+            app:popupTheme="@style/AppTheme.PopupOverlay">
 
 
             <ir.eynakgroup.diet.utils.view.CustomTextView
                 android:id="@+id/next_step"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:textColor="@color/colorPrimary"
-                android:text="@string/next_step"
-                android:textStyle="bold"
-                android:textSize="16sp"
                 android:layout_gravity="center_vertical|right"
-                android:layout_marginRight="@dimen/button_margin" />
+                android:layout_marginRight="@dimen/button_margin"
+                android:text="@string/next_step"
+                android:textColor="@color/colorPrimary"
+                android:textSize="16sp"
+                android:textStyle="bold" />
 
             <ImageView
                 android:id="@+id/back_step"
-                android:visibility="gone"
                 android:layout_width="25dp"
                 android:layout_height="25dp"
-                android:src="@drawable/button_back"
-                android:layout_marginLeft="@dimen/button_margin"
                 android:layout_gravity="center_vertical|left"
-                />
-
+                android:layout_marginLeft="@dimen/button_margin"
+                android:src="@drawable/button_back"
+                android:visibility="gone" />
 
 
         </android.support.v7.widget.Toolbar>
@@ -60,19 +57,19 @@
         app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
     <!--<android.support.design.widget.FloatingActionButton-->
-        <!--android:id="@+id/fab"-->
-        <!--android:layout_width="wrap_content"-->
-        <!--android:layout_height="wrap_content"-->
-        <!--android:layout_gravity="end|bottom"-->
-        <!--android:layout_margin="@dimen/fab_margin"-->
-        <!--android:src="@android:drawable/ic_dialog_email" />-->
+    <!--android:id="@+id/fab"-->
+    <!--android:layout_width="wrap_content"-->
+    <!--android:layout_height="wrap_content"-->
+    <!--android:layout_gravity="end|bottom"-->
+    <!--android:layout_margin="@dimen/fab_margin"-->
+    <!--android:src="@android:drawable/ic_dialog_email" />-->
     <ir.eynakgroup.diet.utils.view.CustomIndicator
         android:id="@+id/indicator"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|center_horizontal"
         android:padding="@dimen/indicator_padding"
-        app:fillColor="@color/colorPrimary"
-        app:centered="true"/>
+        app:centered="true"
+        app:fillColor="@color/colorPrimary" />
 
 </android.support.design.widget.CoordinatorLayout>

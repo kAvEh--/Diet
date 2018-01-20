@@ -104,7 +104,6 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
             e.printStackTrace();
         }
         System.out.println("packages added!!! -------------------");
-
     }
 
     private void insertFoods() throws IOException, JSONException, SQLException {

@@ -1,10 +1,32 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:layout_gravity="right"
+    android:gravity="right"
+    android:layoutDirection="rtl"
     tools:context="ir.eynakgroup.diet.activities.fragments.ProfileFragment">
     <item
-        android:id="@+id/action_settings"
+        android:id="@+id/action_telegram"
+        android:layout_gravity="right"
+        android:gravity="right"
+        android:icon="@drawable/button_back"
         android:orderInCategory="100"
-        android:title="@string/action_settings"
+        android:title="تلگرام"
         app:showAsAction="never" />
+    <item
+        android:id="@+id/action_insta"
+        android:orderInCategory="100"
+        android:title="اینستاگرام"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/action_about"
+        android:orderInCategory="100"
+        android:title="درباره ما"
+        app:showAsAction="never" />
+    <item
+        android:id="@+id/action_setting"
+        android:orderInCategory="100"
+        android:title=""
+        android:icon="@drawable/icn_setting"
+        app:showAsAction="always" />
 </menu>

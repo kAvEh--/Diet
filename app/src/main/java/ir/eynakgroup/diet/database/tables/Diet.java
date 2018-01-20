@@ -6,6 +6,7 @@ import com.j256.ormlite.table.DatabaseTable;
 
 /**
  * Created by Shayan on 7/12/2017.
+ *
  */
 @DatabaseTable(tableName = "Diets")
 public class Diet {
@@ -13,6 +14,8 @@ public class Diet {
     private String serverId;
     @DatabaseField(columnName = "_id", dataType = DataType.INTEGER)
     private int id;
+    @DatabaseField(columnName = "point", dataType = DataType.INTEGER)
+    private int point;
     @DatabaseField(columnName = "startDate", dataType = DataType.STRING)
     private String startDate;
     @DatabaseField(columnName = "day", dataType = DataType.INTEGER)
@@ -241,4 +244,11 @@ public class Diet {
         this.goalWeight = goalWeight;
     }
 
+    public int getPoint() {
+        return point;
+    }
+
+    public void setPoint(int point) {
+        this.point = point;
+    }
 }
