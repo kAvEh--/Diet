@@ -253,7 +253,7 @@ public class SetupDietActivity extends BaseActivity implements View.OnClickListe
                                 lineNumber++;
                                 addResponseView("ساده" + " " + difficulty.get(Level.EASY).getAmount() + " کیلویی");
                                 addResponseView("متوسط" + " " + difficulty.get(Level.NORMAL).getAmount() + " کیلویی");
-                                addResponseView("سخت" + " " + difficulty.get(Level.DIFFICULT).getAmount() + " کیلویی با ورزش");
+                                addResponseView("سخت" + " " + difficulty.get(Level.DIFFICULT).getAmount() + " کیلویی");
                                 return;
                             } else if (difficulty.containsKey(Level.NORMAL)) {
                                 reader.readLine();
@@ -305,42 +305,15 @@ public class SetupDietActivity extends BaseActivity implements View.OnClickListe
 
 
                 }
-//                else if(line.contains("user")){
-//                    String[] responses;
-//                    if(splits[1].contains(","))
-//                        responses = splits[1].trim().split(",");
-//                    else
-//                        responses = new String[]{splits[1].trim()};
-//
-//                    for(String response: responses)
-//                        addResponseView(response.trim());
-//
-//                }
-
                 line = reader.readLine();
                 lineNumber++;
             }
             reader.close();
-
-
         } catch (IOException e) {
             e.printStackTrace();
         } catch (SQLException e) {
             e.printStackTrace();
         }
-
-
-//        addListItem("من دستیار کرفس هستم.", Type.APP);
-//        addListItem("سلام شایان، خوشحالم که تصمیم گرفتی رژیمت رو شروع کنی.", Type.APP);
-//        addListItem("سلام شایان، خوشحالم که تصمیم گرفتی رژیمت رو شروع کنی.", Type.APP);
-//        addListItem("سلام شایان، خوشحالم که تصمیم گرفتی رژیمت رو شروع کنی.", Type.APP);
-//        addAllergyItem();
-//
-//        addResponseView("باشه");
-//        addResponseView("حمید پسر خوبی است.");
-//        addResponseView("باشه");
-//        addResponseView("حمید پسر خوبی است.");
-
     }
 
     public float round(float value, int places) {
@@ -624,13 +597,15 @@ public class SetupDietActivity extends BaseActivity implements View.OnClickListe
                         public void onClick(DialogInterface dialog, int which) {
 
                             Difficulty diff = difficulty.get(diffLevel);
-                            System.out.println(diff.getAmount() + "::::::::::::::::::::::::::::::::");
                             final DietProperty property = generateDiet(diff.getCalorie(), diff.getAmount());
+
+                            System.out.println(",,,,,,,,,,,,,," + diffLevel);
 
                             Call<CreateDietResponse> call = getRequestMethod().createDiet(user.getSessionId(),
                                     user.getUserId(), user.getApiKey(), property.getType(),
                                     property.getStartDate(), createDietJson(property.getId()),
-                                    String.valueOf(user.getWeight()), String.valueOf(user.getWeight() - diff.getAmount()));
+                                    String.valueOf(user.getWeight()), String.valueOf(user.getWeight() - diff.getAmount()),
+                                    diffLevel.name());
 
                             call.enqueue(new Callback<CreateDietResponse>() {
                                 @Override
